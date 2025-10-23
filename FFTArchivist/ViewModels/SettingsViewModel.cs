@@ -1,0 +1,71 @@
+﻿using FFTArchivist.Managers;
+using FFTArchivist.Models;
+using FFTArchivist.Properties;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FFTArchivist.Entries
+{
+    internal class SettingsViewModel : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        //public Poach Poach
+        //{
+        //    get
+        //    {
+        //        return poach;
+        //    }
+
+        //    set
+        //    {
+        //        if (poach == value)
+        //        {
+        //            return;
+        //        }
+
+        //        poach = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PoachViewModel)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Poach.Name)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Poach.Description)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Poach.ItemID)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemNames)));
+        //    }
+        //}
+
+        //public int Id { get => poach.Id; set => poach.Id = value; }
+        //public string Name { get => poach?.Name.Value ?? ""; set => poach.Name.Value = value; }
+        //public string Description { get => poach?.Description.Value ?? ""; set => poach.Description.Value = value; }
+        //public int ItemID { get => poach?.ItemID.Value ?? 0; set => poach.ItemID.Value = value; }
+        //public List<string> ItemNames { get => (poach != null ? App.DataManager.GetDataList<Item>().Select(i => i.Name.Value.Replace("<icon=103>", "+")).ToList() : new List<string>()); }
+        //public string ItemName { get => poach != null ? App.DataManager.GetDataList<Item>()[poach.ItemID.Value].Name.Value : ""; }
+
+        //public string FFTIVCBasePath { get => {
+        //        return Settings.Default.FFTIVCBasePath;
+        //    }
+        //    set => {
+        //        Settings.Default.FFTIVCBasePath = value;
+        //    } }
+        public string FFTIVCRootPath
+        {
+            get => Settings.Default.FFTIVCRootPath;
+            set
+            {
+                if (Settings.Default.FFTIVCRootPath != value)
+                {
+                    Settings.Default.FFTIVCRootPath = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FFTIVCRootPath)));
+                }
+            }
+        }
+
+        public SettingsViewModel()
+        {
+
+        }
+    }
+}

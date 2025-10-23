@@ -1,4 +1,6 @@
 ﻿using FFTArchivist.Managers;
+using System.Data.Common;
+using System.Windows;
 
 namespace FFTArchivist.Models.Base
 {
@@ -7,12 +9,19 @@ namespace FFTArchivist.Models.Base
     {
         public string PackName { get; private set; }
         public string TableName { get; private set; }
-        public int Column { get; private set; }
+        public int? Column { get; private set; }
+        public string ColumnName { get; private set; }
         public NEXLinkageAttribute(string packName, string tableName, int column)
         {
             PackName = packName;
             TableName = tableName;
             Column = column;
+        }
+        public NEXLinkageAttribute(string packName, string tableName, string columnName)
+        {
+            PackName = packName;
+            TableName = tableName;
+            ColumnName = columnName;
         }
     }
 
@@ -20,7 +29,8 @@ namespace FFTArchivist.Models.Base
     {
         public string PackName { get; private set; }
         public string TableName { get; private set; }
-        public int Column { get; private set; }
+        public int? Column { get; private set; }
+        public string ColumnName { get; private set; }
 
         public NEXLinkage(string packName, string tableName, int column)
         {
@@ -28,12 +38,26 @@ namespace FFTArchivist.Models.Base
             TableName = tableName;
             Column = column;
         }
+        public NEXLinkage(string packName, string tableName, string columnName)
+        {
+            PackName = packName;
+            TableName = tableName;
+            ColumnName = columnName;
+        }
 
         public async Task<T> ReadFromSource(int id)
         {
             var dataSource = await DataManager.Instance.GetDataSource(this);
-            var data = await dataSource.ReadData<T>(id, Column);
-            return data;
+            if (Column.HasValue)
+            {
+                return await dataSource.ReadData<T>(id, Column.Value);
+            }
+            else if (ColumnName != null)
+            {
+                return await dataSource.ReadData<T>(id, ColumnName);
+            }
+
+            return default;
         }
 
         public async Task WriteToMod()

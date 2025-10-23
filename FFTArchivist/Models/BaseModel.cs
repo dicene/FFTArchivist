@@ -23,7 +23,7 @@ namespace FFTArchivist.Models
                         var propertyTypeArg = prop.PropertyType.GetGenericArguments()[0];
                         Type genericType = typeof(NEXLinkage<>);
                         Type specificType = genericType.MakeGenericType(propertyTypeArg);
-                        var args = new object[] { linkageAttr.PackName, linkageAttr.TableName, linkageAttr.Column };
+                        var args = new object[] { linkageAttr.PackName, linkageAttr.TableName, linkageAttr.Column.HasValue ? linkageAttr.Column : linkageAttr.ColumnName };
                         object newLinkage = Activator.CreateInstance(specificType, args);
 
                         if (newLinkage == null)

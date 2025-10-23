@@ -14,41 +14,53 @@ namespace FFTArchivist.Entries
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        //public Item Item
-        //{
-        //    get
-        //    {
-        //        return item;
-        //    }
+        public Ability Ability
+        {
+            get
+            {
+                return ability;
+            }
 
-        //    set
-        //    {
-        //        if (item == value)
-        //        {
-        //            return;
-        //        }
+            set
+            {
+                if (ability == value)
+                {
+                    return;
+                }
 
-        //        item = value;
-        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemViewModel)));
-        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
-        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
-        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Price)));
-        //    }
-        //}
+                ability = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCost1)));
+            }
+        }
 
-        //public int Id { get => item.Id; set => item.Id = value; }
-        //public string Name { get => item.Name.Value; set => item.Name.Value = value; }
-        //public string Description { get => item.Description.Value; set => item.Description.Value = value; }
-        //public short Price { get => item.Price.Value; set => item.Price.Value = value; }
+        public int Id { get => ability.Id; set => ability.Id = value; }
+        public string Name { get => ability.Name.Value; set => ability.Name.Value = value; }
+        public string Description { get => ability.Description.Value; set => ability.Description.Value = value; }
+        public int JpCost1
+        {
+            get
+            {
+                return ability.JpCost1.Value + (ability.JpCost2.Value << 8);
+            }
 
-        //public ItemViewModel()
-        //{
-        //    this.item = new Item(0);
-        //}
+            set
+            {
+                ability.JpCost1.Value = (byte)(value & 0xff);
+                ability.JpCost2.Value = (byte)(value >> 8);
+            }
+        }
 
-        //public ItemViewModel(Item item)
-        //{
-        //    this.item = item;
-        //}
+        public AbilityViewModel()
+        {
+            this.ability = new Ability(0);
+        }
+
+        public AbilityViewModel(Ability ability)
+        {
+            this.ability = ability;
+        }
     }
 }

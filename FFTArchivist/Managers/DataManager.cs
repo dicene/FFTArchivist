@@ -4,6 +4,7 @@ using FF16Tools.Pack;
 using FFTArchivist.DataSources;
 using FFTArchivist.Models;
 using FFTArchivist.Models.Base;
+using FFTArchivist.Properties;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,7 +21,7 @@ namespace FFTArchivist.Managers
     {
         private static DataManager _instance = new DataManager();
         public static DataManager Instance { get => _instance; }
-        public string FFTBasePath = @"C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY TACTICS - The Ivalice Chronicles\";
+        public string FFTBasePath => Settings.Default.FFTIVCRootPath;
         public string FFTExecutablePath => Path.Combine([FFTBasePath, "fft_enhanced.exe"]);
         public string DataFolderPath => Path.Combine([FFTBasePath, "data", "enhanced"]);
 
@@ -43,6 +44,7 @@ namespace FFTArchivist.Managers
         public async Task<bool> LoadData()
         {
             var items = new List<Item>();
+
             for (int i = 0; i < 256; i++)
             {
                 items.Add(new Item(i));
@@ -55,8 +57,16 @@ namespace FFTArchivist.Managers
                 poaches.Add(new Poach(i));
             }
 
+            var abilities = new List<Ability>();
+
+            for (int i = 1; i < 512; i++)
+            {
+                abilities.Add(new Ability(i));
+            }
+
             DataLists[typeof(Item)] = items;
             DataLists[typeof(Poach)] = poaches;
+            DataLists[typeof(Ability)] = abilities;
 
             //int id = Random.Shared.Next(1, Items.Count - 1);
 

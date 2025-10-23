@@ -1,4 +1,5 @@
 ﻿using FFTArchivist.Entries;
+using FFTArchivist.Managers;
 using FFTArchivist.Models;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,10 @@ namespace FFTArchivist
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ItemView ItemView { get; set; }
+        public PoachView PoachView { get; set; }
+        public AbilityView AbilityView { get; set; }
+        public SettingsView SettingsView { get; set; }
         public Page CurrentView;
         public MainWindow()
         {
@@ -29,7 +34,8 @@ namespace FFTArchivist
         {
             App.CurrentMod = App.ModManager.CreateMod();
             await App.DataManager.LoadData();
-            CurrentView = new ItemView();
+            SettingsView = new SettingsView();
+            CurrentView = SettingsView;
             EditorFrame.Navigate(CurrentView);
         }
 
@@ -37,23 +43,47 @@ namespace FFTArchivist
         {
             EntryListBox.SelectedIndex = -1;
             EntryListBox.ItemsSource = App.DataManager.GetDataList<Item>().Select(item => $"{item.Id:X} {item.Name.Value}");
-            CurrentView = new ItemView();
-            //CurrentView.ItemViewModel = new ItemViewModel(App.DataManager.Items[0]);
+
+            if (ItemView == null)
+            {
+                ItemView = new ItemView();
+            }
+
+            CurrentView = ItemView;
             EditorFrame.Navigate(CurrentView);
         }
 
         private void PoachEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<Poach>().Select(item => $"{item.Id:X} {item.Name.Value}");
-            CurrentView = new PoachView();
-            //CurrentView.ItemViewModel = new ItemViewModel(App.DataManager.Items[0]);
+            EntryListBox.ItemsSource = App.DataManager.GetDataList<Poach>().Select(item => $"{item.Id:X} {item.Name.Value.Replace("<Icon=103>", "+")}");
+
+            if (PoachView == null)
+            {
+                PoachView = new PoachView();
+            }
+
+            CurrentView = PoachView;
             EditorFrame.Navigate(CurrentView);
         }
 
         private void AbilityEditorButton_Click(object sender, RoutedEventArgs e)
         {
+            EntryListBox.SelectedIndex = -1;
+            EntryListBox.ItemsSource = App.DataManager.GetDataList<Ability>().Select(item => $"{item.Id:X} {item.Name.Value}");
 
+            if (AbilityView == null)
+            {
+                AbilityView = new AbilityView();
+            }
+
+            CurrentView = AbilityView;
+            EditorFrame.Navigate(CurrentView);
+
+            if (EntryListBox.Items.Count > 0)
+            {
+                EntryListBox.SelectedIndex = 0;
+            }
         }
 
         private async void EntryListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -73,7 +103,7 @@ namespace FFTArchivist
             }
             else if (CurrentView is AbilityView abilityView)
             {
-                //abilityView.AbilityViewModel.Ability = App.DataManager.GetDataList<AbilityViewModel>()[EntryListBox.SelectedIndex];
+                abilityView.AbilityViewModel.Ability = App.DataManager.GetDataList<Ability>()[EntryListBox.SelectedIndex];
             }
         }
 
@@ -90,7 +120,9 @@ namespace FFTArchivist
 
         private void SettingsEditorButton_Click(object sender, RoutedEventArgs e)
         {
-
+            EntryListBox.ItemsSource = null;
+            CurrentView = new SettingsView();
+            EditorFrame.Navigate(CurrentView);
         }
     }
 }

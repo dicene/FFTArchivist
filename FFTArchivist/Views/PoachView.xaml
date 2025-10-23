@@ -31,16 +31,12 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Poach" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="26" Grid.Row="0" Grid.Column="0" FontFamily="Sitka Text" Margin="5,0,0,0">
-            <!--<TextBlock.BitmapEffect>
-                <OuterGlowBitmapEffect GlowColor="Black" GlowSize="5" Opacity=""/>
-            </TextBlock.BitmapEffect>-->
-        </TextBlock>
+        <TextBlock Text="Poach" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="26" Grid.Row="0" Grid.Column="0" FontFamily="Sitka Text" Margin="5,0,0,0" />
         <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
             <Label Content="Name:" VerticalAlignment="Center" />
             <TextBox x:Name="Name" VerticalAlignment="Center" Text="{Binding Name}" />
         </DockPanel>
-        <DockPanel Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+        <DockPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
             <Label Content="Reward:" VerticalAlignment="Center" />
             <ComboBox x:Name="Reward" VerticalAlignment="Center" ItemsSource="{Binding ItemNames, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedIndex="{Binding ItemID}" Background="{DynamicResource TextBoxBackgroundBrush}">
             </ComboBox>

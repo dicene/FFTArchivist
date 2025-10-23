@@ -38,15 +38,9 @@ namespace FFTArchivist.DataSources
         private async Task LoadSource()
         {
             pack = await Task.Run(() => FF16Pack.Open(PacFileName, CodeName));
-            //Debug.WriteLine($"Pac: {pack.Name}, Files:{pack.GetNumFiles()}, Size:{pack.GetTotalDecompressedSize()}");
-            //Debug.WriteLine($"Loading from {PacFileName}...");
-            //Debug.WriteLine($"TempFileLocation: {TempFileLocation}");
-            //var tempFilePath = Path.GetDirectoryName(TempFileLocation);
-            //"nxd/ability.en.nxd" "C:\\Program Files (x86)\\Steam\\steamapps\\common\\FINAL FANTASY TACTICS - The Ivalice Chronicles\\data\\enhanced\\0004.en"
             Directory.CreateDirectory(TempFileLocation);
             pack.ExtractFile(NEXPath, TempFileLocation);
             nexFile = NexDataFile.FromFile(Path.Combine(TempFileLocation, NEXPath));
-            //Debug.WriteLine($"Loaded file {NEXPath}: {nexFile.RowManager.GetAllRowInfos().Count} bytes");
             layout = TableMappingReader.ReadTableLayout(LayoutName, new Version(1, 0, 0), CodeName);
             fileIsLoaded = true;
         }
@@ -59,54 +53,33 @@ namespace FFTArchivist.DataSources
             }
 
             List<object> cells = NexUtils.ReadRow(layout, nexFile.Buffer, nexFile.RowManager.GetRowInfo((uint)id).RowDataOffset);
-            Debug.WriteLine($"Row {id} Cell {column}: {cells[column]} ({cells[column].GetType()})");
+            //Debug.WriteLine($"Row {id} Cell {column}: {cells[column]} ({cells[column].GetType()})");
             return (T)cells[column];
-            //using (var pack = await Task.Run(() => FF16Pack.Open(PacFileName, CodeName)))
-            //{
+        }
 
-            //    //var packBuilder = new FF16Tools.Pack.Packing.FF16PackBuilder();
-            //    //packBuilder.InitFromDirectory(DataFolderPath);
-            //    //packBuilder.
-            //    Debug.WriteLine($"Loading from {PacFileName}...");
-            //    Debug.WriteLine($"TempFileLocation: {TempFileLocation}");
-            //    //var tempFilePath = Path.GetDirectoryName(TempFileLocation);
-            //    //"nxd/ability.en.nxd" "C:\\Program Files (x86)\\Steam\\steamapps\\common\\FINAL FANTASY TACTICS - The Ivalice Chronicles\\data\\enhanced\\0004.en"
-            //    Directory.CreateDirectory(TempFileLocation);
-            //    pack.ExtractFile(NEXPath, TempFileLocation);
-            //    //var file = await pack.GetFileDataBytesAsync(nxdPath);
+        public async Task<T> ReadData<T>(int id, string columnName)
+        {
+            if (!fileIsLoaded)
+            {
+                await LoadSource();
+            }
 
-            //    //new FF16Tools.Files.Nex.NexDataFileBuilder(new NexTableLayout("ffto"))
-            //    NexDataFile nexFile = NexDataFile.FromFile(Path.Combine(TempFileLocation, NEXPath));
-            //    //using var importer = new SQLiteToNexImporter(verbs.InputFile, new Version(1, 0, 0), codeName, verbs.Tables.ToList(), _loggerFactory);
-            //    //importer.ReadSqlite();
-            //    //importer.SaveTo(verbs.OutputFile);
+            List<object> cells = NexUtils.ReadRow(layout, nexFile.Buffer, nexFile.RowManager.GetRowInfo((uint)id).RowDataOffset);
+            //Debug.WriteLine($"Row {id} Cell {column}: {cells[column]} ({cells[column].GetType()})");
+            var matchingColumns = layout.Columns.Where(c => c.Key == columnName).Select(c => c.Value).ToList();
+            if (matchingColumns.Count == 0)
+            {
+                Debug.WriteLine($"No columns matching name {columnName}.");
+                return default;
+            }
+            else if (matchingColumns.Count > 1)
+            {
+                Debug.WriteLine($"Multiple columns ({matchingColumns.Count}) matching name {columnName}.");
+                return default;
+            }
 
-            //    Debug.WriteLine($"Loaded file {NEXPath}: {nexFile.RowManager.GetAllRowInfos().Count} bytes");
-            //    var layout = TableMappingReader.ReadTableLayout(LayoutName, new Version(1, 0, 0), CodeName);
-            //    List<object> cells = NexUtils.ReadRow(layout, nexFile.Buffer, nexFile.RowManager.GetRowInfo(1).RowDataOffset);
-            //    var nameColumn = layout.Columns["Name"];
-
-
-            //    Debug.WriteLine($"Cells: {cells.Count}: {cells[0]}");
-            //    //NexToSQLiteExporter
-
-            //    return default;
-            //}
-
-
-            //File.WriteAllText("outTextFile.txt", $"Pac: {pack.Name}, Files:{pack.GetNumFiles()}, Size:{pack.GetTotalDecompressedSize()}");
-
-            //using (var connection = new SqliteConnection($"Data Source=\"{pacFileName}\""))
-            //{
-            //Debug.WriteLine($"Connection opened...");
-            //var abilities = (await connection.QueryAsync<Ability_en>($"SELECT * FROM 'Ability-en'")).ToList();
-            //AbilityData = (await connection.QueryAsync($"SELECT * FROM 'Ability-en'")).ToList();
-            //for (int i = 0; i < abilities.Count; i++)
-            //{
-            //    var ability = abilities[i];
-            //    Debug.WriteLine($"Ability {i}: {ability.Name}");
-            //}
-            //}
+            int columnIndex = layout.Columns.Values.ToList().IndexOf(matchingColumns[0]);
+            return (T)cells[columnIndex];
         }
     }
 }
