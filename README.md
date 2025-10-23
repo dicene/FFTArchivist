@@ -15,3 +15,9 @@
 - Packaging all relevant and modified files directly into archives compatible with Reloaded II for easy sharing and installation.
 - Custom controls for displaying data that might be difficult to visualize/edit in number/text form such as selecting icons and portraits (which could be extracted directly from the game's .pac files for display within the tool), or handling unit positioning in modified ENTD events.
 - Identify linkages between Override tables and the data they are overriding, and make it easier to identify and modify overrides.
+
+<img width="786" height="443" alt="image" src="https://github.com/user-attachments/assets/a07ed2e5-1f8b-4d8e-8c19-bec0f4f4ddf6" />
+
+<img width="786" height="443" alt="image" src="https://github.com/user-attachments/assets/078b504f-36a0-49e4-9ddb-26f8b8619562" />
+
+<img width="786" height="443" alt="image" src="https://github.com/user-attachments/assets/fd40f51c-0ea7-4d54-a34b-980f296b3ccf" />
