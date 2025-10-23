@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36408.4 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFTArchivist", "FFTArchivist\FFTArchivist.csproj", "{32B1DFB2-A41E-43FA-86BF-F67308DD36FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{32B1DFB2-A41E-43FA-86BF-F67308DD36FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32B1DFB2-A41E-43FA-86BF-F67308DD36FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32B1DFB2-A41E-43FA-86BF-F67308DD36FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32B1DFB2-A41E-43FA-86BF-F67308DD36FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {60641F3E-F537-4A7E-8F07-A2979D116FFA}
+	EndGlobalSection
+EndGlobal
