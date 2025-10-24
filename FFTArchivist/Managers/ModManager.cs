@@ -1,6 +1,7 @@
 ﻿using FFTArchivist.DataSources;
 using FFTArchivist.Models;
 using FFTArchivist.Models.Base;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -17,7 +18,7 @@ namespace FFTArchivist.Managers
     {
         private static ModManager _instance = new ModManager();
         public static ModManager Instance { get => _instance; }
-        public async Task ExportMod(string modName, string modPath)
+        public async Task ExportMod(string modName, string modId, string modVersion, string modAuthor, string modDescription, string modPath)
         {
             //var dataManager = DataManager.Instance;
             //Path.CreateDir
@@ -48,11 +49,11 @@ namespace FFTArchivist.Managers
             }
 
             var modConfig = JObject.Parse(modConfigJson);
-            modConfig["ModId"] = "new modid";
+            modConfig["ModId"] = modId;
             modConfig["ModName"] = modName;
-            modConfig["ModAuthor"] = "new modauthor";
-            modConfig["ModVersion"] = "new modversion";
-            modConfig["ModDescription"] = "new moddescription";
+            modConfig["ModAuthor"] = modAuthor;
+            modConfig["ModVersion"] = modVersion;
+            modConfig["ModDescription"] = modDescription;
 
             await File.WriteAllTextAsync(Path.Combine(modPath, "ModConfig.json"), modConfig.ToString());
 

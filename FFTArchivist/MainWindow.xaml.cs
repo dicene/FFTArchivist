@@ -124,9 +124,13 @@ namespace FFTArchivist
         private async void ExportModButton_Click(object sender, RoutedEventArgs e)
         {
             var modName = Properties.Settings.Default.ModName;
+            var modId = Properties.Settings.Default.ModId;
+            var modVersion = Properties.Settings.Default.ModVersion;
+            var modAuthor = Properties.Settings.Default.ModAuthor;
+            var modDescription = Properties.Settings.Default.ModDescription;
             var newModPath = System.IO.Path.Combine(Properties.Settings.Default.ReloadedIIModsPath, modName);
             Debug.WriteLine($"Exporting Mod: {modName} to {newModPath}");
-            await ModManager.Instance.ExportMod(modName, newModPath);
+            await ModManager.Instance.ExportMod(modName, modId, modVersion, modAuthor, modDescription, newModPath);
         }
 
         private void JobEditorButton_Click(object sender, RoutedEventArgs e)
