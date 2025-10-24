@@ -8,7 +8,7 @@ namespace FFTArchivist
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : System.Windows.Application
     {
         internal static IMod CurrentMod { get; set; } = null;
         internal static IModManager ModManager { get; private set; } = new ModManager();

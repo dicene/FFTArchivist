@@ -39,7 +39,11 @@ namespace FFTArchivist.Entries
         public int Id { get => item.Id; set => item.Id = value; }
         public string Name { get => item.Name.Value; set => item.Name.Value = value; }
         public string Description { get => item.Description.Value; set => item.Description.Value = value; }
-        public short Price { get => item.Price.Value; set => item.Price.Value = value; }
+        public short Price
+        {
+            get => item.Price.Value;
+            set => item.Price.Value = value;
+        }
 
         public ItemViewModel()
         {

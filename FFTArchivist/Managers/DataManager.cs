@@ -27,7 +27,7 @@ namespace FFTArchivist.Managers
 
         public event EventHandler OnDataReloaded;
 
-        private List<IDataSource> dataSources = new();
+        public List<IDataSource> DataSources = new();
 
         // TODO: At some point consider refactoring this to a custom class.
         public Dictionary<Type, IEnumerable<BaseModel>> DataLists { get; } = new();
@@ -113,7 +113,7 @@ namespace FFTArchivist.Managers
         {
             Debug.WriteLine($"Loading new NEX data source: {pacFileName}, {nexPath}, {layoutName}");
             var dataSource = new NEXDataSource(Path.Combine(DataFolderPath, pacFileName), nexPath: nexPath, layoutName: layoutName);
-            dataSources.Add(dataSource);
+            DataSources.Add(dataSource);
             return dataSource;
         }
 
@@ -121,14 +121,14 @@ namespace FFTArchivist.Managers
         {
             Debug.WriteLine($"Loading new EXE data source: {baseOffset}, {count}, {size}");
             var dataSource = new EXEDataSource(FFTExecutablePath, baseOffset, count, size);
-            dataSources.Add(dataSource);
+            DataSources.Add(dataSource);
             return dataSource;
         }
 
         public async Task<NEXDataSource> GetDataSource<T>(NEXLinkage<T> linkage)
         {
             // Determine the appropriate data source based on the linkage information
-            var existingDataSource = dataSources.OfType<NEXDataSource>().FirstOrDefault(ds => ds.LayoutName == linkage.TableName);
+            var existingDataSource = DataSources.OfType<NEXDataSource>().FirstOrDefault(ds => ds.LayoutName == linkage.TableName);
 
             if (existingDataSource != default)
             {
@@ -141,7 +141,7 @@ namespace FFTArchivist.Managers
         public async Task<EXEDataSource> GetDataSource<T>(EXELinkage<T> linkage)
         {
             // Determine the appropriate data source based on the linkage information
-            var existingDataSource = dataSources.OfType<EXEDataSource>().FirstOrDefault(ds => ds.BaseOffset == linkage.BaseOffset && ds.Count == linkage.Count && ds.Size == linkage.Size);
+            var existingDataSource = DataSources.OfType<EXEDataSource>().FirstOrDefault(ds => ds.BaseOffset == linkage.BaseOffset && ds.Count == linkage.Count && ds.Size == linkage.Size);
 
             if (existingDataSource != default)
             {

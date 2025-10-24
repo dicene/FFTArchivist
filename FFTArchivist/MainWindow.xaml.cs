@@ -1,6 +1,9 @@
 ﻿using FFTArchivist.Entries;
 using FFTArchivist.Managers;
 using FFTArchivist.Models;
+using FFTArchivist.Properties;
+using System.Diagnostics;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,7 +35,7 @@ namespace FFTArchivist
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            App.CurrentMod = App.ModManager.CreateMod();
+            //App.CurrentMod = App.ModManager.CreateMod();
             await App.DataManager.LoadData();
             SettingsView = new SettingsView();
             CurrentView = SettingsView;
@@ -109,8 +112,21 @@ namespace FFTArchivist
 
         private async void ModDetailsButton_Click(object sender, RoutedEventArgs e)
         {
-            App.CurrentMod = App.ModManager.CreateMod();
+            //App.CurrentMod = App.ModManager.CreateMod();
             await App.DataManager.LoadData();
+        }
+
+        private async void ImportModButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void ExportModButton_Click(object sender, RoutedEventArgs e)
+        {
+            var modName = Properties.Settings.Default.ModName;
+            var newModPath = System.IO.Path.Combine(Properties.Settings.Default.ReloadedIIModsPath, modName);
+            Debug.WriteLine($"Exporting Mod: {modName} to {newModPath}");
+            await ModManager.Instance.ExportMod(modName, newModPath);
         }
 
         private void JobEditorButton_Click(object sender, RoutedEventArgs e)

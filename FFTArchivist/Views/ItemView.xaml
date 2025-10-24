@@ -24,12 +24,12 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Items" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="26" Grid.Row="0" Grid.Column="0" FontFamily="Sitka Text" Margin="5,0,0,0">
             <!--<TextBlock.BitmapEffect>
@@ -45,8 +45,8 @@
             <TextBox x:Name="Price" VerticalAlignment="Center" Text="{Binding Price}"/>
         </DockPanel>
         <DockPanel Grid.Row="2" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="6" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,10,0">
-            <Label Content="Description:" VerticalAlignment="Top" />
-            <TextBox x:Name="Description" VerticalAlignment="Center" Text="{Binding Description}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" AcceptsTab="True" MinLines="5" Margin="5"/>
+            <Label Content="Description:" VerticalAlignment="Top" DockPanel.Dock="Top"/>
+            <TextBox x:Name="Description" VerticalAlignment="Center" Text="{Binding Description}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" AcceptsTab="True" MinLines="5" Margin="0" DockPanel.Dock="Top"/>
         </DockPanel>
     </Grid>
 </Page>

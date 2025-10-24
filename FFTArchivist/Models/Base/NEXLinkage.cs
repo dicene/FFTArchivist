@@ -60,9 +60,20 @@ namespace FFTArchivist.Models.Base
             return default;
         }
 
-        public async Task WriteToMod()
+        public async Task WriteToMod<T>(int id, T value)
         {
-            return;
+            var dataSource = await DataManager.Instance.GetDataSource(this);
+
+            if (Column.HasValue)
+            {
+                dataSource.WriteData(id, Column.Value, value);
+            }
+            else
+            {
+                dataSource.WriteData(id, ColumnName, value);
+                // TODO: Write with column names
+            }
+            //Debug.WriteLine($"Wrote {} bytes to new nex file {filePath}");
         }
     }
 }

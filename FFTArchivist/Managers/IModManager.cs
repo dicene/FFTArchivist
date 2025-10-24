@@ -8,6 +8,7 @@ namespace FFTArchivist.Managers
 {
     internal interface IModManager
     {
-        public IMod CreateMod() { return null; }
+        public static IModManager Instance { get; }
+        public Task ExportMod(string modName, string modPath);
     }
 }

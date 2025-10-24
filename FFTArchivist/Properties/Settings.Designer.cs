@@ -26,13 +26,85 @@ namespace FFTArchivist.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Steam\\steamapps\\common\\FINAL FANTASY TACTICS - The Ivalice" +
-            " Chronicles\\")]
+            " Chronicles")]
         public string FFTIVCRootPath {
             get {
                 return ((string)(this["FFTIVCRootPath"]));
             }
             set {
                 this["FFTIVCRootPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NewMod")]
+        public string ModName {
+            get {
+                return ((string)(this["ModName"]));
+            }
+            set {
+                this["ModName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Thoth\\Documents\\Software\\Reloaded II\\Mods")]
+        public string ReloadedIIModsPath {
+            get {
+                return ((string)(this["ReloadedIIModsPath"]));
+            }
+            set {
+                this["ReloadedIIModsPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("fftivc.various.newMod")]
+        public string ModId {
+            get {
+                return ((string)(this["ModId"]));
+            }
+            set {
+                this["ModId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Author")]
+        public string ModAuthor {
+            get {
+                return ((string)(this["ModAuthor"]));
+            }
+            set {
+                this["ModAuthor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("v0.0.1")]
+        public string ModVersion {
+            get {
+                return ((string)(this["ModVersion"]));
+            }
+            set {
+                this["ModVersion"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Mod Description")]
+        public string ModDescription {
+            get {
+                return ((string)(this["ModDescription"]));
+            }
+            set {
+                this["ModDescription"] = value;
             }
         }
     }

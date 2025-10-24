@@ -28,6 +28,10 @@ namespace FFTArchivist.Models.Base
 
                 this.value = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+                if (!Equals(this.value, this.OriginalValue))
+                {
+                    WriteToMod();
+                }
             }
         }
 
@@ -50,7 +54,7 @@ namespace FFTArchivist.Models.Base
 
         public async void WriteToMod()
         {
-            await linkage.WriteToMod();
+            await linkage.WriteToMod(id, value);
         }
 
         public void RevertToOriginal()

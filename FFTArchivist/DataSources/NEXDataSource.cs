@@ -1,5 +1,7 @@
-﻿using FF16Tools.Files.Nex;
+﻿using CommunityToolkit.HighPerformance.Buffers;
+using FF16Tools.Files.Nex;
 using FF16Tools.Files.Nex.Entities;
+using FF16Tools.Files.Nex.Managers;
 using FF16Tools.Pack;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
@@ -25,8 +27,11 @@ namespace FFTArchivist.DataSources
 
         private bool fileIsLoaded;
         private FF16Pack pack;
-        private NexDataFile nexFile;
+        private NexDataFile originalNexFile;
+        private NexDataFile modifiedNexFile;
+        private NexDataFileBuilder builder;
         private NexTableLayout layout;
+
 
         public NEXDataSource(string pacFileName, string nexPath, string layoutName)
         {
@@ -40,9 +45,44 @@ namespace FFTArchivist.DataSources
             pack = await Task.Run(() => FF16Pack.Open(PacFileName, CodeName));
             Directory.CreateDirectory(TempFileLocation);
             pack.ExtractFile(NEXPath, TempFileLocation);
-            nexFile = NexDataFile.FromFile(Path.Combine(TempFileLocation, NEXPath));
+            originalNexFile = NexDataFile.FromFile(Path.Combine(TempFileLocation, NEXPath));
             layout = TableMappingReader.ReadTableLayout(LayoutName, new Version(1, 0, 0), CodeName);
             fileIsLoaded = true;
+
+            //modifiedNexFile = new NexDataFile();
+            //modifiedNexFile.Type = originalNexFile.Type;
+            //modifiedNexFile.Version = originalNexFile.Version;
+            //modifiedNexFile.Read(originalNexFile.Buffer);
+
+            builder = new NexDataFileBuilder(layout);
+
+            List<NexRowInfo> rowInfos = originalNexFile.RowManager!.GetAllRowInfos();
+            if (originalNexFile.Type == NexTableType.DoubleKeyed)
+            {
+                NexTripleKeyedRowTableManager rowSetManager = (NexTripleKeyedRowTableManager)originalNexFile.RowManager;
+                foreach (var dk in rowSetManager.GetRowSets())
+                {
+                    builder.AddTripleKeyedSet(dk.Key);
+                    foreach (var subSet in dk.Value.SubSets)
+                        builder.AddTripleKeyedSubset(dk.Key, subSet.Key);
+                }
+            }
+            else if (originalNexFile.Type == NexTableType.DoubleKeyed)
+            {
+                NexDoubleKeyedRowTableManager rowSetManager = (NexDoubleKeyedRowTableManager)originalNexFile.RowManager;
+                foreach (var set in rowSetManager.GetRowSets())
+                    builder.AddDoubleKeyedSet(set.Key);
+            }
+
+            for (int i = 0; i < rowInfos.Count; i++)
+            {
+                var row = rowInfos[i];
+                List<object> cells = NexUtils.ReadRow(layout, originalNexFile.Buffer!, row.RowDataOffset);
+                builder.AddRow(row.Key, row.Key2, row.Key3, cells);
+            }
+
+            //using var fs = new FileStream(Path.Combine("built", originalNexFile.Key.ToLower() + ".nxd"), FileMode.Create);
+            //builder.Write(fs);
         }
 
         public async Task<T> ReadData<T>(int id, int column)
@@ -52,7 +92,7 @@ namespace FFTArchivist.DataSources
                 await LoadSource();
             }
 
-            List<object> cells = NexUtils.ReadRow(layout, nexFile.Buffer, nexFile.RowManager.GetRowInfo((uint)id).RowDataOffset);
+            List<object> cells = NexUtils.ReadRow(layout, originalNexFile.Buffer, originalNexFile.RowManager.GetRowInfo((uint)id).RowDataOffset);
             //Debug.WriteLine($"Row {id} Cell {column}: {cells[column]} ({cells[column].GetType()})");
             return (T)cells[column];
         }
@@ -64,7 +104,7 @@ namespace FFTArchivist.DataSources
                 await LoadSource();
             }
 
-            List<object> cells = NexUtils.ReadRow(layout, nexFile.Buffer, nexFile.RowManager.GetRowInfo((uint)id).RowDataOffset);
+            List<object> cells = NexUtils.ReadRow(layout, originalNexFile.Buffer, originalNexFile.RowManager.GetRowInfo((uint)id).RowDataOffset);
             //Debug.WriteLine($"Row {id} Cell {column}: {cells[column]} ({cells[column].GetType()})");
             var matchingColumns = layout.Columns.Where(c => c.Key == columnName).Select(c => c.Value).ToList();
             if (matchingColumns.Count == 0)
@@ -80,6 +120,60 @@ namespace FFTArchivist.DataSources
 
             int columnIndex = layout.Columns.Values.ToList().IndexOf(matchingColumns[0]);
             return (T)cells[columnIndex];
+        }
+
+        public async Task WriteData<T>(int id, int column, T value)
+        {
+            var row = builder.GetRow((uint)id, 0, 0);
+            row.Cells[column] = value;
+            //NexUtils.WriteCell(layout, modifiedNexFile.Buffer, modifiedNexFile.RowManager.GetRowInfo((uint)id).RowDataOffset, column, value);
+            Debug.WriteLine($"Wrote value {value} to row {id} column {column}.");
+        }
+
+        public async Task WriteData<T>(int id, string columnName, T value)
+        {
+            var row = builder.GetRow((uint)id, 0, 0);
+
+            var matchingColumns = layout.Columns.Where(c => c.Key == columnName).Select(c => c.Value).ToList();
+            if (matchingColumns.Count == 0)
+            {
+                Debug.WriteLine($"No columns matching name {columnName}.");
+                return;
+            }
+            else if (matchingColumns.Count > 1)
+            {
+                Debug.WriteLine($"Multiple columns ({matchingColumns.Count}) matching name {columnName}.");
+                return;
+            }
+
+            int columnIndex = layout.Columns.Values.ToList().IndexOf(matchingColumns[0]);
+            row.Cells[columnIndex] = value;
+            //return (T)cells[columnIndex];
+
+            //NexUtils.WriteCell(layout, modifiedNexFile.Buffer, modifiedNexFile.RowManager.GetRowInfo((uint)id).RowDataOffset, column, value);
+            Debug.WriteLine($"Wrote value {value} to row {id} column {columnName}.");
+        }
+
+        public async Task WriteToFile(string filePath)
+        {
+            //var newNexFile = new NexDataFile();
+            //newNexFile.Type = originalNexFile.Type;
+            //newNexFile.Version = originalNexFile.Version;
+            //newNexFile.Read(originalNexFile.Buffer);
+
+            //using MemoryOwner<byte> ogNexFileData = packManagerForGameMode.GetFileData(nexGamePath, includeDiff: false);
+
+            //NexDataFile originalTableFile = new NexDataFile();
+            //originalTableFile.Read(ogNexFileData.Span.ToArray());
+            //await File.WriteAllBytesAsync(filePath, newNexFile.Buffer);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                builder.Write(fileStream);
+                Debug.WriteLine($"Wrote {fileStream.Length} bytes to new nex file {filePath}");
+            }
+
+            //await File.WriteAllBytesAsync(filePath, builder);
+            //Debug.WriteLine($"Wrote {newNexFile.Buffer.Length} bytes to new nex file {filePath}");
         }
     }
 }

@@ -40,7 +40,7 @@ namespace FFTArchivist.Models.Base
             return data;
         }
 
-        public async Task WriteToMod()
+        public async Task WriteToMod<T>(int id, T value)
         {
             return;
         }
