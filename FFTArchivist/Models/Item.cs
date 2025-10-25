@@ -14,10 +14,10 @@ namespace FFTArchivist.Models
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        [NEXLinkage("0004.en", "Item", 1)]
+        [NEXLinkage("0004.en", "Item", "Name")]
         public new DataItem<string> Name { get; set; }
 
-        [NEXLinkage("0004.en", "Item", 4)]
+        [NEXLinkage("0004.en", "Item", "Description")]
         public DataItem<string> Description { get; set; }
 
         [EXELinkage(0x807B30, 256, 0xC, 0x8)]

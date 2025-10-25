@@ -25,6 +25,8 @@
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="FF16Tools.Files" Version="1.4.0" />
     <PackageReference Include="FF16Tools.Pack" Version="1.2.1" />
+    <PackageReference Include="fftivc.utility.modloader.Interfaces" Version="1.0.3" />
+    <PackageReference Include="fftivc.utility.modloader.Serializers" Version="1.0.3" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0-rc.2.25502.107" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Reloaded.Memory.Sigscan" Version="3.1.9" />
