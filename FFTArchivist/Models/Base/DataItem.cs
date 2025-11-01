@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFTArchivist.DataSources;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,7 +12,10 @@ namespace FFTArchivist.Models.Base
     public class DataItem<T> : INotifyPropertyChanged
     {
         private int id;
-        private ILinkage<T> linkage;
+        private string columnName;
+        private ISourceMapping<T> sourceMapping;
+        private IDestinationMapping<T> destinationMapping;
+        private IDataSource source;
         public T OriginalValue { get; private set; }
 
         private T value;
@@ -39,22 +43,36 @@ namespace FFTArchivist.Models.Base
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public DataItem(ILinkage<T> linkage, int id)
+        public DataItem(ISourceMapping<T> sourceMapping, int id)
         {
             this.id = id;
-            this.linkage = linkage;
+            this.sourceMapping = sourceMapping;
+
+            if (sourceMapping is IDestinationMapping<T> destinationMapping)
+            {
+                this.destinationMapping = destinationMapping;
+            }
+
+            Task.Run(ReadFromSource).GetAwaiter().GetResult();
+        }
+
+        public DataItem(ISourceMapping<T> sourceMapping, IDestinationMapping<T> destinationMapping, int id)
+        {
+            this.id = id;
+            this.sourceMapping = sourceMapping;
+            this.destinationMapping = destinationMapping;
             Task.Run(ReadFromSource).GetAwaiter().GetResult();
         }
 
         public async Task ReadFromSource()
         {
-            OriginalValue = await linkage.ReadFromSource(id);
+            OriginalValue = await sourceMapping.ReadFromSource();
             Value = OriginalValue;
         }
 
         public async void WriteToMod()
         {
-            await linkage.WriteToMod(id, value);
+            await destinationMapping.WriteToDestination(Value);
         }
 
         public void RevertToOriginal()

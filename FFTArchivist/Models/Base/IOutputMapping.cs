@@ -2,6 +2,6 @@
 {
     public interface IDestinationMapping<T>
     {
-        public Task WriteToMod<T>(T value);
+        public Task WriteToDestination<T>(T value);
     }
 }

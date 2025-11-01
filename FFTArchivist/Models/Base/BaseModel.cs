@@ -1,4 +1,5 @@
-﻿using FFTArchivist.Managers;
+﻿using FFTArchivist.DataSources.EXE;
+using FFTArchivist.Managers;
 using System.CodeDom;
 using System.Diagnostics;
 using System.Reflection;
@@ -26,6 +27,20 @@ namespace FFTArchivist.Models.Base
                     {
                         //Debug.WriteLine($"{GetType().Name}: {prop.Name}: {nexLinkageAttribute.DataSourceType.Name} - {nexLinkageAttribute.ColumnName}");
                         if (DataManager.Instance.DataSources.TryGetValue(nexLinkageAttribute.DataSourceType, out var source))
+                        {
+                            //source.ReadData<>
+                        }
+
+                        //source.ReadData<string>(prop., nexLinkageAttribute.ColumnName);
+                        //Debug.WriteLine($"");
+                    }
+
+                    var exeSourceMappingAttribute = prop.GetCustomAttribute<EXESourceMappingAttribute>();
+
+                    if (exeSourceMappingAttribute != null)
+                    {
+                        //Debug.WriteLine($"{GetType().Name}: {prop.Name}: {nexLinkageAttribute.DataSourceType.Name} - {nexLinkageAttribute.ColumnName}");
+                        if (DataManager.Instance.DataSources.TryGetValue(exeSourceMappingAttribute.DataSourceType, out var source))
                         {
                             //source.ReadData<>
                         }
@@ -81,8 +96,54 @@ namespace FFTArchivist.Models.Base
 
                         var newDataItem = Activator.CreateInstance(prop.PropertyType, newMapping, id);
 
+                        //newDataItem.ReadFromSource();
+                        prop.SetValue(this, newDataItem);
 
+                        //if (DataManager.Instance.DataSources.TryGetValue(nexLinkageAttribute.DataSourceType, out var source))
+                        //{
+                        //    //source.ReadData<>
+                        //}
 
+                        //source.ReadData<string>(prop., nexLinkageAttribute.ColumnName);
+                        //Debug.WriteLine($"");
+                    }
+
+                    var exeSourceMappingAttribute = prop.GetCustomAttribute<EXESourceMappingAttribute>();
+
+                    if (exeSourceMappingAttribute != null)
+                    {
+                        //Debug.WriteLine($"{GetType().Name}: {prop.Name}: {nexMappingAttribute.DataSourceType.Name} - {nexMappingAttribute.ColumnName}");
+
+                        var propertyTypeArg = prop.PropertyType.GetGenericArguments()[0];
+                        Type genericType = typeof(EXESourceMapping<>);
+                        Type specificType = genericType.MakeGenericType(propertyTypeArg);
+                        var args = new object[] { };
+                        //var args = new object[] { specificType, Id, exeSourceMappingAttribute.PropertyName };
+                        //EXESourceMapping(Type t, AEXEDataSource dataSource, int id, string propertyName)
+                        object newMapping = Activator.CreateInstance(specificType, args);
+
+                        if (newMapping == null)
+                        {
+                            continue;
+                        }
+
+                        var dataSource = DataManager.Instance.GetDataSource(exeSourceMappingAttribute.DataSourceType);
+                        var dataSourceProp = specificType.GetProperty("DataSource");
+                        var propertyNameProp = specificType.GetProperty("PropertyName");
+                        var idProp = specificType.GetProperty("Id");
+                        var dataTypeProp = specificType.GetProperty("DataType");
+
+                        //var dataSourceProp = genericType.GetProperty("DataSource");
+                        //var columnNameProp = genericType.GetProperty("ColumnName");
+                        //var idProp = genericType.GetProperty("Id");
+
+                        //var data
+                        dataSourceProp.SetValue(newMapping, dataSource);
+                        propertyNameProp.SetValue(newMapping, exeSourceMappingAttribute.PropertyName);
+                        idProp.SetValue(newMapping, Id);
+                        dataTypeProp.SetValue(newMapping, propertyTypeArg);
+
+                        var newDataItem = Activator.CreateInstance(prop.PropertyType, newMapping, id);
 
                         //newDataItem.ReadFromSource();
                         prop.SetValue(this, newDataItem);

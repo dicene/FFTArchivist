@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.HighPerformance.Buffers;
+﻿/*using CommunityToolkit.HighPerformance.Buffers;
 using FF16Tools.Files.Nex;
 using FF16Tools.Files.Nex.Entities;
 using FF16Tools.Files.Nex.Managers;
@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
-namespace FFTArchivist.DataSources
+namespace FFTArchivist.DataSources.NEX
 {
-    public class NEXDataSource : IDataSource
+    public abstract class ANEXDataSource : IDataSource
     {
         public string PacFileName;
         public string NEXPath;
@@ -33,7 +33,7 @@ namespace FFTArchivist.DataSources
         private NexTableLayout layout;
 
 
-        public NEXDataSource(string pacFileName, string nexPath, string layoutName)
+        public ANEXDataSource(string pacFileName, string nexPath, string layoutName)
         {
             PacFileName = pacFileName.EndsWith(".pac") ? pacFileName : $"{pacFileName}.pac";
             NEXPath = nexPath;
@@ -177,3 +177,4 @@ namespace FFTArchivist.DataSources
         }
     }
 }
+*/

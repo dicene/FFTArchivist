@@ -1,8 +1,10 @@
-﻿using CommunityToolkit.HighPerformance.Buffers;
+﻿using BCnEncoder.Shared.ImageFiles;
+using CommunityToolkit.HighPerformance.Buffers;
 using FF16Tools.Files.Nex;
 using FF16Tools.Files.Nex.Entities;
 using FF16Tools.Files.Nex.Managers;
 using FF16Tools.Pack;
+using FFTArchivist.Managers;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,11 +21,13 @@ namespace FFTArchivist.DataSources
 {
     public abstract class ANEXDataSource : IDataSource
     {
-        public string PacFileName;
+        //public string PacFileName;
+        public string TableName;
         public string NEXPath;
         public string LayoutName;
         public string TempFileLocation => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FFTArchivist", "temp");
         public string CodeName = FF16Tools.Pack.Crypto.PackKeyStore.FFT_IVALICE_CODENAME;
+        public string Locale = "en";
 
         private bool fileIsLoaded;
         private FF16Pack pack;
@@ -32,21 +36,42 @@ namespace FFTArchivist.DataSources
         private NexDataFileBuilder builder;
         private NexTableLayout layout;
 
-
-        public ANEXDataSource(string pacFileName, string nexPath, string layoutName)
+        public ANEXDataSource(string name)
         {
-            PacFileName = pacFileName.EndsWith(".pac") ? pacFileName : $"{pacFileName}.pac";
-            NEXPath = nexPath;
-            LayoutName = layoutName;
+            TableName = name.Replace("<locale>", Locale);
+            NEXPath = $"nxd/{TableName}.nxd";
+            LayoutName = NEXPath.Contains('.') ? NEXPath.Split('.')[0] : NEXPath;
+            //LoadSource($"nxd/{NEXPath}.nxd");
+            Task.Run(() => LoadSource(NEXPath)).GetAwaiter().GetResult();
+            //PacFileName = pacFileName.EndsWith(".pac") ? pacFileName : $"{pacFileName}.pac";
+            //NEXPath = Path.Combine("nxd", nexName);
+            //if (pacFileName.Contains('.'))
+            //{
+            //    NEXPath += ".en";
+            //}
+            //NEXPath += ".nxd";
+            //LayoutName = layoutName;
         }
 
-        private async Task LoadSource()
+        private async Task LoadSource(string directory)
         {
-            pack = await Task.Run(() => FF16Pack.Open(PacFileName, CodeName));
-            Directory.CreateDirectory(TempFileLocation);
-            pack.ExtractFile(NEXPath, TempFileLocation);
-            originalNexFile = NexDataFile.FromFile(Path.Combine(TempFileLocation, NEXPath));
-            layout = TableMappingReader.ReadTableLayout(LayoutName, new Version(1, 0, 0), CodeName);
+            //var packManager = new FF16PackManager();
+            var fileData = DataManager.Instance.FF16PackManager.GetFileData(NEXPath, false);
+            //var pack = packManager.GetFileDataBytesAsync.GetPack(PacFileName);
+            //pack = await Task.Run(() => FF16Pack.Open(Path.Combine(App.DataManager.DataFolderPath, PacFileName), CodeName));
+            //Directory.CreateDirectory(TempFileLocation);
+            //pack.ExtractFile(NEXPath, TempFileLocation);
+            //Print($"Processing nex changes for '{nexFile.Key}' ({nexPack.Key})");
+
+            //NexTableLayout tableColumnLayout = TableMappingReader.ReadTableLayout(TableName, new Version(1, 0, 0), "ffto");
+
+            //using MemoryOwner<byte> ogNexFileData = packManagerForGameMode.GetFileData(nexGamePath, includeDiff: false);
+
+            originalNexFile = new NexDataFile();
+            originalNexFile.Read(fileData.Span.ToArray());
+            //var originalNexFile = new NexDataFile();
+
+            layout = TableMappingReader.ReadTableLayout(TableName, new Version(1, 0, 0), CodeName);
             fileIsLoaded = true;
 
             //modifiedNexFile = new NexDataFile();
@@ -89,7 +114,7 @@ namespace FFTArchivist.DataSources
         {
             if (!fileIsLoaded)
             {
-                await LoadSource();
+                await LoadSource("");
             }
 
             List<object> cells = NexUtils.ReadRow(layout, originalNexFile.Buffer, originalNexFile.RowManager.GetRowInfo((uint)id).RowDataOffset);
@@ -101,7 +126,7 @@ namespace FFTArchivist.DataSources
         {
             if (!fileIsLoaded)
             {
-                await LoadSource();
+                await LoadSource("");
             }
 
             List<object> cells = NexUtils.ReadRow(layout, originalNexFile.Buffer, originalNexFile.RowManager.GetRowInfo((uint)id).RowDataOffset);

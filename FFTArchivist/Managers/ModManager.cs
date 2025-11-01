@@ -1,4 +1,5 @@
 ﻿using FFTArchivist.DataSources;
+using FFTArchivist.DataSources.EXE;
 using FFTArchivist.Models;
 using FFTArchivist.Models.Base;
 using Microsoft.VisualBasic;
@@ -11,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.TextFormatting;
 
 namespace FFTArchivist.Managers
 {
@@ -26,7 +28,7 @@ namespace FFTArchivist.Managers
             Directory.CreateDirectory(Path.Combine(modPath, "FFTIVC"));
             var enhancedDataPath = Path.Combine(modPath, "FFTIVC", "data", "enhanced");
             Directory.CreateDirectory(enhancedDataPath);
-            var tablesPath = Path.Combine(modPath, "FFTIVC", "tables");
+            var tablesPath = Path.Combine(modPath, "FFTIVC", "tables", "enhanced");
             Directory.CreateDirectory(tablesPath);
 
             var assembly = System.Reflection.Assembly.GetEntryAssembly();
@@ -83,13 +85,28 @@ namespace FFTArchivist.Managers
                 Debug.WriteLine($"No changed items to write...");
             }
 
-            foreach (var source in DataManager.Instance.DataSources)
+            foreach ((Type type, IDataSource dataSource) in DataManager.Instance.DataSources)
             {
-                if (source is NEXDataSource nexSource)
+                if (dataSource is ANEXDataSource nexSource)
                 {
                     var destinationPath = Path.Combine(enhancedDataPath, nexSource.NEXPath);
                     Debug.WriteLine($"Writing to NEX file at {destinationPath}");
                     nexSource.WriteToFile(destinationPath);
+                }
+
+                if ((type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(AEXEDataSource<,,>)))
+                {
+                    var destinationPath = Path.Combine(enhancedDataPath);
+                    Debug.WriteLine($"Writing to EXE file at {destinationPath}");
+
+                    var writeToFileMethod = type.GetMethods().FirstOrDefault(m => m.Name == "WriteToFile");
+
+                    if (writeToFileMethod != default)
+                    {
+                        var args = new object[] { tablesPath };
+                        writeToFileMethod.Invoke(dataSource, args);
+                        //exeSource.WriteToFile(destinationPath);
+                    }
                 }
             }
         }

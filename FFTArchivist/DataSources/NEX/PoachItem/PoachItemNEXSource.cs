@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FFTArchivist.DataSources.NEX.PoachItem
 {
-    internal class PoachItemNEXSource : NEXDataSource
+    internal class PoachItemNEXSource : ANEXDataSource
     {
         public PoachItemNEXSource() : base("PoachItem.<locale>")
         {

@@ -1,4 +1,6 @@
-﻿using FFTArchivist.Models.Base;
+﻿using FFTArchivist.DataSources.NEX.Ability;
+using FFTArchivist.DataSources.NEX.Item;
+using FFTArchivist.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,17 +16,16 @@ namespace FFTArchivist.Models
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        [NEXLinkage("0004.en", "Ability", 2)]
-        public new DataItem<string> Name { get; set; }
+        [NEXMapping(typeof(AbilityNEXSource), nameof(AbilityNEXModel.Name))]
+        public DataItem<string> Name { get; set; }
 
-        [NEXLinkage("0004.en", "Ability", "Description")]
-        //[NEXLinkage("0004.en", "Ability", 3)]
+        [NEXMapping(typeof(AbilityNEXSource), nameof(AbilityNEXModel.Description))]
         public DataItem<string> Description { get; set; }
 
-        [NEXLinkage("0004.en", "Ability", 19)]
+        [NEXMapping(typeof(AbilityNEXSource), nameof(AbilityNEXModel.JpCost1))]
         public DataItem<byte> JpCost1 { get; set; }
 
-        [NEXLinkage("0004.en", "Ability", 20)]
+        [NEXMapping(typeof(AbilityNEXSource), nameof(AbilityNEXModel.JpCost2))]
         public DataItem<byte> JpCost2 { get; set; }
     }
 }

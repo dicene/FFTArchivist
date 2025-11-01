@@ -2,6 +2,7 @@
 using Dapper;
 using FF16Tools.Pack;
 using FFTArchivist.DataSources;
+using FFTArchivist.DataSources.EXE;
 using FFTArchivist.Models;
 using FFTArchivist.Models.Base;
 using FFTArchivist.Properties;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,22 +26,75 @@ namespace FFTArchivist.Managers
         public string FFTBasePath => Settings.Default.FFTIVCRootPath;
         public string FFTExecutablePath => Path.Combine([FFTBasePath, "fft_enhanced.exe"]);
         public string DataFolderPath => Path.Combine([FFTBasePath, "data", "enhanced"]);
+        public string Locale = "en";
+        public string CodeName = FF16Tools.Pack.Crypto.PackKeyStore.FFT_IVALICE_CODENAME;
 
         public event EventHandler OnDataReloaded;
 
-        public List<IDataSource> DataSources = new();
+        public Dictionary<Type, IDataSource> DataSources { get; set; } = new();
+
+        public FF16PackManager FF16PackManager { get; set; } = new();
 
         // TODO: At some point consider refactoring this to a custom class.
         public Dictionary<Type, IEnumerable<BaseModel>> DataLists { get; } = new();
 
-        //public List<dynamic> AbilityData { get; private set; } = new();
-        //public List<Item> Items { get; private set; } = new();
-        //public List<Poach> Poaches { get; private set; } = new();
-
-        private DataManager()
+        public async Task OpenPack(string packDirectory)
         {
-            Debug.WriteLine($"Creating DataManager...");
+            FF16PackManager.Open(packDirectory, CodeName);
         }
+
+        public static List<Type> GetModelTypes()
+        {
+            var modelTypes = new List<Type>();
+            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.BaseType == typeof(BaseModel) && !type.IsAbstract))
+            {
+                modelTypes.Add(t);
+            }
+
+            foreach (var type in modelTypes)
+            {
+                Debug.WriteLine($"ModelTypes: {type}");
+            }
+
+            return modelTypes;
+        }
+
+        //public static List<Type> GetModelDataItems(List<Type> modelTypes)
+        //{
+        //    var dataItems = new List<Type>();
+
+        //    foreach (var type in modelTypes)
+        //    {
+        //        foreach (var prop in type.GetProperties())
+        //        {
+        //            if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(DataItem<>))
+        //            {
+        //                var nexLinkageAttribute = prop.GetCustomAttribute<NEXMappingAttribute>();
+        //                if (nexLinkageAttribute != null)
+        //                {
+        //                    var propertyTypeArg = prop.PropertyType.GetGenericArguments()[0];
+        //                    //Type genericType = typeof(NEXLinkage<>);
+        //                    //Type specificType = genericType.MakeGenericType(propertyTypeArg);
+        //                    //var args = new object[] { nexLinkageAttribute.PackName, nexLinkageAttribute.TableName, nexLinkageAttribute.Column.HasValue ? nexLinkageAttribute.Column : nexLinkageAttribute.ColumnName };
+        //                    //Debug.WriteLine($"Linkage: {nexLinkageAttribute.PackName}, {nexLinkageAttribute.TableName}, {nexLinkageAttribute.ColumnName}");
+        //                    //object newLinkage = Activator.CreateInstance(specificType, args);
+
+        //                    //if (newLinkage == null)
+        //                    //{
+        //                    //    continue;
+        //                    //}
+
+        //                    //var newDataItem = Activator.CreateInstance(prop.PropertyType, newLinkage, id);
+
+        //                    //newDataItem.ReadFromSource();
+        //                    //prop.SetValue(this, newDataItem);
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return dataItems;
+        //}
 
         public async Task<bool> LoadData()
         {
@@ -47,109 +102,51 @@ namespace FFTArchivist.Managers
 
             for (int i = 0; i < 256; i++)
             {
-                items.Add(new Item(i));
+                var item = new Item(i);
+                await item.ReadData();
+                items.Add(item);
             }
 
             var poaches = new List<Poach>();
 
             for (int i = 1; i < 97; i++)
             {
-                poaches.Add(new Poach(i));
+                var poach = new Poach(i);
+                await poach.ReadData();
+                poaches.Add(poach);
             }
 
             var abilities = new List<Ability>();
 
             for (int i = 1; i < 512; i++)
             {
-                abilities.Add(new Ability(i));
+                var ability = new Ability(i);
+                await ability.ReadData();
+                abilities.Add(ability);
             }
 
             DataLists[typeof(Item)] = items;
             DataLists[typeof(Poach)] = poaches;
             DataLists[typeof(Ability)] = abilities;
 
-            //int id = Random.Shared.Next(1, Items.Count - 1);
-
-            //Debug.Print($"Item [{id}]: {Items[id].Name.Value}");
-
-            //NEXDataSource AbilityEnDataSource = new(pacFileName: Path.Combine(DataFolderPath, "0004.en.pac"), nexPath: @"nxd/Ability.en.nxd", layoutName: "Ability");
-            //dataSources.Add(AbilityEnDataSource);
-
-            //Debug.WriteLine("Loading data from original pac sources...");
-            //var pack = FF16Pack.Open(Path.Combine([DataFolderPath, "0004.en.pac"]), FF16Tools.Pack.Crypto.PackKeyStore.FFT_IVALICE_CODENAME);
-            //Debug.WriteLine($"Pac: {pack.Name}, Files:{pack.GetNumFiles()}, Size:{pack.GetTotalDecompressedSize()}");
-            ////var packBuilder = new FF16Tools.Pack.Packing.FF16PackBuilder();
-            ////packBuilder.InitFromDirectory(DataFolderPath);
-            ////packBuilder.
-            //Debug.WriteLine($"Loading from {TextDbPath}");
-
-            //var results = await AbilityEnDataSource.ReadData<List<object>>();
-            ////var results = await AbilityEnDataSource.ReadData<List<object>>();
-
-            ////File.WriteAllText("outTextFile.txt", $"Pac: {pack.Name}, Files:{pack.GetNumFiles()}, Size:{pack.GetTotalDecompressedSize()}");
-
-            ////using (var connection = new SqliteConnection($"Data Source=\"{TextDbPath}\""))
-            ////{
-            ////    Debug.WriteLine($"Connection opened...");
-            ////    var abilities = (await connection.QueryAsync<Ability_en>($"SELECT * FROM 'Ability-en'")).ToList();
-            ////    AbilityData = (await connection.QueryAsync($"SELECT * FROM 'Ability-en'")).ToList();
-            ////    for (int i = 0; i < abilities.Count; i++)
-            ////    {
-            ////        var ability = abilities[i];
-            ////        Debug.WriteLine($"Ability {i}: {ability.Name}");
-            ////    }
-            ////}
-
             OnDataReloaded?.Invoke(this, EventArgs.Empty);
-
-            //using (var connection = new SqlConnection(connectionString))
 
             return true;
         }
 
+        public async Task LoadDataSources()
+        {
+            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IDataSource") != null && !type.IsAbstract))
+            {
+                Debug.WriteLine($"Initializing new datasource: {t.Name}");
+                if (Activator.CreateInstance(t) is IDataSource dataSource)
+                {
+                    DataSources.Add(t, dataSource);
+                }
+            }
+        }
+
         // TODO: Move data source loading and caching logic to their respective classes
-
-        public async Task<NEXDataSource> LoadNewDataSource(string pacFileName, string nexPath, string layoutName)
-        {
-            Debug.WriteLine($"Loading new NEX data source: {pacFileName}, {nexPath}, {layoutName}");
-            var dataSource = new NEXDataSource(Path.Combine(DataFolderPath, pacFileName), nexPath: nexPath, layoutName: layoutName);
-            DataSources.Add(dataSource);
-            return dataSource;
-        }
-
-        public async Task<EXEDataSource> LoadNewDataSource(long baseOffset, int count, int size)
-        {
-            Debug.WriteLine($"Loading new EXE data source: {baseOffset}, {count}, {size}");
-            var dataSource = new EXEDataSource(FFTExecutablePath, baseOffset, count, size);
-            DataSources.Add(dataSource);
-            return dataSource;
-        }
-
-        public async Task<NEXDataSource> GetDataSource<T>(NEXLinkage<T> linkage)
-        {
-            // Determine the appropriate data source based on the linkage information
-            var existingDataSource = DataSources.OfType<NEXDataSource>().FirstOrDefault(ds => ds.LayoutName == linkage.TableName);
-
-            if (existingDataSource != default)
-            {
-                return existingDataSource;
-            }
-
-            return await LoadNewDataSource(Path.Combine(DataFolderPath, linkage.PackName), $"nxd/{linkage.TableName}{(linkage.PackName.Count('.') > 0 ? $".{linkage.PackName.Split('.')[1]}" : "")}.nxd", linkage.TableName);
-        }
-
-        public async Task<EXEDataSource> GetDataSource<T>(EXELinkage<T> linkage)
-        {
-            // Determine the appropriate data source based on the linkage information
-            var existingDataSource = DataSources.OfType<EXEDataSource>().FirstOrDefault(ds => ds.BaseOffset == linkage.BaseOffset && ds.Count == linkage.Count && ds.Size == linkage.Size);
-
-            if (existingDataSource != default)
-            {
-                return existingDataSource;
-            }
-
-            return await LoadNewDataSource(linkage.BaseOffset, linkage.Count, linkage.Size);
-        }
 
         public List<T> GetDataList<T>() where T : BaseModel
         {
@@ -159,6 +156,16 @@ namespace FFTArchivist.Managers
             }
 
             return new List<T>();
+        }
+
+        public IDataSource GetDataSource(Type type)
+        {
+            if (DataSources.TryGetValue(type, out var source))
+            {
+                return source;
+            }
+
+            return default;
         }
     }
 }

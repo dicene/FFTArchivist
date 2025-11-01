@@ -1,4 +1,6 @@
-﻿using FFTArchivist.Models.Base;
+﻿using FFTArchivist.DataSources.NEX.Item;
+using FFTArchivist.DataSources.NEX.PoachItem;
+using FFTArchivist.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,13 +16,13 @@ namespace FFTArchivist.Models
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        [NEXLinkage("0004.en", "PoachItem", 2)]
-        public new DataItem<string> Name { get; set; }
+        [NEXMapping(typeof(PoachItemNEXSource), nameof(PoachItemNEXModel.Unknown8))]
+        public DataItem<string> Name { get; set; }
 
-        [NEXLinkage("0004.en", "PoachItem", 6)]
+        [NEXMapping(typeof(PoachItemNEXSource), nameof(PoachItemNEXModel.Unknown18))]
         public DataItem<string> Description { get; set; }
 
-        [NEXLinkage("0004.en", "PoachItem", 14)]
-        public DataItem<int> ItemID { get; set; }
+        [NEXMapping(typeof(PoachItemNEXSource), nameof(PoachItemNEXModel.Unknown2C))]
+        public DataItem<int> RewardID { get; set; }
     }
 }

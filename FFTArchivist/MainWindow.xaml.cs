@@ -36,16 +36,18 @@ namespace FFTArchivist
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //App.CurrentMod = App.ModManager.CreateMod();
+            await App.DataManager.OpenPack(App.DataManager.DataFolderPath);
+            await App.DataManager.LoadDataSources();
             await App.DataManager.LoadData();
             SettingsView = new SettingsView();
-            CurrentView = SettingsView;
-            EditorFrame.Navigate(CurrentView);
+            //CurrentView = SettingsView;
+            //EditorFrame.Navigate(CurrentView);
         }
 
         private void ItemEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<Item>().Select(item => $"{item.Id:X} {item.Name.Value}");
+            EntryListBox.ItemsSource = App.DataManager.GetDataList<Item>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}");
 
             if (ItemView == null)
             {
@@ -59,7 +61,7 @@ namespace FFTArchivist
         private void PoachEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<Poach>().Select(item => $"{item.Id:X} {item.Name.Value.Replace("<Icon=103>", "+")}");
+            EntryListBox.ItemsSource = App.DataManager.GetDataList<Poach>().Select(item => $"{item.Id:X} {item.Name?.Value.Replace("<Icon=103>", "+") ?? "N/A"}");
 
             if (PoachView == null)
             {
@@ -73,7 +75,7 @@ namespace FFTArchivist
         private void AbilityEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<Ability>().Select(item => $"{item.Id:X} {item.Name.Value}");
+            EntryListBox.ItemsSource = App.DataManager.GetDataList<Ability>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}");
 
             if (AbilityView == null)
             {

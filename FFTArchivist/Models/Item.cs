@@ -1,4 +1,11 @@
-﻿using FFTArchivist.Models.Base;
+﻿using FFTArchivist.DataSources.EXE;
+using FFTArchivist.DataSources.NEX;
+using FFTArchivist.DataSources.NEX.Ability;
+using FFTArchivist.DataSources.NEX.Item;
+using FFTArchivist.DataSources.NEX.PoachItem;
+using FFTArchivist.Models.Base;
+using fftivc.utility.modloader.Interfaces.Tables.Models;
+using fftivc.utility.modloader.Interfaces.Tables.Structures;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,17 +17,20 @@ using System.Threading.Tasks;
 
 namespace FFTArchivist.Models
 {
-    public class Item(int id) : BaseModel(id), INotifyPropertyChanged
+    public class Item : BaseModel, INotifyPropertyChanged
     {
+        public Item() : base() { }
+        public Item(int id) : base(id) { }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        [NEXLinkage("0004.en", "Item", "Name")]
-        public new DataItem<string> Name { get; set; }
+        [NEXMapping(typeof(ItemNEXSource), nameof(ItemNEXModel.Name))]
+        public DataItem<string> Name { get; set; }
 
-        [NEXLinkage("0004.en", "Item", "Description")]
+        [NEXMapping(typeof(ItemNEXSource), nameof(ItemNEXModel.Description))]
         public DataItem<string> Description { get; set; }
 
-        [EXELinkage(0x807B30, 256, 0xC, 0x8)]
-        public DataItem<short> Price { get; set; }
+        [EXESourceMapping(typeof(ItemEXESource), nameof(Item.Price))]
+        public DataItem<ushort> Price { get; set; }
     }
 }

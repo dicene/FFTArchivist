@@ -21,7 +21,7 @@ namespace FFTArchivist.Models.Base
 
     public class NEXMapping<T> : ISourceMapping<T>, IDestinationMapping<T>
     {
-        public NEXDataSource DataSource { get; private set; }
+        public ANEXDataSource DataSource { get; private set; }
         public int Id { get; private set; }
         public string ColumnName { get; private set; }
         public Type DataType { get; private set; }
@@ -36,7 +36,7 @@ namespace FFTArchivist.Models.Base
             //Debug.WriteLine($"New NEXMapping with type args.");
         }
 
-        public NEXMapping(T type, NEXDataSource dataSource, int id, string columnName)
+        public NEXMapping(T type, ANEXDataSource dataSource, int id, string columnName)
         {
             DataSource = dataSource;
             Id = id;
@@ -56,9 +56,9 @@ namespace FFTArchivist.Models.Base
             return await DataSource.ReadData<T>(Id, ColumnName);
         }
 
-        public Task WriteToMod<T1>(T1 value)
+        public async Task WriteToDestination<T>(T value)
         {
-            throw new NotImplementedException();
+            await DataSource.WriteData<T>(Id, ColumnName, value);
         }
     }
 

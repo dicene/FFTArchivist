@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FFTArchivist.DataSources.NEX.Ability
 {
-    internal class AbilityNEXSource : NEXDataSource
+    internal class AbilityNEXSource : ANEXDataSource
     {
         public string Name { get; set; }
         public AbilityNEXSource() : base("Ability.<locale>")

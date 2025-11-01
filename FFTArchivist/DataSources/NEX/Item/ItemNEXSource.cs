@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FFTArchivist.DataSources.NEX.Item
 {
-    internal class ItemNEXSource : NEXDataSource
+    internal class ItemNEXSource : ANEXDataSource
     {
         public ItemNEXSource() : base("Item.<locale>")
         {

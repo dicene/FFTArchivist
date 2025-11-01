@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FFTArchivist.DataSources.NEX.Job
 {
-    internal class JobNEXSource : NEXDataSource
+    internal class JobNEXSource : ANEXDataSource
     {
         public JobNEXSource() : base("Job.<locale>")
         {

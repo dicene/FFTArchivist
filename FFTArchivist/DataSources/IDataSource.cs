@@ -8,6 +8,7 @@ namespace FFTArchivist.DataSources
 {
     public interface IDataSource
     {
-        public Task<T> ReadData<T>(int id, int column);
+        //public Task<T> ReadData<T>(int id, int column);
+        public Task<T> ReadData<T>(int id, string columnName);
     }
 }

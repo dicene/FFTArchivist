@@ -37,17 +37,27 @@ namespace FFTArchivist.Entries
         }
 
         public int Id { get => item.Id; set => item.Id = value; }
-        public string Name { get => item.Name.Value; set => item.Name.Value = value; }
-        public string Description { get => item.Description.Value; set => item.Description.Value = value; }
-        public short Price
+        public string Name
         {
-            get => item.Price.Value;
+            get => item.Name?.Value ?? "";
+            set
+            {
+                if (item.Name != null)
+                {
+                    item.Name.Value = value;
+                }
+            }
+        }
+        public string Description { get => item.Description?.Value ?? ""; set => item.Description.Value = value; }
+        public ushort Price
+        {
+            get => item.Price?.Value ?? 0;
             set => item.Price.Value = value;
         }
 
         public ItemViewModel()
         {
-            this.item = new Item(0);
+            this.item = new Item();
         }
 
         public ItemViewModel(Item item)

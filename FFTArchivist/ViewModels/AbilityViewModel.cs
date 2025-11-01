@@ -37,13 +37,13 @@ namespace FFTArchivist.Entries
         }
 
         public int Id { get => ability.Id; set => ability.Id = value; }
-        public string Name { get => ability.Name.Value; set => ability.Name.Value = value; }
-        public string Description { get => ability.Description.Value; set => ability.Description.Value = value; }
+        public string Name { get => ability.Name?.Value ?? "N/A"; set => ability.Name.Value = value; }
+        public string Description { get => ability.Description?.Value ?? ""; set => ability.Description.Value = value; }
         public int JpCost1
         {
             get
             {
-                return ability.JpCost1.Value + (ability.JpCost2.Value << 8);
+                return (ability.JpCost1?.Value ?? 0) + ((ability.JpCost2?.Value ?? 0) << 8);
             }
 
             set
