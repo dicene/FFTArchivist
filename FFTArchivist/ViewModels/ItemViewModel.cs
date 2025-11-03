@@ -64,5 +64,10 @@ namespace FFTArchivist.Entries
         {
             this.item = item;
         }
+
+        public void ChangeIndex(int index)
+        {
+            Item = App.DataManager.GetDataList<Item>()[index];
+        }
     }
 }

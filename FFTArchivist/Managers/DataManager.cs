@@ -24,7 +24,7 @@ namespace FFTArchivist.Managers
         private static DataManager _instance = new DataManager();
         public static DataManager Instance { get => _instance; }
         public string FFTBasePath => Settings.Default.FFTIVCRootPath;
-        public string FFTExecutablePath => Path.Combine([FFTBasePath, "fft_enhanced.exe"]);
+        public string FFTExecutablePath => Path.Combine([FFTBasePath, "fft_enhanced - 1.2.0.exe"]);
         public string DataFolderPath => Path.Combine([FFTBasePath, "data", "enhanced"]);
         public string Locale = "en";
         public string CodeName = FF16Tools.Pack.Crypto.PackKeyStore.FFT_IVALICE_CODENAME;
@@ -118,16 +118,26 @@ namespace FFTArchivist.Managers
 
             var abilities = new List<Ability>();
 
-            for (int i = 1; i < 512; i++)
+            for (int i = 0; i < 512; i++)
             {
                 var ability = new Ability(i);
                 await ability.ReadData();
                 abilities.Add(ability);
             }
 
+            var abilitiesDefaultSecondary = new List<AbilityDefaultSecondary>();
+
+            for (int i = 0; i < 368; i++)
+            {
+                var abilityDefaultSecondary = new AbilityDefaultSecondary(i);
+                await abilityDefaultSecondary.ReadData();
+                abilitiesDefaultSecondary.Add(abilityDefaultSecondary);
+            }
+
             DataLists[typeof(Item)] = items;
             DataLists[typeof(Poach)] = poaches;
             DataLists[typeof(Ability)] = abilities;
+            DataLists[typeof(AbilityDefaultSecondary)] = abilitiesDefaultSecondary;
 
             OnDataReloaded?.Invoke(this, EventArgs.Empty);
 

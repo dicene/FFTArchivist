@@ -55,5 +55,10 @@ namespace FFTArchivist.Entries
         {
             this.poach = poach;
         }
+
+        public void ChangeIndex(int index)
+        {
+            Poach = App.DataManager.GetDataList<Poach>()[index];
+        }
     }
 }

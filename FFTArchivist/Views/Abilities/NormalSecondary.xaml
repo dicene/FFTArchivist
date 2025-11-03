@@ -1,0 +1,72 @@
+﻿<Page x:Class="FFTArchivist.Views.Abilities.NormalSecondary"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FFTArchivist.Views.Abilities"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="NormalSecondary">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="32"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="Range:" VerticalAlignment="Center" />
+            <TextBox x:Name="Range" VerticalAlignment="Center" Text="{Binding Range}"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="Effect Area:" VerticalAlignment="Center" />
+            <TextBox x:Name="EffectArea" VerticalAlignment="Center" Text="{Binding EffectArea}"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="Vertical:" VerticalAlignment="Center" />
+            <TextBox x:Name="Vertical" VerticalAlignment="Center" Text="{Binding Vertical}"/>
+        </DockPanel>
+        <DockPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="Formula:" VerticalAlignment="Center" />
+            <ComboBox x:Name="FormulaID" VerticalAlignment="Center" ItemsSource="{Binding FormulaNames, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedIndex="{Binding FormulaID}" Background="{DynamicResource TextBoxBackgroundBrush}"/>
+        </DockPanel>
+        <DockPanel Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="X:" VerticalAlignment="Center" />
+            <TextBox x:Name="X" VerticalAlignment="Center" Text="{Binding X}"/>
+        </DockPanel>
+        <DockPanel Grid.Row="6" Grid.Column="4" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="Y:" VerticalAlignment="Center" />
+            <TextBox x:Name="Y" VerticalAlignment="Center" Text="{Binding Y}"/>
+        </DockPanel>
+        <DockPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="CT:" VerticalAlignment="Center" />
+            <TextBox x:Name="CT" VerticalAlignment="Center" Text="{Binding CT}"/>
+        </DockPanel>
+        <DockPanel Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="MP Cost:" VerticalAlignment="Center" />
+            <TextBox x:Name="MPCost" VerticalAlignment="Center" Text="{Binding MPCost}"/>
+        </DockPanel>
+        <DockPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="8" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Label Content="Inflict Status:" VerticalAlignment="Center" />
+            <ComboBox x:Name="InflictStatus" VerticalAlignment="Center" ItemsSource="{Binding StatusNames, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedIndex="{Binding InflictStatus}" Background="{DynamicResource TextBoxBackgroundBrush}"/>
+        </DockPanel>
+    </Grid>
+</Page>

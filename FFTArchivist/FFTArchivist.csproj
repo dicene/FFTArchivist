@@ -43,6 +43,27 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="Views\Abilities\RSMSecondary.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Abilities\MathSecondary.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Abilities\ChargeSecondary.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Abilities\JumpSecondary.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Abilities\ThrowSecondary.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Abilities\ItemSecondary.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\ENTDView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\SettingsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

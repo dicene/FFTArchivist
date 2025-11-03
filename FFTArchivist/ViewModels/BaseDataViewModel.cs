@@ -8,5 +8,6 @@ namespace FFTArchivist.Entries
 {
     internal interface BaseDataViewModel
     {
+        public void ChangeIndex(int index);
     }
 }

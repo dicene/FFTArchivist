@@ -98,18 +98,24 @@ namespace FFTArchivist
                 return;
             }
 
-            if (CurrentView is ItemView itemView)
+            if (CurrentView.DataContext is BaseDataViewModel viewModel)
             {
-                itemView.ItemViewModel.Item = App.DataManager.GetDataList<Item>()[EntryListBox.SelectedIndex];
+                viewModel.ChangeIndex(EntryListBox.SelectedIndex);
             }
-            else if (CurrentView is PoachView poachView)
-            {
-                poachView.PoachViewModel.Poach = App.DataManager.GetDataList<Poach>()[EntryListBox.SelectedIndex];
-            }
-            else if (CurrentView is AbilityView abilityView)
-            {
-                abilityView.AbilityViewModel.Ability = App.DataManager.GetDataList<Ability>()[EntryListBox.SelectedIndex];
-            }
+
+            //if (CurrentView is ItemView itemView)
+            //{
+            //    itemView.ItemViewModel.Item = App.DataManager.GetDataList<Item>()[EntryListBox.SelectedIndex];
+            //}
+            //else if (CurrentView is PoachView poachView)
+            //{
+            //    poachView.PoachViewModel.Poach = App.DataManager.GetDataList<Poach>()[EntryListBox.SelectedIndex];
+            //}
+            //else if (CurrentView is AbilityView abilityView)
+            //{
+            //    abilityView.AbilityViewModel.Ability = App.DataManager.GetDataList<Ability>()[EntryListBox.SelectedIndex];
+            //    abilityView.AbilityViewModel.AbilityDefaultSecondary = App.DataManager.GetDataList<AbilityDefaultSecondary>()[EntryListBox.SelectedIndex];
+            //}
         }
 
         private async void ModDetailsButton_Click(object sender, RoutedEventArgs e)
