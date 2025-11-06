@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFTArchivist.DataSources.EXE.TempInterfaces.ENTD
+namespace FFTArchivist.DataSources.EXE.TempInterfaces.JumpAbility
 {
-    public class ENTDTable : TableBase<ENTD>, IVersionableModel
+    public class JumpAbilityTable : TableBase<JumpAbility>, IVersionableModel
     {
         public uint Version { get; set; } = 1u;
     }

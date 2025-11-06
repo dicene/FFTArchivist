@@ -48,7 +48,8 @@
         </DockPanel>
         <DockPanel Grid.Row="6" Grid.RowSpan="10" Grid.Column="0" Grid.ColumnSpan="10" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,10,0">
             <Border Margin="5" BorderBrush="Black" BorderThickness="2">
-                <Frame x:Name="SecondaryFrame" NavigationUIVisibility="Hidden" Source="{Binding SecondaryPage}"/>
+                <!--<Frame x:Name="SecondaryFrame" NavigationUIVisibility="Hidden" Source="{Binding SecondaryPage}"/>-->
+                <Frame x:Name="SecondaryFrame" NavigationUIVisibility="Hidden" Content="{Binding CurrentPage}"/>
             </Border>
         </DockPanel>        
     </Grid>

@@ -105,7 +105,6 @@ namespace FFTArchivist.Managers
                     {
                         var args = new object[] { tablesPath };
                         writeToFileMethod.Invoke(dataSource, args);
-                        //exeSource.WriteToFile(destinationPath);
                     }
                 }
             }

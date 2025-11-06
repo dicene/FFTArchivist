@@ -107,11 +107,11 @@ namespace FFTArchivist.Managers
                 items.Add(item);
             }
 
-            var poaches = new List<Poach>();
+            var poaches = new List<PoachItem>();
 
             for (int i = 1; i < 97; i++)
             {
-                var poach = new Poach(i);
+                var poach = new PoachItem(i);
                 await poach.ReadData();
                 poaches.Add(poach);
             }
@@ -125,19 +125,29 @@ namespace FFTArchivist.Managers
                 abilities.Add(ability);
             }
 
-            var abilitiesDefaultSecondary = new List<AbilityDefaultSecondary>();
+            var actionAbilities = new List<ActionAbility>();
 
             for (int i = 0; i < 368; i++)
             {
-                var abilityDefaultSecondary = new AbilityDefaultSecondary(i);
-                await abilityDefaultSecondary.ReadData();
-                abilitiesDefaultSecondary.Add(abilityDefaultSecondary);
+                var actionAbility = new ActionAbility(i);
+                await actionAbility.ReadData();
+                actionAbilities.Add(actionAbility);
+            }
+
+            var itemAbilities = new List<ItemAbility>();
+
+            for (int i = 0; i < 0xe; i++)
+            {
+                var itemAbility = new ItemAbility(i);
+                await itemAbility.ReadData();
+                itemAbilities.Add(itemAbility);
             }
 
             DataLists[typeof(Item)] = items;
-            DataLists[typeof(Poach)] = poaches;
+            DataLists[typeof(PoachItem)] = poaches;
             DataLists[typeof(Ability)] = abilities;
-            DataLists[typeof(AbilityDefaultSecondary)] = abilitiesDefaultSecondary;
+            DataLists[typeof(ActionAbility)] = actionAbilities;
+            DataLists[typeof(ItemAbility)] = itemAbilities;
 
             OnDataReloaded?.Invoke(this, EventArgs.Empty);
 

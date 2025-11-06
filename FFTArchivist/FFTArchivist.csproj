@@ -43,22 +43,22 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="Views\Abilities\RSMSecondary.xaml.cs">
+    <Compile Update="Views\Abilities\SupportAbilityView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Abilities\MathSecondary.xaml.cs">
+    <Compile Update="Views\Abilities\MathAbilityView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Abilities\ChargeSecondary.xaml.cs">
+    <Compile Update="Views\Abilities\ChargeAbilityView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Abilities\JumpSecondary.xaml.cs">
+    <Compile Update="Views\Abilities\JumpAbilityView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Abilities\ThrowSecondary.xaml.cs">
+    <Compile Update="Views\Abilities\ThrowAbilityView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Abilities\ItemSecondary.xaml.cs">
+    <Compile Update="Views\Abilities\ItemAbilityView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\ENTDView.xaml.cs">

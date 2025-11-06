@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFTArchivist.DataSources.EXE.TempInterfaces.ENTD
+namespace FFTArchivist.DataSources.EXE.TempInterfaces.ChargeAbility
 {
-    public class ENTDTable : TableBase<ENTD>, IVersionableModel
+    public class ChargeAbilityTable : TableBase<ChargeAbility>, IVersionableModel
     {
         public uint Version { get; set; } = 1u;
     }

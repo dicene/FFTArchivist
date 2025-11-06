@@ -11,11 +11,11 @@ namespace FFTArchivist.Entries
 {
     internal class PoachViewModel : BaseDataViewModel, INotifyPropertyChanged
     {
-        private Poach poach;
+        private PoachItem poach;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public Poach Poach
+        public PoachItem Poach
         {
             get
             {
@@ -51,14 +51,9 @@ namespace FFTArchivist.Entries
             this.poach = null;
         }
 
-        public PoachViewModel(Poach poach)
-        {
-            this.poach = poach;
-        }
-
         public void ChangeIndex(int index)
         {
-            Poach = App.DataManager.GetDataList<Poach>()[index];
+            Poach = App.DataManager.GetDataList<PoachItem>()[index];
         }
     }
 }

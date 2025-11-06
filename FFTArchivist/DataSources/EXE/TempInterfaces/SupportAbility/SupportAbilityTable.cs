@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FFTArchivist.DataSources.EXE.TempInterfaces.ENTD
+namespace FFTArchivist.DataSources.EXE.TempInterfaces.SupportAbility
 {
-    public class ENTDTable : TableBase<ENTD>, IVersionableModel
+    public class SupportAbilityTable : TableBase<SupportAbility>, IVersionableModel
     {
         public uint Version { get; set; } = 1u;
     }

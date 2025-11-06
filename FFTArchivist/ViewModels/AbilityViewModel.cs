@@ -1,4 +1,5 @@
 ﻿using FFTArchivist.Models;
+using FFTArchivist.Views.Abilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Navigation;
 
 namespace FFTArchivist.Entries
@@ -13,20 +15,58 @@ namespace FFTArchivist.Entries
     internal class AbilityViewModel : BaseDataViewModel, INotifyPropertyChanged
     {
         private Ability ability;
-        private AbilityDefaultSecondary abilityDefaultSecondary;
+        private ActionAbilityViewModel actionAbilityViewModel = new();
+        private ItemAbilityViewModel itemAbilityViewModel = new();
+        //private ThrowAbilityViewModel throwAbilityViewModel;
+        //private JumpAbilityViewModel jumpAbilityViewModel;
+        //private ChargeAbilityViewModel chargeAbilityViewModel;
+        //private MathAbilityViewModel mathAbilityViewModel;
+        //private SupportAbilityViewModel supportAbilityViewModel;
+
+        private ActionAbility actionAbility;
+        private ItemAbility itemAbility;
+        private ThrowAbility throwAbility;
+        private JumpAbility jumpAbility;
+        private ChargeAbility chargeAbility;
+        private MathAbility mathAbility;
+        private SupportAbility supportAbility;
+
+        private ActionAbilityView actionAbilityView = new();
+        private ItemAbilityView itemAbilityView = new();
+        private ThrowAbilityView throwAbilityView = new();
+        private JumpAbilityView jumpAbilityView = new();
+        private ChargeAbilityView chargeAbilityView = new();
+        private MathAbilityView mathAbilityView = new();
+        private SupportAbilityView supportAbilityView = new();
+
+        //private System.Windows.Controls.Page CurrentPage;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private string secondaryType { get; set; }
-        public string SecondaryType
+        public string AbilityType
         {
             get => secondaryType;
             set
             {
                 secondaryType = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SecondaryType)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityType)));
             }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        private Page currentPage { get; set; }
+        public Page CurrentPage
+        {
+            get => currentPage;
+            set
+            {
+                if (currentPage != value)
+                {
+                    currentPage = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentPage)));
+                }
+            }
+        }
 
         public Ability Ability
         {
@@ -46,36 +86,156 @@ namespace FFTArchivist.Entries
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCost1)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCost)));
             }
         }
 
-        public AbilityDefaultSecondary AbilityDefaultSecondary
+        public ActionAbility ActionAbility
         {
             get
             {
-                return abilityDefaultSecondary;
+                return actionAbility;
             }
 
             set
             {
-                if (abilityDefaultSecondary == value)
+                if (actionAbility == value)
                 {
                     return;
                 }
 
-                abilityDefaultSecondary = value;
+                actionAbility = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityDefaultSecondary.Range)));
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityDefaultSecondary.EffectArea)));
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityDefaultSecondary.Vertical)));
+            }
+        }
+
+        public ItemAbility ItemAbility
+        {
+            get
+            {
+                return itemAbility;
+            }
+
+            set
+            {
+                if (itemAbility == value)
+                {
+                    return;
+                }
+
+                itemAbility = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(itemAbility.ItemId)));
+            }
+        }
+
+        public ThrowAbility ThrowAbility
+        {
+            get
+            {
+                return throwAbility;
+            }
+
+            set
+            {
+                if (throwAbility == value)
+                {
+                    return;
+                }
+
+                throwAbility = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(throwAbility.ItemId)));
+            }
+        }
+
+        public JumpAbility JumpAbility
+        {
+            get
+            {
+                return jumpAbility;
+            }
+
+            set
+            {
+                if (jumpAbility == value)
+                {
+                    return;
+                }
+
+                jumpAbility = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(jumpAbility.Range)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(jumpAbility.Vertical)));
+            }
+        }
+
+        public ChargeAbility ChargeAbility
+        {
+            get
+            {
+                return chargeAbility;
+            }
+
+            set
+            {
+                if (chargeAbility == value)
+                {
+                    return;
+                }
+
+                chargeAbility = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(chargeAbility.CT)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(chargeAbility.Power)));
+            }
+        }
+
+        public MathAbility MathAbility
+        {
+            get
+            {
+                return mathAbility;
+            }
+
+            set
+            {
+                if (mathAbility == value)
+                {
+                    return;
+                }
+
+                mathAbility = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(mathAbility.Key)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(mathAbility.Value)));
+            }
+        }
+
+        public SupportAbility SupportAbility
+        {
+            get
+            {
+                return supportAbility;
+            }
+
+            set
+            {
+                if (supportAbility == value)
+                {
+                    return;
+                }
+
+                supportAbility = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(supportAbility.AbilityId)));
             }
         }
 
         public int Id { get => ability.Id; set => ability.Id = value; }
         public string Name { get => ability.Name?.Value ?? "N/A"; set => ability.Name.Value = value; }
         public string Description { get => ability.Description?.Value ?? ""; set => ability.Description.Value = value; }
-        public int JpCost1
+        public int JpCost
         {
             get
             {
@@ -89,93 +249,74 @@ namespace FFTArchivist.Entries
             }
         }
 
-        public byte Range
-        {
-            get => abilityDefaultSecondary.Range?.Value ?? 0;
-            set => abilityDefaultSecondary.Range.Value = Range;
-        }
-
         public AbilityViewModel()
         {
-            this.ability = new Ability(0);
-            this.abilityDefaultSecondary = new AbilityDefaultSecondary(0);
-        }
+            ability = new Ability(0);
+            actionAbility = new ActionAbility(0);
+            itemAbility = new ItemAbility(0);
+            throwAbility = new ThrowAbility(0);
+            jumpAbility = new JumpAbility(0);
+            chargeAbility = new ChargeAbility(0);
+            mathAbility = new MathAbility(0);
+            supportAbility = new SupportAbility(0);
 
-        public AbilityViewModel(Ability ability, AbilityDefaultSecondary abilityDefaultSecondary)
-        {
-            this.ability = ability;
-            this.abilityDefaultSecondary = abilityDefaultSecondary;
+            actionAbilityView.DataContext = actionAbilityViewModel;
+            itemAbilityView.DataContext = itemAbilityViewModel;
+
+            actionAbilityViewModel.ActionAbility = actionAbility;
+            itemAbilityViewModel.ItemAbility = itemAbility;
+            //throwAbilityView.DataContext = throwAbility;
+            //jumpAbilityView.DataContext = jumpAbility;
+            //chargeAbilityView.DataContext = chargeAbility;
+            //mathAbilityView.DataContext = this;
+            //supportAbilityView.DataContext = this;
         }
 
         public void ChangeIndex(int index)
         {
             Ability = App.DataManager.GetDataList<Ability>()[index];
 
-            if (index < 0x170)      //Default
+            if (index < 0x170)      //Action
             {
-                SecondaryType = "Normal";
-                AbilityDefaultSecondary = App.DataManager.GetDataList<AbilityDefaultSecondary>()[index];
-                SecondaryPage = new Uri(@"NormalSecondary.xaml", UriKind.RelativeOrAbsolute);
+                AbilityType = "Action";
+                actionAbilityViewModel.ChangeIndex(index);
+                CurrentPage = actionAbilityView;
             }
             else if (index < 0x17E) //Item
             {
-                SecondaryType = "Item";
-                AbilityDefaultSecondary = App.DataManager.GetDataList<AbilityDefaultSecondary>()[index - 0x170];
-                SecondaryPage = new Uri(@"ItemSecondary.xaml", UriKind.RelativeOrAbsolute);
+                AbilityType = "Item";
+                itemAbilityViewModel.ChangeIndex(index - 0x170);
+                CurrentPage = itemAbilityView;
             }
             else if (index < 0x18A) //Throw
             {
-                SecondaryType = "Throw";
-                AbilityDefaultSecondary = App.DataManager.GetDataList<AbilityDefaultSecondary>()[index - 0x17E];
-                SecondaryPage = new Uri(@"ThrowSecondary.xaml", UriKind.RelativeOrAbsolute);
+                AbilityType = "Throw";
+                ThrowAbility = App.DataManager.GetDataList<ThrowAbility>()[index - 0x17E];
+                CurrentPage = throwAbilityView;
             }
             else if (index < 0x196) //Jump
             {
-                SecondaryType = "Jump";
-                AbilityDefaultSecondary = App.DataManager.GetDataList<AbilityDefaultSecondary>()[index - 0x18A];
-                SecondaryPage = new Uri(@"JumpSecondary.xaml", UriKind.RelativeOrAbsolute);
+                AbilityType = "Jump";
+                JumpAbility = App.DataManager.GetDataList<JumpAbility>()[index - 0x18A];
+                CurrentPage = jumpAbilityView;
             }
             else if (index < 0x19E) //Charge
             {
-                SecondaryType = "Charge";
-                AbilityDefaultSecondary = App.DataManager.GetDataList<AbilityDefaultSecondary>()[index - 0x196];
-                SecondaryPage = new Uri(@"ChargeSecondary.xaml", UriKind.RelativeOrAbsolute);
+                AbilityType = "Charge";
+                ChargeAbility = App.DataManager.GetDataList<ChargeAbility>()[index - 0x196];
+                CurrentPage = chargeAbilityView;
             }
             else if (index < 0x1A6) //Math
             {
-                SecondaryType = "Math";
-                AbilityDefaultSecondary = App.DataManager.GetDataList<AbilityDefaultSecondary>()[index - 0x19E];
-                SecondaryPage = new Uri(@"MathSecondary.xaml", UriKind.RelativeOrAbsolute);
+                AbilityType = "Math";
+                MathAbility = App.DataManager.GetDataList<MathAbility>()[index - 0x19E];
+                CurrentPage = mathAbilityView;
             }
             else if (index < 0x200) //RSM
             {
-                SecondaryType = "RSM";
-                AbilityDefaultSecondary = App.DataManager.GetDataList<AbilityDefaultSecondary>()[index - 0x1A6];
-                SecondaryPage = new Uri(@"RSMSecondary.xaml", UriKind.RelativeOrAbsolute);
-            }
-        }
-
-        //protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
-        //{
-        //    if (!Equals(field, newValue))
-        //    {
-        //        field = newValue;
-        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
-        private Uri secondaryPage;
-
-        public Uri SecondaryPage
-        {
-            get => secondaryPage;
-            set
-            {
-                secondaryPage = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SecondaryPage)));
+                AbilityType = "RSM";
+                SupportAbility = App.DataManager.GetDataList<SupportAbility>()[index - 0x1A6];
+                CurrentPage = supportAbilityView;
             }
         }
     }

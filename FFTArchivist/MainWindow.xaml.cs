@@ -61,7 +61,7 @@ namespace FFTArchivist
         private void PoachEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<Poach>().Select(item => $"{item.Id:X} {item.Name?.Value.Replace("<Icon=103>", "+") ?? "N/A"}");
+            EntryListBox.ItemsSource = App.DataManager.GetDataList<PoachItem>().Select(item => $"{item.Id:X} {item.Name?.Value.Replace("<Icon=103>", "+") ?? "N/A"}");
 
             if (PoachView == null)
             {
