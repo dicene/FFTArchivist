@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:FFTArchivist.Views.Abilities"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ThrowSecondary">
+      Title="ThrowAbility">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -22,7 +22,7 @@
         </DockPanel>
         <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
             <Label Content="Thrown Item:" VerticalAlignment="Center" />
-            <ComboBox x:Name="ThrownItemId" VerticalAlignment="Center" ItemsSource="{Binding ItemNames, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedIndex="{Binding ThrownItemId}" Background="{DynamicResource TextBoxBackgroundBrush}"/>
+            <ComboBox x:Name="ThrownItemId" VerticalAlignment="Center" ItemsSource="{Binding ItemNames, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedIndex="{Binding ItemId}" Background="{DynamicResource TextBoxBackgroundBrush}"/>
         </DockPanel>
     </Grid>
 </Page>

@@ -11,7 +11,7 @@ namespace FFTArchivist.DataSources.EXE
 {
     internal class MathAbilityEXESource : AEXEDataSource<MathAbility, MATH_ABILITY_DATA, MathAbilityTable>
     {
-        public MathAbilityEXESource() : base("MathAbility.xml", "F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 FA FB FC FD", 14)
+        public MathAbilityEXESource() : base("MathAbility.xml", "80 40 20 10 08 04 02 01", 8)
         {
         }
     }

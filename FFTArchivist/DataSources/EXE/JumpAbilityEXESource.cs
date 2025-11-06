@@ -11,7 +11,7 @@ namespace FFTArchivist.DataSources.EXE
 {
     internal class JumpAbilityEXESource : AEXEDataSource<JumpAbility, JUMP_ABILITY_DATA, JumpAbilityTable>
     {
-        public JumpAbilityEXESource() : base("JumpAbility.xml", "F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 FA FB FC FD", 14)
+        public JumpAbilityEXESource() : base("JumpAbility.xml", "02 00 03 00 04 00 05 00 08 00 00 02 00 03 00 04 00 05 00 06 00 07 00 08", 12)
         {
         }
     }

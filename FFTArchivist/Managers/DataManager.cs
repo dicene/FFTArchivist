@@ -3,6 +3,7 @@ using Dapper;
 using FF16Tools.Pack;
 using FFTArchivist.DataSources;
 using FFTArchivist.DataSources.EXE;
+using FFTArchivist.DataSources.EXE.TempInterfaces.SupportAbility;
 using FFTArchivist.Models;
 using FFTArchivist.Models.Base;
 using FFTArchivist.Properties;
@@ -136,11 +137,56 @@ namespace FFTArchivist.Managers
 
             var itemAbilities = new List<ItemAbility>();
 
-            for (int i = 0; i < 0xe; i++)
+            for (int i = 0; i < 14; i++)
             {
                 var itemAbility = new ItemAbility(i);
                 await itemAbility.ReadData();
                 itemAbilities.Add(itemAbility);
+            }
+
+            var throwAbilities = new List<ThrowAbility>();
+
+            for (int i = 0; i < 12; i++)
+            {
+                var throwAbility = new ThrowAbility(i);
+                await throwAbility.ReadData();
+                throwAbilities.Add(throwAbility);
+            }
+
+            var jumpAbilities = new List<JumpAbility>();
+
+            for (int i = 0; i < 12; i++)
+            {
+                var jumpAbility = new JumpAbility(i);
+                await jumpAbility.ReadData();
+                jumpAbilities.Add(jumpAbility);
+            }
+
+            var chargeAbilities = new List<ChargeAbility>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                var chargeAbility = new ChargeAbility(i);
+                await chargeAbility.ReadData();
+                chargeAbilities.Add(chargeAbility);
+            }
+
+            var mathAbilities = new List<MathAbility>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                var mathAbility = new MathAbility(i);
+                await mathAbility.ReadData();
+                mathAbilities.Add(mathAbility);
+            }
+
+            var supportAbilities = new List<Models.SupportAbility>();
+
+            for (int i = 0; i < 90; i++)
+            {
+                var supportAbility = new Models.SupportAbility(i);
+                await supportAbility.ReadData();
+                supportAbilities.Add(supportAbility);
             }
 
             DataLists[typeof(Item)] = items;
@@ -148,6 +194,11 @@ namespace FFTArchivist.Managers
             DataLists[typeof(Ability)] = abilities;
             DataLists[typeof(ActionAbility)] = actionAbilities;
             DataLists[typeof(ItemAbility)] = itemAbilities;
+            DataLists[typeof(ThrowAbility)] = throwAbilities;
+            DataLists[typeof(JumpAbility)] = jumpAbilities;
+            DataLists[typeof(ChargeAbility)] = chargeAbilities;
+            DataLists[typeof(MathAbility)] = mathAbilities;
+            DataLists[typeof(Models.SupportAbility)] = supportAbilities;
 
             OnDataReloaded?.Invoke(this, EventArgs.Empty);
 

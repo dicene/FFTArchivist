@@ -17,11 +17,11 @@ namespace FFTArchivist.Entries
         private Ability ability;
         private ActionAbilityViewModel actionAbilityViewModel = new();
         private ItemAbilityViewModel itemAbilityViewModel = new();
-        //private ThrowAbilityViewModel throwAbilityViewModel;
-        //private JumpAbilityViewModel jumpAbilityViewModel;
-        //private ChargeAbilityViewModel chargeAbilityViewModel;
-        //private MathAbilityViewModel mathAbilityViewModel;
-        //private SupportAbilityViewModel supportAbilityViewModel;
+        private ThrowAbilityViewModel throwAbilityViewModel = new();
+        private JumpAbilityViewModel jumpAbilityViewModel = new();
+        private ChargeAbilityViewModel chargeAbilityViewModel = new();
+        private MathAbilityViewModel mathAbilityViewModel = new();
+        private SupportAbilityViewModel supportAbilityViewModel = new();
 
         private ActionAbility actionAbility;
         private ItemAbility itemAbility;
@@ -233,8 +233,36 @@ namespace FFTArchivist.Entries
         }
 
         public int Id { get => ability.Id; set => ability.Id = value; }
-        public string Name { get => ability.Name?.Value ?? "N/A"; set => ability.Name.Value = value; }
-        public string Description { get => ability.Description?.Value ?? ""; set => ability.Description.Value = value; }
+        public string Name
+        {
+            get => ability.Name?.Value ?? "N/A";
+            set
+            {
+                if (ability.Name.Value == value)
+                {
+                    return;
+                }
+
+                ability.Name.Value = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityView.Name)));
+            }
+        }
+
+        public string Description
+        {
+            get => ability.Description?.Value ?? "";
+            set
+            {
+                if (ability.Description.Value == value)
+                {
+                    return;
+                }
+
+                ability.Description.Value = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityView.Description)));
+            }
+        }
+
         public int JpCost
         {
             get
@@ -246,6 +274,7 @@ namespace FFTArchivist.Entries
             {
                 ability.JpCost1.Value = (byte)(value & 0xff);
                 ability.JpCost2.Value = (byte)(value >> 8);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityView.JpCost)));
             }
         }
 
@@ -262,14 +291,19 @@ namespace FFTArchivist.Entries
 
             actionAbilityView.DataContext = actionAbilityViewModel;
             itemAbilityView.DataContext = itemAbilityViewModel;
+            throwAbilityView.DataContext = throwAbilityViewModel;
+            jumpAbilityView.DataContext = jumpAbilityViewModel;
+            chargeAbilityView.DataContext = chargeAbilityViewModel;
+            mathAbilityView.DataContext = mathAbilityViewModel;
+            supportAbilityView.DataContext = supportAbilityViewModel;
 
             actionAbilityViewModel.ActionAbility = actionAbility;
             itemAbilityViewModel.ItemAbility = itemAbility;
-            //throwAbilityView.DataContext = throwAbility;
-            //jumpAbilityView.DataContext = jumpAbility;
-            //chargeAbilityView.DataContext = chargeAbility;
-            //mathAbilityView.DataContext = this;
-            //supportAbilityView.DataContext = this;
+            throwAbilityViewModel.ThrowAbility = throwAbility;
+            jumpAbilityViewModel.JumpAbility = jumpAbility;
+            chargeAbilityViewModel.ChargeAbility = chargeAbility;
+            mathAbilityViewModel.MathAbility = mathAbility;
+            supportAbilityViewModel.SupportAbility = supportAbility;
         }
 
         public void ChangeIndex(int index)
@@ -291,31 +325,36 @@ namespace FFTArchivist.Entries
             else if (index < 0x18A) //Throw
             {
                 AbilityType = "Throw";
-                ThrowAbility = App.DataManager.GetDataList<ThrowAbility>()[index - 0x17E];
+                throwAbilityViewModel.ChangeIndex(index - 0x17E);
+                //ThrowAbility = App.DataManager.GetDataList<ThrowAbility>()[index - 0x17E];
                 CurrentPage = throwAbilityView;
             }
             else if (index < 0x196) //Jump
             {
                 AbilityType = "Jump";
-                JumpAbility = App.DataManager.GetDataList<JumpAbility>()[index - 0x18A];
+                jumpAbilityViewModel.ChangeIndex(index - 0x18A);
+                //JumpAbility = App.DataManager.GetDataList<JumpAbility>()[index - 0x18A];
                 CurrentPage = jumpAbilityView;
             }
             else if (index < 0x19E) //Charge
             {
                 AbilityType = "Charge";
-                ChargeAbility = App.DataManager.GetDataList<ChargeAbility>()[index - 0x196];
+                chargeAbilityViewModel.ChangeIndex(index - 0x196);
+                //ChargeAbility = App.DataManager.GetDataList<ChargeAbility>()[index - 0x196];
                 CurrentPage = chargeAbilityView;
             }
             else if (index < 0x1A6) //Math
             {
                 AbilityType = "Math";
-                MathAbility = App.DataManager.GetDataList<MathAbility>()[index - 0x19E];
+                mathAbilityViewModel.ChangeIndex(index - 0x19E);
+                //MathAbility = App.DataManager.GetDataList<MathAbility>()[index - 0x19E];
                 CurrentPage = mathAbilityView;
             }
             else if (index < 0x200) //RSM
             {
                 AbilityType = "RSM";
-                SupportAbility = App.DataManager.GetDataList<SupportAbility>()[index - 0x1A6];
+                supportAbilityViewModel.ChangeIndex(index - 0x1A6);
+                //SupportAbility = App.DataManager.GetDataList<SupportAbility>()[index - 0x1A6];
                 CurrentPage = supportAbilityView;
             }
         }
