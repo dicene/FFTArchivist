@@ -39,7 +39,7 @@ namespace FFTArchivist.Entries
         {
             get
             {
-                return supportAbility.AbilityId?.Value ?? 0;
+                return supportAbility?.AbilityId?.Value ?? 0;
             }
 
             set

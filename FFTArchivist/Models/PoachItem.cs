@@ -1,14 +1,6 @@
-﻿using FFTArchivist.DataSources.NEX.Item;
-using FFTArchivist.DataSources.NEX.PoachItem;
+﻿using FFTArchivist.DataSources.NEX.PoachItem;
 using FFTArchivist.Models.Base;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FFTArchivist.Models
 {

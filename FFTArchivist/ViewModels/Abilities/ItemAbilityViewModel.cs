@@ -1,6 +1,5 @@
 ﻿using FFTArchivist.Managers;
 using FFTArchivist.Models;
-using FFTArchivist.Views.Abilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

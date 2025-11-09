@@ -37,22 +37,50 @@ namespace FFTArchivist.Entries
         }
 
         public int Id { get => item.Id; set => item.Id = value; }
+
         public string Name
         {
             get => item.Name?.Value ?? "";
             set
             {
-                if (item.Name != null)
+                if (item.Name == null)
                 {
-                    item.Name.Value = value;
+                    return;
                 }
+
+                item.Name.Value = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
         }
-        public string Description { get => item.Description?.Value ?? ""; set => item.Description.Value = value; }
+
+        public string Description
+        {
+            get => item.Description?.Value.Replace("<br>", "\n") ?? "";
+            set
+            {
+                if (item.Description.Value == value.Replace("\n", "<br>"))
+                {
+                    return;
+                }
+
+                item.Description.Value = value.Replace("\n", "<br>");
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
+            }
+        }
+
         public ushort Price
         {
             get => item.Price?.Value ?? 0;
-            set => item.Price.Value = value;
+            set
+            {
+                if (item.Price.Value == value)
+                {
+                    return;
+                }
+
+                item.Price.Value = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Price)));
+            }
         }
 
         public ItemViewModel()

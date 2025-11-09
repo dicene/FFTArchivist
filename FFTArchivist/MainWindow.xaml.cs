@@ -26,6 +26,7 @@ namespace FFTArchivist
         public ItemView ItemView { get; set; }
         public PoachView PoachView { get; set; }
         public AbilityView AbilityView { get; set; }
+        public UIView UIView { get; set; }
         public SettingsView SettingsView { get; set; }
         public Page CurrentView;
         public MainWindow()
@@ -83,6 +84,25 @@ namespace FFTArchivist
             }
 
             CurrentView = AbilityView;
+            EditorFrame.Navigate(CurrentView);
+
+            if (EntryListBox.Items.Count > 0)
+            {
+                EntryListBox.SelectedIndex = 0;
+            }
+        }
+
+        private void UIEditorButton_Click(object sender, RoutedEventArgs e)
+        {
+            EntryListBox.SelectedIndex = -1;
+            EntryListBox.ItemsSource = App.DataManager.GetDataList<UI>().Select(ui => $"{ui.Id} {(ui.Text?.Value.Replace("\n", "") + (new string(' ', 30)))[0..30] ?? "N/A"}");
+
+            if (UIView == null)
+            {
+                UIView = new UIView();
+            }
+
+            CurrentView = UIView;
             EditorFrame.Navigate(CurrentView);
 
             if (EntryListBox.Items.Count > 0)

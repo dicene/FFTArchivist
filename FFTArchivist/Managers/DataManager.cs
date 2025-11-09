@@ -189,6 +189,15 @@ namespace FFTArchivist.Managers
                 supportAbilities.Add(supportAbility);
             }
 
+            var uis = new List<Models.UI>();
+
+            for (int i = 0; i < 4031; i++)
+            {
+                var ui = new Models.UI(i);
+                await ui.ReadData();
+                uis.Add(ui);
+            }
+
             DataLists[typeof(Item)] = items;
             DataLists[typeof(PoachItem)] = poaches;
             DataLists[typeof(Ability)] = abilities;
@@ -199,6 +208,7 @@ namespace FFTArchivist.Managers
             DataLists[typeof(ChargeAbility)] = chargeAbilities;
             DataLists[typeof(MathAbility)] = mathAbilities;
             DataLists[typeof(Models.SupportAbility)] = supportAbilities;
+            DataLists[typeof(UI)] = uis;
 
             OnDataReloaded?.Invoke(this, EventArgs.Empty);
 

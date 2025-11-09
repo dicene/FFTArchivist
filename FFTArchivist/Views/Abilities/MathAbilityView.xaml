@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:FFTArchivist.Views.Abilities"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="MathSecondary">
+      Title="MathAbility">
 
     <Grid>
         <Grid.ColumnDefinitions>

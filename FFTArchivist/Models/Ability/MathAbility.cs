@@ -1,4 +1,5 @@
 ﻿using FFTArchivist.DataSources.EXE;
+using FFTArchivist.DataSources.EXE.TempInterfaces.MathAbility;
 using FFTArchivist.Models.Base;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,7 @@ namespace FFTArchivist.Models
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        [EXESourceMapping(typeof(MathAbilityEXESource), "Key")]
-        public DataItem<byte> Key { get; set; }
-
-        [EXESourceMapping(typeof(MathAbilityEXESource), "Value")]
-        public DataItem<byte> Value { get; set; }
+        [EXESourceMapping(typeof(MathAbilityEXESource), "MathFlags")]
+        public DataItem<MathFlags> MathFlags { get; set; }
     }
 }

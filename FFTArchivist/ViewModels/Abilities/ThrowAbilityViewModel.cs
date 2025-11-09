@@ -1,6 +1,8 @@
-﻿using FFTArchivist.Managers;
+﻿using FFTArchivist.DataSources.EXE.TempInterfaces.ItemAbility;
+using FFTArchivist.Managers;
 using FFTArchivist.Models;
 using FFTArchivist.Views.Abilities;
+using fftivc.utility.modloader.Interfaces.Tables.Structures;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -54,8 +56,8 @@ namespace FFTArchivist.Entries
             }
         }
 
-        public List<string> ItemNames { get => (throwAbility?.ItemId != null ? App.DataManager.GetDataList<Item>().Select(i => (i.Name?.Value.Replace("<icon=103>", "+") ?? "N/A")).ToList() : new List<string>()); }
-        public string ItemName { get => throwAbility?.ItemId != null ? App.DataManager.GetDataList<Item>()[(throwAbility?.ItemId?.Value ?? 0)].Name.Value : ""; }
+        public List<string> ItemNames { get => Enum.GetNames(typeof(ItemCategory)).ToList(); }
+        public string ItemName => throwAbility?.ItemId != null ? Enum.GetName(typeof(ItemCategory), throwAbility?.ItemId?.Value ?? 0) ?? "???" : "???";
 
         public void ChangeIndex(int index)
         {

@@ -17,5 +17,11 @@ namespace FFTArchivist.Models
 
         [EXESourceMapping(typeof(ActionAbilityEXESource), "Range")]
         public DataItem<byte> Range { get; set; }
+
+        [EXESourceMapping(typeof(ActionAbilityEXESource), "EffectArea")]
+        public DataItem<byte> EffectArea { get; set; }
+
+        [EXESourceMapping(typeof(ActionAbilityEXESource), "Vertical")]
+        public DataItem<byte> Vertical { get; set; }
     }
 }

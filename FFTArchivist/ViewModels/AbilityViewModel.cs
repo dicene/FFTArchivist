@@ -90,147 +90,147 @@ namespace FFTArchivist.Entries
             }
         }
 
-        public ActionAbility ActionAbility
-        {
-            get
-            {
-                return actionAbility;
-            }
+        //public ActionAbility ActionAbility
+        //{
+        //    get
+        //    {
+        //        return actionAbility;
+        //    }
 
-            set
-            {
-                if (actionAbility == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (actionAbility == value)
+        //        {
+        //            return;
+        //        }
 
-                actionAbility = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
-            }
-        }
+        //        actionAbility = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+        //    }
+        //}
 
-        public ItemAbility ItemAbility
-        {
-            get
-            {
-                return itemAbility;
-            }
+        //public ItemAbility ItemAbility
+        //{
+        //    get
+        //    {
+        //        return itemAbility;
+        //    }
 
-            set
-            {
-                if (itemAbility == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (itemAbility == value)
+        //        {
+        //            return;
+        //        }
 
-                itemAbility = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(itemAbility.ItemId)));
-            }
-        }
+        //        itemAbility = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(itemAbility.ItemId)));
+        //    }
+        //}
 
-        public ThrowAbility ThrowAbility
-        {
-            get
-            {
-                return throwAbility;
-            }
+        //public ThrowAbility ThrowAbility
+        //{
+        //    get
+        //    {
+        //        return throwAbility;
+        //    }
 
-            set
-            {
-                if (throwAbility == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (throwAbility == value)
+        //        {
+        //            return;
+        //        }
 
-                throwAbility = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(throwAbility.ItemId)));
-            }
-        }
+        //        throwAbility = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(throwAbility.ItemId)));
+        //    }
+        //}
 
-        public JumpAbility JumpAbility
-        {
-            get
-            {
-                return jumpAbility;
-            }
+        //public JumpAbility JumpAbility
+        //{
+        //    get
+        //    {
+        //        return jumpAbility;
+        //    }
 
-            set
-            {
-                if (jumpAbility == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (jumpAbility == value)
+        //        {
+        //            return;
+        //        }
 
-                jumpAbility = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(jumpAbility.Range)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(jumpAbility.Vertical)));
-            }
-        }
+        //        jumpAbility = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(jumpAbility.Range)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(jumpAbility.Vertical)));
+        //    }
+        //}
 
-        public ChargeAbility ChargeAbility
-        {
-            get
-            {
-                return chargeAbility;
-            }
+        //public ChargeAbility ChargeAbility
+        //{
+        //    get
+        //    {
+        //        return chargeAbility;
+        //    }
 
-            set
-            {
-                if (chargeAbility == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (chargeAbility == value)
+        //        {
+        //            return;
+        //        }
 
-                chargeAbility = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(chargeAbility.CT)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(chargeAbility.Power)));
-            }
-        }
+        //        chargeAbility = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(chargeAbility.CT)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(chargeAbility.Power)));
+        //    }
+        //}
 
-        public MathAbility MathAbility
-        {
-            get
-            {
-                return mathAbility;
-            }
+        //public MathAbility MathAbility
+        //{
+        //    get
+        //    {
+        //        return mathAbility;
+        //    }
 
-            set
-            {
-                if (mathAbility == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (mathAbility == value)
+        //        {
+        //            return;
+        //        }
 
-                mathAbility = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(mathAbility.Key)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(mathAbility.Value)));
-            }
-        }
+        //        mathAbility = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+        //        //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(mathAbility.MathFlags)));
+        //        //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(mathAbility.Value)));
+        //    }
+        //}
 
-        public SupportAbility SupportAbility
-        {
-            get
-            {
-                return supportAbility;
-            }
+        //public SupportAbility SupportAbility
+        //{
+        //    get
+        //    {
+        //        return supportAbility;
+        //    }
 
-            set
-            {
-                if (supportAbility == value)
-                {
-                    return;
-                }
+        //    set
+        //    {
+        //        if (supportAbility == value)
+        //        {
+        //            return;
+        //        }
 
-                supportAbility = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(supportAbility.AbilityId)));
-            }
-        }
+        //        supportAbility = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(supportAbility.AbilityId)));
+        //    }
+        //}
 
         public int Id { get => ability.Id; set => ability.Id = value; }
         public string Name
@@ -250,15 +250,15 @@ namespace FFTArchivist.Entries
 
         public string Description
         {
-            get => ability.Description?.Value ?? "";
+            get => ability.Description?.Value.Replace("<br>", "\n") ?? "";
             set
             {
-                if (ability.Description.Value == value)
+                if (ability.Description.Value.Replace("\n", "<br>") == value)
                 {
                     return;
                 }
 
-                ability.Description.Value = value;
+                ability.Description.Value = value.Replace("\n", "<br>");
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityView.Description)));
             }
         }

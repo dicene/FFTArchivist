@@ -27,6 +27,8 @@ namespace FFTArchivist.Entries
 
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.Range)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.EffectArea)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.Vertical)));
                 }
             }
         }
@@ -47,6 +49,42 @@ namespace FFTArchivist.Entries
                     actionAbility.Range.Value = Range;
 
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.Range)));
+                }
+            }
+        }
+
+        public byte EffectArea
+        {
+            get
+            {
+                return actionAbility.EffectArea?.Value ?? 0;
+            }
+
+            set
+            {
+                if (actionAbility.EffectArea.Value != value)
+                {
+                    actionAbility.EffectArea.Value = EffectArea;
+
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.EffectArea)));
+                }
+            }
+        }
+
+        public byte Vertical
+        {
+            get
+            {
+                return actionAbility.Vertical?.Value ?? 0;
+            }
+
+            set
+            {
+                if (actionAbility.Vertical.Value != value)
+                {
+                    actionAbility.Vertical.Value = Vertical;
+
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.Vertical)));
                 }
             }
         }
