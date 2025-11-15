@@ -1,6 +1,8 @@
-﻿using FFTArchivist.DataSources.NEX.Ability;
+﻿using FFTArchivist.DataSources.EXE;
+using FFTArchivist.DataSources.NEX.Ability;
 using FFTArchivist.DataSources.NEX.Item;
 using FFTArchivist.Models.Base;
+using fftivc.utility.modloader.Interfaces.Tables.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,5 +29,8 @@ namespace FFTArchivist.Models
 
         [NEXMapping(typeof(AbilityNEXSource), nameof(AbilityNEXModel.JpCost2))]
         public DataItem<byte> JpCost2 { get; set; }
+
+        [EXESourceMapping(typeof(AbilityEXESource), nameof(fftivc.utility.modloader.Interfaces.Tables.Models.Ability.ChanceToLearn))]
+        public DataItem<byte> ChanceToLearn { get; set; }
     }
 }

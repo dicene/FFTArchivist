@@ -30,62 +30,20 @@ namespace FFTArchivist.DataSources.EXE.TempInterfaces.ActionAbility
 
         public static Dictionary<string, DiffablePropertyItem<ActionAbility>> PropertyMap { get; } = new Dictionary<string, DiffablePropertyItem<ActionAbility>>
         {
-            ["Range"] = new DiffablePropertyItem<ActionAbility, byte?>("Range", (i) => i.Range, delegate (ActionAbility i, byte? v)
-            {
-                i.Range = v;
-            }),
-            ["EffectArea"] = new DiffablePropertyItem<ActionAbility, byte?>("EffectArea", (i) => i.EffectArea, delegate (ActionAbility i, byte? v)
-            {
-                i.EffectArea = v;
-            }),
-            ["Vertical"] = new DiffablePropertyItem<ActionAbility, byte?>("Vertical", (i) => i.Vertical, delegate (ActionAbility i, byte? v)
-            {
-                i.Vertical = v;
-            }),
-            ["Flags1"] = new DiffablePropertyItem<ActionAbility, byte?>("Flags1", (i) => i.Flags1, delegate (ActionAbility i, byte? v)
-            {
-                i.Flags1 = v;
-            }),
-            ["Flags2"] = new DiffablePropertyItem<ActionAbility, byte?>("Flags2", (i) => i.Flags2, delegate (ActionAbility i, byte? v)
-            {
-                i.Flags2 = v;
-            }),
-            ["Flags3"] = new DiffablePropertyItem<ActionAbility, byte?>("Flags3", (i) => i.Flags3, delegate (ActionAbility i, byte? v)
-            {
-                i.Flags3 = v;
-            }),
-            ["Flags4"] = new DiffablePropertyItem<ActionAbility, byte?>("Flags4", (i) => i.Flags4, delegate (ActionAbility i, byte? v)
-            {
-                i.Flags4 = v;
-            }),
-            ["Element"] = new DiffablePropertyItem<ActionAbility, byte?>("Element", (i) => i.Element, delegate (ActionAbility i, byte? v)
-            {
-                i.Element = v;
-            }),
-            ["Formula"] = new DiffablePropertyItem<ActionAbility, byte?>("Formula", (i) => i.Formula, delegate (ActionAbility i, byte? v)
-            {
-                i.Formula = v;
-            }),
-            ["X"] = new DiffablePropertyItem<ActionAbility, byte?>("X", (i) => i.X, delegate (ActionAbility i, byte? v)
-            {
-                i.X = v;
-            }),
-            ["Y"] = new DiffablePropertyItem<ActionAbility, byte?>("Y", (i) => i.Y, delegate (ActionAbility i, byte? v)
-            {
-                i.Y = v;
-            }),
-            ["InflictStatus"] = new DiffablePropertyItem<ActionAbility, byte?>("InflictStatus", (i) => i.InflictStatus, delegate (ActionAbility i, byte? v)
-            {
-                i.InflictStatus = v;
-            }),
-            ["CT"] = new DiffablePropertyItem<ActionAbility, byte?>("CT", (i) => i.CT, delegate (ActionAbility i, byte? v)
-            {
-                i.CT = v;
-            }),
-            ["MPCost"] = new DiffablePropertyItem<ActionAbility, byte?>("MPCost", (i) => i.MPCost, delegate (ActionAbility i, byte? v)
-            {
-                i.MPCost = v;
-            }),
+            [nameof(Range)]         = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Range), (i) => i.Range, (ActionAbility i, byte? v) => i.Range = v),
+            [nameof(EffectArea)]    = new DiffablePropertyItem<ActionAbility, byte?>(nameof(EffectArea), (i) => i.EffectArea, (ActionAbility i, byte? v) => i.EffectArea = v),
+            [nameof(Vertical)]      = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Vertical), (i) => i.Vertical, (ActionAbility i, byte? v) => i.Vertical = v),
+            [nameof(Flags1)]        = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Flags1), (i) => i.Flags1, (ActionAbility i, byte? v) => i.Flags1 = v),
+            [nameof(Flags2)]        = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Flags2), (i) => i.Flags2, (ActionAbility i, byte? v) => i.Flags2 = v),
+            [nameof(Flags3)]        = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Flags3), (i) => i.Flags3, (ActionAbility i, byte? v) => i.Flags3 = v),
+            [nameof(Flags4)]        = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Flags4), (i) => i.Flags4, (ActionAbility i, byte? v) => i.Flags4 = v),
+            [nameof(Element)]       = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Element), (i) => i.Element, (ActionAbility i, byte? v) => i.Element = v),
+            [nameof(Formula)]       = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Formula), (i) => i.Formula, (ActionAbility i, byte? v) => i.Formula = v),
+            [nameof(X)]             = new DiffablePropertyItem<ActionAbility, byte?>(nameof(X), (i) => i.X, (ActionAbility i, byte? v) => i.X = v),
+            [nameof(Y)]             = new DiffablePropertyItem<ActionAbility, byte?>(nameof(Y), (i) => i.Y, (ActionAbility i, byte? v) => i.Y = v),
+            [nameof(InflictStatus)] = new DiffablePropertyItem<ActionAbility, byte?>(nameof(InflictStatus), (i) => i.InflictStatus, (ActionAbility i, byte? v) => i.InflictStatus = v),
+            [nameof(CT)]            = new DiffablePropertyItem<ActionAbility, byte?>(nameof(CT), (i) => i.CT, (ActionAbility i, byte? v) => i.CT = v),
+            [nameof(MPCost)]        = new DiffablePropertyItem<ActionAbility, byte?>(nameof(MPCost), (i) => i.MPCost, (ActionAbility i, byte? v) => i.MPCost = v),
         };
 
 

@@ -87,6 +87,7 @@ namespace FFTArchivist.Entries
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCost)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChanceToLearn)));
             }
         }
 
@@ -244,7 +245,7 @@ namespace FFTArchivist.Entries
                 }
 
                 ability.Name.Value = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityView.Name)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
         }
 
@@ -259,7 +260,7 @@ namespace FFTArchivist.Entries
                 }
 
                 ability.Description.Value = value.Replace("\n", "<br>");
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityView.Description)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
             }
         }
 
@@ -274,7 +275,21 @@ namespace FFTArchivist.Entries
             {
                 ability.JpCost1.Value = (byte)(value & 0xff);
                 ability.JpCost2.Value = (byte)(value >> 8);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityView.JpCost)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCost)));
+            }
+        }
+
+        public int ChanceToLearn
+        {
+            get
+            {
+                return ability.ChanceToLearn?.Value ?? 0;
+            }
+
+            set
+            {
+                ability.ChanceToLearn.Value = (byte)(value & 0xff);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChanceToLearn)));
             }
         }
 

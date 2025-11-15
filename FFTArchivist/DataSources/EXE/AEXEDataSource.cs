@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace FFTArchivist.DataSources.EXE
 {
-    public abstract class AEXEDataSource<TClass, TStruct, TTable> : IDataSource where TClass : class where TStruct : struct where TTable : class, new()
+    public abstract class AEXEDataSource<TClass, TStruct, TTable> : IEXEDataSource, IDataSource where TClass : class where TStruct : struct where TTable : class, new()
     {
         public string Path { get; private set; }
         public long BaseOffset { get; private set; }

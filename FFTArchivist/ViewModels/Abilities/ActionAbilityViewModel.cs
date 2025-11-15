@@ -26,9 +26,9 @@ namespace FFTArchivist.Entries
                     actionAbility = value;
 
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility)));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.Range)));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.EffectArea)));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.Vertical)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Range)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EffectArea)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Vertical)));
                 }
             }
         }
@@ -46,9 +46,9 @@ namespace FFTArchivist.Entries
             {
                 if (actionAbility.Range.Value != value)
                 {
-                    actionAbility.Range.Value = Range;
+                    actionAbility.Range.Value = value;
 
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.Range)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Range)));
                 }
             }
         }
@@ -64,9 +64,9 @@ namespace FFTArchivist.Entries
             {
                 if (actionAbility.EffectArea.Value != value)
                 {
-                    actionAbility.EffectArea.Value = EffectArea;
+                    actionAbility.EffectArea.Value = value;
 
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.EffectArea)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EffectArea)));
                 }
             }
         }
@@ -82,9 +82,9 @@ namespace FFTArchivist.Entries
             {
                 if (actionAbility.Vertical.Value != value)
                 {
-                    actionAbility.Vertical.Value = Vertical;
+                    actionAbility.Vertical.Value = value;
 
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ActionAbility.Vertical)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Vertical)));
                 }
             }
         }
