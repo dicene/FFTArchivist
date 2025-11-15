@@ -44,6 +44,12 @@ namespace FFTArchivist.Managers
             FF16PackManager.Open(packDirectory, CodeName);
         }
 
+        public async Task ClosePack()
+        {
+            await FF16PackManager.DisposeAsync();
+            FF16PackManager = null;
+        }
+
         public static List<Type> GetModelTypes()
         {
             var modelTypes = new List<Type>();
@@ -99,6 +105,11 @@ namespace FFTArchivist.Managers
 
         public async Task<bool> LoadData()
         {
+            foreach (var pac in FF16PackManager.PackFiles)
+            {
+                Debug.WriteLine($"Loaded pac: {pac}");
+            }
+
             var items = new List<Item>();
 
             for (int i = 0; i < 256; i++)
@@ -237,6 +248,18 @@ namespace FFTArchivist.Managers
             }
 
             return new List<T>();
+        }
+
+        public List<object> GetDataList(Type dataType)
+        {
+            if (DataLists.TryGetValue(dataType, out var list))
+            {
+                var returnList = new List<object>();
+                returnList.AddRange(list);
+                return returnList;
+            }
+
+            return new List<object>();
         }
 
         public IDataSource GetDataSource(Type type)

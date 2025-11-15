@@ -18,6 +18,7 @@ namespace FFTArchivist.Managers
         string DataFolderPath { get; }
 
         public Task OpenPack(string packDirectory);
+        public Task ClosePack();
         public Task<bool> LoadData();
         public List<T> GetDataList<T>() where T : BaseModel;
         public Task LoadDataSources();

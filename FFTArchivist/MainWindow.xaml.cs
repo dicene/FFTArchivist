@@ -1,20 +1,10 @@
 ﻿using FFTArchivist.Entries;
 using FFTArchivist.Managers;
 using FFTArchivist.Models;
-using FFTArchivist.Properties;
 using System.Diagnostics;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FFTArchivist
 {
@@ -37,9 +27,25 @@ namespace FFTArchivist
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //App.CurrentMod = App.ModManager.CreateMod();
+            var moddedPacs = Directory.GetFiles(App.DataManager.DataFolderPath, "modded*.pac");
+
+            foreach (var moddedPac in moddedPacs)
+            {
+                Debug.WriteLine($"Temporarily renaming modded pac {moddedPac}...");
+                File.Move(moddedPac, moddedPac + ".bak");
+            }
+            
             await App.DataManager.OpenPack(App.DataManager.DataFolderPath);
             await App.DataManager.LoadDataSources();
             await App.DataManager.LoadData();
+            await App.DataManager.ClosePack();
+
+            foreach (var moddedPac in moddedPacs)
+            {
+                Debug.WriteLine($"Restoring modded pac {moddedPac}...");
+                File.Move(moddedPac + ".bak", moddedPac);
+            }
+
             SettingsView = new SettingsView();
             //CurrentView = SettingsView;
             //EditorFrame.Navigate(CurrentView);
@@ -146,7 +152,24 @@ namespace FFTArchivist
 
         private async void ImportModButton_Click(object sender, RoutedEventArgs e)
         {
+            var path = Properties.Settings.Default.ReloadedIIModsPath;
+            path = System.IO.Path.TrimEndingDirectorySeparator(path) + System.IO.Path.DirectorySeparatorChar;
+            path = System.IO.Path.Combine(path, Properties.Settings.Default.ModName) + System.IO.Path.DirectorySeparatorChar;
 
+            using var dialog = new FolderBrowserDialog
+            {
+                Description = "Select the base FFT - The Ivalice Chronicles folder",
+                UseDescriptionForTitle = true,
+                SelectedPath = path,
+                ShowNewFolderButton = false
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                path = dialog.SelectedPath;
+            }
+
+            await App.ModManager.ImportMod(path);
         }
 
         private async void ExportModButton_Click(object sender, RoutedEventArgs e)
