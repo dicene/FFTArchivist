@@ -1,19 +1,10 @@
 ﻿using FFTArchivist.Managers;
 using FFTArchivist.Models;
-using FFTArchivist.Views.Abilities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 
-namespace FFTArchivist.Entries
+namespace FFTArchivist.ViewModels.Pages.Abilities
 {
-    internal class ActionAbilityViewModel : BaseDataViewModel, INotifyPropertyChanged
+    internal class ActionAbilityViewModel : BaseDataPageViewModel, INotifyPropertyChanged
     {
         private ActionAbility actionAbility { get; set; }
         public ActionAbility ActionAbility

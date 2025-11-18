@@ -4,9 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FFTArchivist"
-        xmlns:ViewModels="clr-namespace:FFTArchivist.ViewModels" x:Class="FFTArchivist.MainWindow"
+        xmlns:ViewModels="clr-namespace:FFTArchivist.ViewModels"
+        x:Class="FFTArchivist.MainWindow"
         mc:Ignorable="d"
         Title="FFT Archivist" Height="450" Width="800" Loaded="Window_Loaded" Background="{DynamicResource WindowBackgroundBrush}">
+    <Window.DataContext>
+        <ViewModels:MainWindowViewModel x:Name="MainWindowViewModel"/>
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220" />
@@ -18,9 +22,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <!--<StackPanel Orientation="Vertical">-->
-        <Grid.DataContext>
+        <!--<Grid.DataContext>
             <ViewModels:MainWindowViewModel/>
-        </Grid.DataContext>
+        </Grid.DataContext>-->
         <!--<StackPanel Orientation="Horizontal">
                 <Button x:Name="ModDetailsButton" Content="Load Data" Click="ModDetailsButton_Click" Margin="5"/>
             </StackPanel>-->
@@ -39,7 +43,7 @@
             <Button x:Name="Settings" Content="Settings" Click="SettingsEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Right"/>
             <Label Content="" DockPanel.Dock="Right"/>
         </DockPanel>
-        <ListBox x:Name="EntryListBox" Grid.Row="1" Grid.Column="0" SelectionChanged="EntryListBox_SelectionChanged" Margin="5,0,5,0"/>
+        <ListBox x:Name="EntryListBox" Grid.Row="1" Grid.Column="0" SelectionChanged="EntryListBox_SelectionChanged" Margin="5,0,5,0" ItemsSource="{Binding ItemList, Mode=OneWay}"/>
         <GridSplitter Grid.Row="1" Grid.Column="0" Width="5" HorizontalAlignment="Right" Background="{DynamicResource ButtonBackgroundBrush}" Margin="0"/>
         <Border Grid.Row="1" Grid.Column="1" Margin="5">
             <Frame x:Name="EditorFrame" NavigationUIVisibility="Hidden" Content="{Binding CurrentPage}"/>

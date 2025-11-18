@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.HighPerformance;
 using Dapper;
+using FF16Tools.Files.Nex;
+using FF16Tools.Files.Nex.Entities;
+using FF16Tools.Files.Nex.Managers;
 using FF16Tools.Pack;
 using FFTArchivist.DataSources;
 using FFTArchivist.DataSources.EXE;
@@ -115,6 +118,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 256; i++)
             {
                 var item = new Item(i);
+                item.SetOriginalSources(DataSources);
                 await item.ReadData();
                 items.Add(item);
             }
@@ -124,6 +128,7 @@ namespace FFTArchivist.Managers
             for (int i = 1; i < 97; i++)
             {
                 var poach = new PoachItem(i);
+                poach.SetOriginalSources(DataSources);
                 await poach.ReadData();
                 poaches.Add(poach);
             }
@@ -133,6 +138,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 512; i++)
             {
                 var ability = new Ability(i);
+                ability.SetOriginalSources(DataSources);
                 await ability.ReadData();
                 abilities.Add(ability);
             }
@@ -142,6 +148,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 368; i++)
             {
                 var actionAbility = new ActionAbility(i);
+                actionAbility.SetOriginalSources(DataSources);
                 await actionAbility.ReadData();
                 actionAbilities.Add(actionAbility);
             }
@@ -151,6 +158,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 14; i++)
             {
                 var itemAbility = new ItemAbility(i);
+                itemAbility.SetOriginalSources(DataSources);
                 await itemAbility.ReadData();
                 itemAbilities.Add(itemAbility);
             }
@@ -160,6 +168,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 12; i++)
             {
                 var throwAbility = new ThrowAbility(i);
+                throwAbility.SetOriginalSources(DataSources);
                 await throwAbility.ReadData();
                 throwAbilities.Add(throwAbility);
             }
@@ -169,6 +178,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 12; i++)
             {
                 var jumpAbility = new JumpAbility(i);
+                jumpAbility.SetOriginalSources(DataSources);
                 await jumpAbility.ReadData();
                 jumpAbilities.Add(jumpAbility);
             }
@@ -178,6 +188,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 8; i++)
             {
                 var chargeAbility = new ChargeAbility(i);
+                chargeAbility.SetOriginalSources(DataSources);
                 await chargeAbility.ReadData();
                 chargeAbilities.Add(chargeAbility);
             }
@@ -187,6 +198,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 8; i++)
             {
                 var mathAbility = new MathAbility(i);
+                mathAbility.SetOriginalSources(DataSources);
                 await mathAbility.ReadData();
                 mathAbilities.Add(mathAbility);
             }
@@ -196,6 +208,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 90; i++)
             {
                 var supportAbility = new Models.SupportAbility(i);
+                supportAbility.SetOriginalSources(DataSources);
                 await supportAbility.ReadData();
                 supportAbilities.Add(supportAbility);
             }
@@ -205,6 +218,7 @@ namespace FFTArchivist.Managers
             for (int i = 0; i < 4031; i++)
             {
                 var ui = new Models.UI(i);
+                ui.SetOriginalSources(DataSources);
                 await ui.ReadData();
                 uis.Add(ui);
             }
@@ -234,6 +248,13 @@ namespace FFTArchivist.Managers
                 if (Activator.CreateInstance(t) is IDataSource dataSource)
                 {
                     DataSources.Add(t, dataSource);
+
+                    if (dataSource is ANEXDataSource aNEXDataSource)
+                    {
+                        await aNEXDataSource.LoadPackSource(FF16PackManager);
+                        //var layout = aNEXDataSource.TableLayout;
+                        //var originalNexFile = aNEXDataSource.OriginalNexFile;
+                    }
                 }
             }
         }

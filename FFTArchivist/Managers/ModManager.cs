@@ -1,23 +1,12 @@
-﻿using FFTArchivist.DataSources;
+﻿using FF16Tools.Pack;
+using FFTArchivist.DataSources;
 using FFTArchivist.DataSources.EXE;
-using FFTArchivist.DataSources.EXE.TempInterfaces.ActionAbility;
-using FFTArchivist.Models;
 using FFTArchivist.Models.Base;
-using fftivc.utility.modloader.Interfaces.Serializers;
-using fftivc.utility.modloader.Interfaces.Tables.Models;
 using fftivc.utility.modloader.Serializers;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.TextFormatting;
 using Item = FFTArchivist.Models.Item;
 
 namespace FFTArchivist.Managers
@@ -99,42 +88,72 @@ namespace FFTArchivist.Managers
                     Debug.WriteLine($"Writing to NEX file at {destinationPath}");
                     nexSource.WriteToFile(destinationPath);
                 }
-
-                if ((type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(AEXEDataSource<,,>)))
+                else if (dataSource is IEXEDataSource exeDataSource)
                 {
-                    var destinationPath = Path.Combine(enhancedDataPath);
-                    Debug.WriteLine($"Writing to EXE file at {destinationPath}");
-
-                    var writeToFileMethod = type.GetMethods().FirstOrDefault(m => m.Name == "WriteToFile");
-
-                    if (writeToFileMethod != default)
-                    {
-                        var args = new object[] { tablesPath };
-                        writeToFileMethod.Invoke(dataSource, args);
-                    }
+                    Debug.WriteLine($"Writing to XML file at {tablesPath}");
+                    await exeDataSource.WriteToFile(tablesPath);
                 }
+
+                //if ((type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(AEXEDataSource<,,>)))
+                //{
+                //    var destinationPath = Path.Combine(enhancedDataPath);
+                //    Debug.WriteLine($"Writing to EXE file at {destinationPath}");
+
+                //    var writeToFileMethod = type.GetMethods().FirstOrDefault(m => m.Name == "WriteToFile");
+
+                //    if (writeToFileMethod != default)
+                //    {
+                //        var args = new object[] { tablesPath };
+                //        writeToFileMethod.Invoke(dataSource, args);
+                //    }
+                //}
             }
         }
 
         public async Task ImportMod(string modPath)
         {
-            foreach (var (type, dataList) in DataManager.Instance.DataLists)
+            Dictionary<Type, IDataSource> modDataSources = new();
+
+            var nxdBasePath = Path.Combine(modPath, "FFTIVC", "data", "enhanced");
+            var tablesPath = Path.Combine(modPath, "FFTIVC", "tables", "enhanced");
+
+            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IDataSource") != null && !type.IsAbstract))
             {
-                Debug.WriteLine($"Importing items of type: {type}, list size: {dataList.Count()}");
+                Debug.WriteLine($"Initializing new datasource from mod: {t.Name}");
+                if (Activator.CreateInstance(t) is IDataSource dataSource)
+                {
+                    modDataSources.Add(t, dataSource);
+
+                    if (dataSource is ANEXDataSource aNEXDataSource)
+                    {
+                        //await aNEXDataSource.LoadPackSource(FF16PackManager);
+                        await aNEXDataSource.LoadModSource(nxdBasePath);
+                    }
+                    else if (dataSource is IEXEDataSource iEXEDataSource)
+                    {
+                        await iEXEDataSource.LoadModSource(tablesPath);
+                    }
+                }
             }
 
+            foreach (var datalist in DataManager.Instance.DataLists.Values)
+            {
+                foreach (var model in datalist.ToList())
+                {
+                    foreach (var (name, dataItem) in model.DataItems)
+                    {
+                        var sourceType = dataItem.SourceMapping.SourceType;
+                        if (sourceType != null && modDataSources.TryGetValue(sourceType, out var source))
+                        {
+                            dataItem.SetModSource(source);
+                            await dataItem.ReadFromModSource();
+                        }
+                    }
+                }
+            }
+            
             foreach ((Type type, IDataSource dataSource) in DataManager.Instance.DataSources)
             {
-                break;
-                //if (dataSource is ANEXDataSource nexSource)
-                //{
-                //    var sourcePath = Path.Combine(enhancedDataPath, nexSource.NEXPath);
-                //    Debug.WriteLine($"Loading from NEX file at {sourcePath}");
-                //    if (File.Exists(sourcePath))
-                //    {
-                //        nexSource.LoadFromFile(sourcePath);
-                //    }
-                //}
                 if ((type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(AEXEDataSource<,,>)) && dataSource is IEXEDataSource exeDataSource)
                 {
                     //var sourcePath = Path.Combine(enhancedDataPath);
@@ -177,6 +196,78 @@ namespace FFTArchivist.Managers
                     //}
                 }
             }
+
+            //foreach (var (type, dataList) in DataManager.Instance.DataLists)
+            //{
+            //    Debug.WriteLine($"Importing items of type: {type}, list size: {dataList.Count()}");
+            //    var dataItem1 = dataList.ToList()?[2] ?? default;
+
+            //    if (dataItem1 != default)
+            //    {
+            //        Debug.WriteLine($"{type.Name}:");
+            //        foreach (var (key, dataItem) in dataItem1.DataItems)
+            //        {
+            //            //if (dataItem.)
+            //            //dataItem.LoadFrom
+            //            Debug.WriteLine($"  DataItem Key: {key}, Type: {dataItem.GetType().Name}, Value: {dataItem.GetValue()}");
+            //        }
+            //    }
+            //}
+
+            //foreach ((Type type, IDataSource dataSource) in DataManager.Instance.DataSources)
+            //{
+            //    break;
+            //    //if (dataSource is ANEXDataSource nexSource)
+            //    //{
+            //    //    var sourcePath = Path.Combine(enhancedDataPath, nexSource.NEXPath);
+            //    //    Debug.WriteLine($"Loading from NEX file at {sourcePath}");
+            //    //    if (File.Exists(sourcePath))
+            //    //    {
+            //    //        nexSource.LoadFromFile(sourcePath);
+            //    //    }
+            //    //}
+            //    if ((type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(AEXEDataSource<,,>)) && dataSource is IEXEDataSource exeDataSource)
+            //    {
+            //        //var sourcePath = Path.Combine(enhancedDataPath);
+            //        var tableType = type.BaseType.GetGenericArguments()[2];
+
+            //        var tablesDirectory = Path.Combine(modPath, "FFTIVC", "tables", "enhanced");
+            //        var tablePath = Path.Combine(tablesDirectory, exeDataSource.Filename);
+            //        Debug.WriteLine($"Loading from EXE file at {modPath}: {tablePath}");
+            //        var abilitySerializer = new XmlModelFormatSerializer();
+            //        var deserializeMethod = abilitySerializer.GetType().GetMethods().FirstOrDefault(m => m.Name == "Deserialize");
+            //        if (deserializeMethod != null)
+            //        {
+            //            var typedDeserializeMethod = deserializeMethod.MakeGenericMethod([tableType]);
+
+            //            var args = new object[] { tablePath };
+            //            var results = typedDeserializeMethod.Invoke(abilitySerializer, args);
+            //            var entriesProp = tableType.GetProperties().FirstOrDefault(p => p.Name == "Entries");
+            //            if (entriesProp != default)
+            //            {
+            //                var entries = entriesProp.GetValue(results);
+
+            //                Debug.WriteLine($"Entries: {entries}");
+
+            //                var dataList = DataManager.Instance.GetDataList(type.BaseType.GetGenericArguments()[0]);
+
+            //                Debug.WriteLine($"Corresponding data list: {dataList}");
+            //            }
+            //            //var entryType = type.BaseType.GetGenericArguments()[0];
+
+            //            //var results = abilitySerializer.Deserialize<AbilityTable>(File.OpenRead(tablePath));
+
+            //            Debug.WriteLine($"Results: {results}");
+            //        }
+
+            //        //var loadFromFileMethod = type.GetMethods().FirstOrDefault(m => m.Name == "LoadFromFile");
+            //        //if (loadFromFileMethod != default)
+            //        //{
+            //        //    var args = new object[] { tablesPath };
+            //        //    loadFromFileMethod.Invoke(dataSource, args);
+            //        //}
+            //    }
+            //}
         }
     }
 }

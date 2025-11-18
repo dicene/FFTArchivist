@@ -1,6 +1,7 @@
-﻿using FFTArchivist.Entries;
-using FFTArchivist.Managers;
+﻿using FFTArchivist.Managers;
 using FFTArchivist.Models;
+using FFTArchivist.ViewModels;
+using FFTArchivist.ViewModels.Pages;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -54,7 +55,15 @@ namespace FFTArchivist
         private void ItemEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<Item>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}");
+            MainWindowViewModel.ItemList.Clear();
+            foreach (var item in App.DataManager.GetDataList<Item>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}"))
+            {
+                MainWindowViewModel.ItemList.Add(item);
+            }
+
+            //EntryListBox.ItemsSource = MainWindowViewModel.ItemList;
+
+            //EntryListBox.ItemsSource = App.DataManager.GetDataList<Item>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}");
 
             if (ItemView == null)
             {
@@ -68,7 +77,13 @@ namespace FFTArchivist
         private void PoachEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<PoachItem>().Select(item => $"{item.Id:X} {item.Name?.Value.Replace("<Icon=103>", "+") ?? "N/A"}");
+            MainWindowViewModel.ItemList.Clear();
+            foreach (var item in App.DataManager.GetDataList<PoachItem>().Select(item => $"{item.Id:X} {item.Name?.Value?.Replace("<Icon=103>", "+") ?? "N/A"}"))
+            {
+                MainWindowViewModel.ItemList.Add(item);
+            }
+            //MainWindowViewModel.ItemList = App.DataManager.GetDataList<PoachItem>().Select(item => $"{item.Id:X} {item.Name?.Value?.Replace("<Icon=103>", "+") ?? "N/A"}").ToList();
+            //EntryListBox.ItemsSource = App.DataManager.GetDataList<PoachItem>().Select(item => $"{item.Id:X} {item.Name?.Value?.Replace("<Icon=103>", "+") ?? "N/A"}");
 
             if (PoachView == null)
             {
@@ -82,7 +97,13 @@ namespace FFTArchivist
         private void AbilityEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<Ability>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}");
+            MainWindowViewModel.ItemList.Clear();
+            foreach (var item in App.DataManager.GetDataList<Ability>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}"))
+            {
+                MainWindowViewModel.ItemList.Add(item);
+            }
+            //MainWindowViewModel.ItemList = App.DataManager.GetDataList<Ability>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}").ToList();
+            //EntryListBox.ItemsSource = App.DataManager.GetDataList<Ability>().Select(item => $"{item.Id:X} {item.Name?.Value ?? "N/A"}");
 
             if (AbilityView == null)
             {
@@ -101,7 +122,13 @@ namespace FFTArchivist
         private void UIEditorButton_Click(object sender, RoutedEventArgs e)
         {
             EntryListBox.SelectedIndex = -1;
-            EntryListBox.ItemsSource = App.DataManager.GetDataList<UI>().Select(ui => $"{ui.Id} {(ui.Text?.Value.Replace("\n", "") + (new string(' ', 30)))[0..30] ?? "N/A"}");
+            MainWindowViewModel.ItemList.Clear();
+            foreach (var item in App.DataManager.GetDataList<UI>().Select(ui => $"{ui.Id} {(ui.Text?.Value?.Replace("\n", "") + (new string(' ', 30)))[0..30] ?? "N/A"}"))
+            {
+                MainWindowViewModel.ItemList.Add(item);
+            }
+            //MainWindowViewModel.ItemList = App.DataManager.GetDataList<UI>().Select(ui => $"{ui.Id} {(ui.Text?.Value?.Replace("\n", "") + (new string(' ', 30)))[0..30] ?? "N/A"}").ToList();
+            //EntryListBox.ItemsSource = App.DataManager.GetDataList<UI>().Select(ui => $"{ui.Id} {(ui.Text?.Value?.Replace("\n", "") + (new string(' ', 30)))[0..30] ?? "N/A"}");
 
             if (UIView == null)
             {
@@ -124,7 +151,7 @@ namespace FFTArchivist
                 return;
             }
 
-            if (CurrentView.DataContext is BaseDataViewModel viewModel)
+            if (CurrentView.DataContext is BaseDataPageViewModel viewModel)
             {
                 viewModel.ChangeIndex(EntryListBox.SelectedIndex);
             }
@@ -191,7 +218,7 @@ namespace FFTArchivist
 
         private void SettingsEditorButton_Click(object sender, RoutedEventArgs e)
         {
-            EntryListBox.ItemsSource = null;
+            //EntryListBox.ItemsSource = null;
             CurrentView = new SettingsView();
             EditorFrame.Navigate(CurrentView);
         }

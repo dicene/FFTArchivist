@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWindowsForms>true</UseWindowsForms>
 	<UseWPF>true</UseWPF>
+	<Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,11 +15,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Images\Icons\ic_fluent_history_48_filled.png" />
+    <None Remove="Images\Icons\ic_fluent_history_48_filled.svg" />
+    <None Remove="Images\Icons\ic_fluent_history_dismiss_48_filled.png" />
+    <None Remove="Images\Icons\ic_fluent_history_dismiss_48_filled.svg" />
+    <None Remove="Images\Icons\ic_fluent_pen_dismiss_48_filled.png" />
+    <None Remove="Images\Icons\ic_fluent_pen_dismiss_48_filled.svg" />
     <None Remove="ModConfig.json" />
     <None Remove="Preview.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\Icons\ic_fluent_history_48_filled.png" />
+    <Resource Include="Images\Icons\ic_fluent_history_48_filled.svg" />
+    <Resource Include="Images\Icons\ic_fluent_history_dismiss_48_filled.png" />
+    <Resource Include="Images\Icons\ic_fluent_history_dismiss_48_filled.svg" />
+    <Resource Include="Images\Icons\ic_fluent_pen_dismiss_48_filled.png" />
+    <Resource Include="Images\Icons\ic_fluent_pen_dismiss_48_filled.svg" />
     <EmbeddedResource Include="ModConfig.json">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
@@ -38,6 +51,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\TextBoxIntDataItemControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>

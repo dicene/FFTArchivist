@@ -1,14 +1,9 @@
 ﻿using FFTArchivist.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FFTArchivist.Entries
+namespace FFTArchivist.ViewModels.Pages
 {
-    internal class ENTDViewModel : BaseDataViewModel, INotifyPropertyChanged
+    internal class ENTDViewModel : BaseDataPageViewModel, INotifyPropertyChanged
     {
         private ENTD entry;
 

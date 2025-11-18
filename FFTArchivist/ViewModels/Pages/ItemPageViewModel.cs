@@ -1,19 +1,15 @@
 ﻿using FFTArchivist.Models;
-using System;
-using System.Collections.Generic;
+using FFTArchivist.Models.Base;
+using FFTArchivist.ViewModels.DataItems;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FFTArchivist.Entries
+namespace FFTArchivist.ViewModels.Pages
 {
-    internal class ItemViewModel : BaseDataViewModel, INotifyPropertyChanged
+    internal class ItemPageViewModel : BaseDataPageViewModel, INotifyPropertyChanged
     {
-        private Item item;
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        private Item item;
         public Item Item
         {
             get
@@ -29,7 +25,10 @@ namespace FFTArchivist.Entries
                 }
 
                 item = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemViewModel)));
+                nameDataItemViewModel.DataItem = value.Name;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemPageViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameDataItemViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PriceDataItemViewModel)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Price)));
@@ -37,6 +36,40 @@ namespace FFTArchivist.Entries
         }
 
         public int Id { get => item.Id; set => item.Id = value; }
+
+        private TextBoxStringDataItemViewModel nameDataItemViewModel = new();
+        public TextBoxStringDataItemViewModel NameDataItemViewModel
+        {
+            get => nameDataItemViewModel;
+            set
+            {
+                if (nameDataItemViewModel == value)
+                {
+                    return;
+                }
+
+                nameDataItemViewModel = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameDataItemViewModel)));
+            }
+        }
+
+        private TextBoxIntDataItemViewModel priceDataItemViewModel = new();
+        public TextBoxIntDataItemViewModel PriceDataItemViewModel
+        {
+            get => priceDataItemViewModel;
+            set
+            {
+                if (priceDataItemViewModel == value)
+                {
+                    return;
+                }
+
+                priceDataItemViewModel = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PriceDataItemViewModel)));
+            }
+        }
 
         public string Name
         {
@@ -55,7 +88,7 @@ namespace FFTArchivist.Entries
 
         public string Description
         {
-            get => item.Description?.Value.Replace("<br>", "\n") ?? "";
+            get => item.Description?.Value?.Replace("<br>", "\n") ?? "";
             set
             {
                 if (item.Description.Value == value.Replace("\n", "<br>"))
@@ -83,12 +116,14 @@ namespace FFTArchivist.Entries
             }
         }
 
-        public ItemViewModel()
+        public ItemPageViewModel()
         {
-            this.item = new Item();
+            item = new Item();
+            NameDataItemViewModel.Label = "Name";
+            PriceDataItemViewModel.Label = "Price";
         }
 
-        public ItemViewModel(Item item)
+        public ItemPageViewModel(Item item)
         {
             this.item = item;
         }

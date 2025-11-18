@@ -18,10 +18,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Vortice.Win32;
+using YamlDotNet.Serialization;
 
 namespace FFTArchivist.DataSources.EXE
 {
-    public abstract class AEXEDataSource<TClass, TStruct, TTable> : IEXEDataSource, IDataSource where TClass : class where TStruct : struct where TTable : class, new()
+    public abstract class AEXEDataSource<TClass, TStruct, TTable> : IEXEDataSource, IDataSource where TClass : class, IDiffableModel<TClass> where TStruct : struct where TTable : class, new()
+    //public abstract class AEXEDataSource<TClass, TStruct, TTable> : IEXEDataSource, IDataSource where TClass : class where TStruct : struct where TTable : class, new()
     {
         public string Path { get; private set; }
         public long BaseOffset { get; private set; }
@@ -71,6 +74,47 @@ namespace FFTArchivist.DataSources.EXE
             }
         }
 
+        public async Task LoadModSource(string tablesPath)
+        {
+            var xmlFilename = System.IO.Path.Combine(tablesPath, Filename);
+            var xmlText = File.ReadAllText(xmlFilename);
+            var serializer = new XmlModelFormatSerializer();
+            //TClass result = serializer.Deserialize<TClass>(xmlText);
+            //AbilityActionTable? abilityActionTable = _abilityActionSerializer.ReadModelFromFile(xmlFilename);
+
+            //var deserializeMethod = serializer.GetType().GetMethods().FirstOrDefault(m => m.Name == "Deserialize");
+            //if (deserializeMethod != null)
+            //{
+            var result = serializer.Deserialize<TTable>(xmlFilename);
+
+            if (result is TableBase<TClass> TClassResult)
+            {
+                rows = TClassResult.Entries;
+            }
+            //var Rows = result.rows
+            //var typedDeserializeMethod = deserializeMethod.MakeGenericMethod([tableType]);
+
+            //    var args = new object[] { tablePath };
+            //    var results = typedDeserializeMethod.Invoke(abilitySerializer, args);
+            //    var entriesProp = tableType.GetProperties().FirstOrDefault(p => p.Name == "Entries");
+            //    if (entriesProp != default)
+            //    {
+            //        var entries = entriesProp.GetValue(results);
+
+            //        Debug.WriteLine($"Entries: {entries}");
+
+            //        var dataList = DataManager.Instance.GetDataList(type.BaseType.GetGenericArguments()[0]);
+
+            //        Debug.WriteLine($"Corresponding data list: {dataList}");
+            //    }
+            //    //var entryType = type.BaseType.GetGenericArguments()[0];
+
+            //    //var results = abilitySerializer.Deserialize<AbilityTable>(File.OpenRead(tablePath));
+
+            //    Debug.WriteLine($"Results: {results}");
+            ////}
+        }
+
         public async Task<TDataType> ReadData<TDataType>(int id, string propertyName)
         {
             if (rows.Count <= id)
@@ -93,8 +137,8 @@ namespace FFTArchivist.DataSources.EXE
 
         public async Task WriteData<T2>(int id, string columnName, T2 value)
         {
+            //Debug.WriteLine($"Wrote value {value} to row {id} column {columnName}.");
 
-            Debug.WriteLine($"Wrote value {value} to row {id} column {columnName}.");
             var row = rows[id];
             var prop = row.GetType().GetProperty(columnName);
 

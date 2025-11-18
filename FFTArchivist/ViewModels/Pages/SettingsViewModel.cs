@@ -1,14 +1,7 @@
-﻿using FFTArchivist.Managers;
-using FFTArchivist.Models;
-using FFTArchivist.Properties;
-using System;
-using System.Collections.Generic;
+﻿using FFTArchivist.Properties;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FFTArchivist.Entries
+namespace FFTArchivist.ViewModels.Pages
 {
     internal class SettingsViewModel : INotifyPropertyChanged
     {

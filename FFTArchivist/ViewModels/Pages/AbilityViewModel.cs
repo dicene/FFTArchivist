@@ -1,18 +1,12 @@
 ﻿using FFTArchivist.Models;
+using FFTArchivist.ViewModels.Pages.Abilities;
 using FFTArchivist.Views.Abilities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Navigation;
 
-namespace FFTArchivist.Entries
+namespace FFTArchivist.ViewModels.Pages
 {
-    internal class AbilityViewModel : BaseDataViewModel, INotifyPropertyChanged
+    internal class AbilityViewModel : BaseDataPageViewModel, INotifyPropertyChanged
     {
         private Ability ability;
         private ActionAbilityViewModel actionAbilityViewModel = new();
@@ -251,10 +245,10 @@ namespace FFTArchivist.Entries
 
         public string Description
         {
-            get => ability.Description?.Value.Replace("<br>", "\n") ?? "";
+            get => ability.Description?.Value?.Replace("<br>", "\n") ?? "";
             set
             {
-                if (ability.Description.Value.Replace("\n", "<br>") == value)
+                if (ability.Description.Value?.Replace("\n", "<br>") == value)
                 {
                     return;
                 }

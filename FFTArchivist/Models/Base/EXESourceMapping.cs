@@ -20,24 +20,49 @@ namespace FFTArchivist.Models.Base
             PropertyName = propertyName;
         }
     }
-    public class EXESourceMapping<T> : ISourceMapping<T>, IDestinationMapping<T>
+    public class EXESourceMapping : ISourceMapping, IDestinationMapping
     {
-        public int Id { get; private set; }
-        public long BaseOffset { get; private set; }
-        public int Count { get; private set; }
-        public int Size { get; private set; }
-        public int ColumnOffset { get; private set; }
-        public IDataSource DataSource { get; private set; }
-        public Type DataType { get; private set; }
-        public string PropertyName { get; private set; }
+        public int Id { get; set; }
+        public long BaseOffset { get; set; }
+        public int Count { get; set; }
+        public int Size { get; set; }
+        public int ColumnOffset { get; set; }
+        public IDataSource DataSource { get; set; }
+        public Type DataType { get; set; }
+        public string PropertyName { get; set; }
+        public Type SourceType { get; set; }
 
         public EXESourceMapping() { }
+
+        public EXESourceMapping(IDataSource dataSource, int id, string propertyName)
+        {
+            DataSource = dataSource;
+            Id = id;
+            PropertyName = propertyName;
+            SourceType = dataSource.GetType();
+            //DataType = typeof(T);
+        }
+
         public EXESourceMapping(Type t, IDataSource dataSource, int id, string propertyName)
         {
             DataSource = dataSource;
             Id = id;
             PropertyName = propertyName;
-            DataType = typeof(T);
+            SourceType = dataSource.GetType();
+            //DataType = typeof(T);
+            //BaseOffset = baseOffset;
+            //Count = count;
+            //Size = size;
+            //ColumnOffset = columnOffset;
+        }
+
+        public EXESourceMapping(Type t, int id, string propertyName)
+        {
+            //DataSource = dataSource;
+            Id = id;
+            PropertyName = propertyName;
+            SourceType = t;
+            //DataType = typeof(T);
             //BaseOffset = baseOffset;
             //Count = count;
             //Size = size;
@@ -52,7 +77,7 @@ namespace FFTArchivist.Models.Base
             ColumnOffset = columnOffset;
         }
 
-        public async Task<T> ReadFromSource()
+        public async Task<T> ReadFromSource<T>()
         {
             //var dataSource = await DataManager.Instance.GetDataSource(this);
 
@@ -71,22 +96,38 @@ namespace FFTArchivist.Models.Base
             return await DataSource.ReadData<T>(Id, PropertyName);
         }
 
+        public async Task<T> ReadFromSource<T>(IDataSource dataSource)
+        {
+            return await dataSource.ReadData<T>(Id, PropertyName);
+        }
+
+        public async Task<T> ReadFromModSource<T>(IDataSource dataSource)
+        {
+            return await dataSource.ReadData<T>(Id, PropertyName);
+        }
+
         public async Task WriteToMod<T>(T value)
         {
             return;
         }
 
-        public async Task WriteToDestination<T>(T value)
+        public async Task WriteToDestination<T>(IDataSource dataSource, T value)
         {
-            Debug.WriteLine($"Attempting to write via EXESourceMapping...");
+            //Debug.WriteLine($"Attempting to write via EXESourceMapping...");
 
-            if (DataSource == null)
+            if (dataSource == null)
             {
                 return;
             }
 
-            var dataSourceType = DataSource.GetType().BaseType;
+            var dataSourceType = dataSource.GetType().BaseType;
             //if (DataSource.GetType().GetGenericTypeDefinition() == typeof(AEXEDataSource<>))
+
+            if (dataSource is IDataSource iDataSource)
+            {
+                dataSource.WriteData<T>(Id, PropertyName, value);
+            }
+
             if (dataSourceType.IsGenericType && dataSourceType.GetGenericTypeDefinition() == typeof(AEXEDataSource<,,>))
             {
                 var propertyClassArg = dataSourceType.GetGenericArguments()[0];
@@ -101,7 +142,7 @@ namespace FFTArchivist.Models.Base
 
                 var args = new object[] { Id, PropertyName, value };
                 //var args = new object[] { specificType, null, Id, nexLinkageAttribute.ColumnName };
-                genericWriteMethod.Invoke(DataSource, args);
+                genericWriteMethod.Invoke(dataSource, args);
                 //object newMapping = Activator.CreateInstance(specificType, args);
             }
 

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Controls;
 
 namespace FFTArchivist.ViewModels
@@ -12,8 +9,8 @@ namespace FFTArchivist.ViewModels
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private Page currentPage;
-        public Page CurrentPage
+        private Page? currentPage;
+        public Page? CurrentPage
         {
             get => currentPage; set
             {
@@ -23,6 +20,27 @@ namespace FFTArchivist.ViewModels
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentPage)));
                 }
             }
+        }
+
+        private ObservableCollection<string> itemList = new();
+        public ObservableCollection<string> ItemList
+        {
+            get => itemList;
+            set
+            {
+                if (itemList != value)
+                {
+                    itemList = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
+                }
+            }
+        }
+
+        public MainWindowViewModel()
+        {
+            Debug.WriteLine($"Creating MainWindowViewModel");
         }
     }
 }

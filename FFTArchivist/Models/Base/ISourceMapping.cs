@@ -1,7 +1,11 @@
-﻿namespace FFTArchivist.Models.Base
+﻿using FFTArchivist.DataSources;
+
+namespace FFTArchivist.Models.Base
 {
-    public interface ISourceMapping<T>
+    public interface ISourceMapping
     {
-        public Task<T> ReadFromSource();
+        public Type SourceType { get; }
+        public Task<T> ReadFromSource<T>();
+        public Task<T> ReadFromSource<T>(IDataSource dataSource);
     }
 }

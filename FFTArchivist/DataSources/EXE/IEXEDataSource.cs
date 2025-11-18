@@ -14,5 +14,7 @@ namespace FFTArchivist.DataSources.EXE
         public Type RowType { get; }
         public string Pattern { get; }
         public string Filename { get; }
+        public Task LoadModSource(string filename);
+        public Task WriteToFile(string tablesPath);
     }
 }

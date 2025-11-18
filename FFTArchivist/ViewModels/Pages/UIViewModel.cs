@@ -1,9 +1,9 @@
 ﻿using FFTArchivist.Models;
 using System.ComponentModel;
 
-namespace FFTArchivist.Entries
+namespace FFTArchivist.ViewModels.Pages
 {
-    internal class UIViewModel : BaseDataViewModel, INotifyPropertyChanged
+    internal class UIViewModel : BaseDataPageViewModel, INotifyPropertyChanged
     {
         private UI ui;
 
@@ -37,7 +37,7 @@ namespace FFTArchivist.Entries
 
         public UIViewModel()
         {
-            this.ui = null;
+            ui = null;
         }
 
         public void ChangeIndex(int index)

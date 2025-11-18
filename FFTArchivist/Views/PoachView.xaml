@@ -4,13 +4,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FFTArchivist"
-      xmlns:Entries="clr-namespace:FFTArchivist.Entries" x:Class="FFTArchivist.PoachView"
+      xmlns:Pages="clr-namespace:FFTArchivist.ViewModels.Pages" x:Class="FFTArchivist.PoachView"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PoachView" Background="{DynamicResource WindowBackgroundBrush}">
 
     <Page.DataContext>
-        <Entries:PoachViewModel x:Name="PoachViewModel"/>
+        <Pages:PoachViewModel x:Name="PoachViewModel"/>
     </Page.DataContext>
 
     <Grid>

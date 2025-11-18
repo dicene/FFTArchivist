@@ -1,18 +1,10 @@
 ﻿using FFTArchivist.Managers;
 using FFTArchivist.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 
-namespace FFTArchivist.Entries
+namespace FFTArchivist.ViewModels.Pages.Abilities
 {
-    internal class ItemAbilityViewModel : BaseDataViewModel, INotifyPropertyChanged
+    internal class ItemAbilityViewModel : BaseDataPageViewModel, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -53,8 +45,8 @@ namespace FFTArchivist.Entries
             }
         }
 
-        public List<string> ItemNames { get => (itemAbility?.ItemId != null ? App.DataManager.GetDataList<Item>().Select(i => (i.Name?.Value.Replace("<icon=103>", "+") ?? "N/A")).ToList() : new List<string>()); }
-        public string ItemName { get => itemAbility?.ItemId != null ? App.DataManager.GetDataList<Item>()[(itemAbility?.ItemId?.Value ?? 0)].Name.Value : ""; }
+        public List<string> ItemNames { get => itemAbility?.ItemId != null ? App.DataManager.GetDataList<Item>().Select(i => i.Name?.Value?.Replace("<icon=103>", "+") ?? "N/A").ToList() : new List<string>(); }
+        public string ItemName { get => itemAbility?.ItemId != null ? App.DataManager.GetDataList<Item>()[itemAbility?.ItemId?.Value ?? 0].Name.Value : ""; }
 
         public void ChangeIndex(int index)
         {

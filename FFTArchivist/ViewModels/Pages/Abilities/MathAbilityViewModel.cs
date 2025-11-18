@@ -1,20 +1,12 @@
 ﻿using FFTArchivist.Managers;
 using FFTArchivist.Models;
-using FFTArchivist.Views.Abilities;
-using System;
-using System.Collections.Generic;
+using FFTArchivist.ViewModels.Pages;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 using MathFlags = FFTArchivist.DataSources.EXE.TempInterfaces.MathAbility.MathFlags;
 
-namespace FFTArchivist.Entries
+namespace FFTArchivist.ViewModels.Pages.Abilities
 {
-    internal class MathAbilityViewModel : BaseDataViewModel, INotifyPropertyChanged
+    internal class MathAbilityViewModel : BaseDataPageViewModel, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
