@@ -17,5 +17,6 @@ namespace FFTArchivist.Managers
         public List<T> GetDataList<T>() where T : BaseModel;
         public Task<bool> LoadDataSources();
         public IDataSource GetDataSource(Type type);
+        public void ClearDataSources();
     }
 }

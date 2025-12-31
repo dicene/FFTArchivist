@@ -343,6 +343,7 @@ namespace FFTArchivist.ViewModels
 
         internal async Task ReloadData()
         {
+            App.DataManager.ClearDataSources();
             await LoadData();
         }
     }

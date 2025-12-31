@@ -252,5 +252,10 @@ namespace FFTArchivist.Managers
 
             return default;
         }
+
+        public void ClearDataSources()
+        {
+            DataSources.Clear();
+        }
     }
 }
