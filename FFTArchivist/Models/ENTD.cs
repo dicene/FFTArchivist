@@ -6,13 +6,13 @@ namespace FFTArchivist.Models
 {
     public class ENTD : BaseModel, INotifyPropertyChanged
     {
-        public ENTD() : base() { }
-        public ENTD(int id) : base(id) { }
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         //[EXESourceMapping(typeof(ENTDEXESource), nameof(FFTArchivist.DataSources.EXE.TempInterfaces.ENTD.Units))]
         public List<DataItem<ENTD_EntryUnit>> Units { get; set; }
+
+        public ENTD() : base() { }
+        public ENTD(int id) : base(id) { }
 
         //[NEXMapping(typeof(ItemNEXSource), nameof(ItemNEXModel.Name))]
         //public DataItem<string> Name { get; set; }

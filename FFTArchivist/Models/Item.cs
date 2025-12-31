@@ -7,9 +7,6 @@ namespace FFTArchivist.Models
 {
     public class Item : BaseModel, INotifyPropertyChanged
     {
-        public Item() : base() { }
-        public Item(int id) : base(id) { }
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         [NEXMapping(typeof(ItemNEXSource), nameof(ItemNEXModel.Name))]
@@ -20,5 +17,10 @@ namespace FFTArchivist.Models
 
         [EXESourceMapping(typeof(ItemEXESource), nameof(Item.Price))]
         public DataItem<ushort> Price { get; set; }
+
+        public Item() : base() { }
+        public Item(int id) : base(id) { }
+
+        public override string ToString() => $"{Id:X} {Name?.Value ?? "N/A"}";
     }
 }

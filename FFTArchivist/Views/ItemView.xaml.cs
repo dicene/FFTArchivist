@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using FFTArchivist.Controls.TextBox;
+using FFTArchivist.ViewModels.Pages;
+using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace FFTArchivist
 {
@@ -9,6 +12,7 @@ namespace FFTArchivist
     {
         public ItemView()
         {
+            Debug.WriteLine($"Constructing new {nameof(ItemView)}");
             InitializeComponent();
         }
     }

@@ -5,48 +5,114 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FFTArchivist"
         xmlns:ViewModels="clr-namespace:FFTArchivist.ViewModels"
+        xmlns:Controls="clr-namespace:FFTArchivist.Controls"
         x:Class="FFTArchivist.MainWindow"
         mc:Ignorable="d"
         Title="FFT Archivist" Height="450" Width="800" Loaded="Window_Loaded" Background="{DynamicResource WindowBackgroundBrush}">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
     <Window.DataContext>
         <ViewModels:MainWindowViewModel x:Name="MainWindowViewModel"/>
     </Window.DataContext>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
-            <!--<RowDefinition Height="30" />-->
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <!--<StackPanel Orientation="Vertical">-->
-        <!--<Grid.DataContext>
-            <ViewModels:MainWindowViewModel/>
-        </Grid.DataContext>-->
-        <!--<StackPanel Orientation="Horizontal">
-                <Button x:Name="ModDetailsButton" Content="Load Data" Click="ModDetailsButton_Click" Margin="5"/>
-            </StackPanel>-->
-        <StackPanel Orientation="Horizontal">
-            <Button x:Name="ImportModButton" Content="Import Mod" Click="ImportModButton_Click" Margin="5"/>
-            <Button x:Name="ExportModButton" Content="Export Mod" Click="ExportModButton_Click" Margin="5"/>
-        </StackPanel>
-        <!--</StackPanel>-->
-        <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0"/>
-        <DockPanel Grid.Row="0" Grid.Column="1">
-            <Button x:Name="ItemEditorButton" Content="Items" Click="ItemEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left"/>
-            <Button x:Name="AbilityEditorButton" Content="Abilities" Click="AbilityEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left"/>
-            <Button x:Name="JobEditorButton" Content="Jobs" Click="JobEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" Visibility="Collapsed"/>
-            <Button x:Name="PoachEditorButton" Content="Poach" Click="PoachEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left"/>
-            <Button x:Name="UIButton" Content="UI" Click="UIEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left"/>
-            <Button x:Name="Settings" Content="Settings" Click="SettingsEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Right"/>
-            <Label Content="" DockPanel.Dock="Right"/>
-        </DockPanel>
-        <ListBox x:Name="EntryListBox" Grid.Row="1" Grid.Column="0" SelectionChanged="EntryListBox_SelectionChanged" Margin="5,0,5,0" ItemsSource="{Binding ItemList, Mode=OneWay}"/>
-        <GridSplitter Grid.Row="1" Grid.Column="0" Width="5" HorizontalAlignment="Right" Background="{DynamicResource ButtonBackgroundBrush}" Margin="0"/>
-        <Border Grid.Row="1" Grid.Column="1" Margin="5">
-            <Frame x:Name="EditorFrame" NavigationUIVisibility="Hidden" Content="{Binding CurrentPage}"/>
+        <Grid IsHitTestVisible="{Binding LoadingScreenHidden}">
+            <Grid.Effect>
+                <BlurEffect Radius="{Binding BlurRadius}" KernelType="Gaussian"/>
+                <!--<BlurEffect Radius="6" KernelType="Gaussian"/>-->
+            </Grid.Effect>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <!--<RowDefinition Height="30" />-->
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="ImportModButton" Content="Import Mod" Click="ImportModButton_Click" Margin="5" IsEnabled="{Binding IsDataLoaded}"/>
+                <Button x:Name="ExportModButton" Content="Export Mod" Click="ExportModButton_Click" Margin="5" IsEnabled="{Binding IsDataLoaded}"/>
+            </StackPanel>
+            <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0"/>
+            <DockPanel Grid.Row="0" Grid.Column="1">
+                <Button x:Name="ItemEditorButton" Content="Items" Click="ItemEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" IsEnabled="{Binding IsDataLoaded}"/>
+                <Button x:Name="AbilityEditorButton" Content="Abilities" Click="AbilityEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" IsEnabled="{Binding IsDataLoaded}"/>
+                <Button x:Name="JobEditorButton" Content="Jobs" Click="JobEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" Visibility="Collapsed" IsEnabled="{Binding IsDataLoaded}"/>
+                <Button x:Name="PoachEditorButton" Content="Poach" Click="PoachEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" IsEnabled="{Binding IsDataLoaded}"/>
+                <Button x:Name="UIButton" Content="UI" Click="UIEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" IsEnabled="{Binding IsDataLoaded}"/>
+                <Button x:Name="Settings" Content="Settings" Click="SettingsEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Right"/>
+                <Button x:Name="ReloadData" Content="ReloadData" Click="ReloadDataButton_Click" Margin="3,5,3,5" DockPanel.Dock="Right"/>
+                <Control DockPanel.Dock="Right"/>
+                <!--<Label Content="asdf" DockPanel.Dock="Right"/>-->
+            </DockPanel>
+            <ListBox x:Name="EntryListBox" Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" ItemsSource="{Binding ItemList, Mode=OneWay}" SelectedIndex="{Binding SelectedIndex}"/>
+            <GridSplitter Grid.Row="1" Grid.Column="0" Width="5" HorizontalAlignment="Right" Background="{DynamicResource ButtonBackgroundBrush}" Margin="0"/>
+            <Border Grid.Row="1" Grid.Column="1" Margin="5">
+                <Frame x:Name="EditorFrame" NavigationUIVisibility="Hidden" Content="{Binding CurrentPage}"/>
+            </Border>
+            <Border Grid.Row="1" Grid.Column="1" Margin="5">
+                <!--<Image x:Name="OdinImage" Source="/Odin Main.png">
+                    <Image.Triggers>
+                        <Trigger Property="IsVisible" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+            Storyboard.TargetName="OdinImage" 
+            Storyboard.TargetProperty="Opacity"
+            From="1.0" To="0.0" Duration="0:0:5" 
+            AutoReverse="True" RepeatBehavior="Forever" />
+                                        <DoubleAnimation
+            Storyboard.TargetName="OdinImage" 
+            Storyboard.TargetProperty="Margin.Left"
+            From="150.0" To="-150.0" Duration="0:0:2" 
+            AutoReverse="True" RepeatBehavior="Forever" />
+                                        --><!--<ThicknessAnimation
+            Storyboard.TargetName="OdinImage" 
+            Storyboard.TargetProperty="Margin"
+            From="0,0,0,0" To="50,50,0,0" Duration="0:0:1" 
+            AutoReverse="True" RepeatBehavior="Forever" />--><!--
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                        --><!--Animates the rectangle's opacity.-->
+                        <!--<EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="OdinImage" 
+                                        Storyboard.TargetProperty="Opacity"
+                                        From="1.0" To="0.0" Duration="0:0:5" 
+                                        AutoReverse="True" RepeatBehavior="Forever" />
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="OdinImage" 
+                                        Storyboard.TargetProperty="Margin.Left"
+                                        From="150.0" To="-150.0" Duration="0:0:2" 
+                                        AutoReverse="True" RepeatBehavior="Forever" />
+                                    --><!--<ThicknessAnimation
+                                        Storyboard.TargetName="OdinImage" 
+                                        Storyboard.TargetProperty="Margin"
+                                        From="0,0,0,0" To="50,50,0,0" Duration="0:0:1" 
+                                        AutoReverse="True" RepeatBehavior="Forever" />--><!--
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>--><!--
+                    </Image.Triggers>
+                </Image>-->
+            </Border>
+        </Grid>
+        <!--<Border HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible" Grid.Row="0" Grid.Column="0" Grid.RowSpan="100" Grid.ColumnSpan="100" Panel.ZIndex="1000" BorderThickness="0" BorderBrush="White">-->
+        <Border HorizontalAlignment="Center" VerticalAlignment="Center" 
+                Visibility="{Binding ShowLoadingScreen, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Grid.Row="0" Grid.Column="0" Grid.RowSpan="100" Grid.ColumnSpan="100" 
+                Panel.ZIndex="1000" BorderThickness="3" BorderBrush="Black" CornerRadius="8" Background="{StaticResource TextBoxBackgroundBrush}"
+                Padding="80,40,80,40">
+            <StackPanel Orientation="Vertical" Background="Transparent">
+                <Controls:Spinner BorderBrush="OrangeRed" BorderThickness="0"/>
+                <Label x:Name="statusLabel" Content="{Binding Status, FallbackValue=Loading}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"/>
+            </StackPanel>
         </Border>
-    </Grid>
+    </Grid>    
 </Window>

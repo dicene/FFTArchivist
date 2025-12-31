@@ -47,6 +47,12 @@ namespace FFTArchivist.ViewModels.Pages
 
         public void ChangeIndex(int index)
         {
+            if (index < 0 || index >= App.DataManager.GetDataList<Item>().Count)
+            {
+                Poach = new PoachItem(0);
+                return;
+            }
+
             Poach = App.DataManager.GetDataList<PoachItem>()[index];
         }
     }

@@ -5,6 +5,8 @@
     <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FFCEC7B4"/>
     <SolidColorBrush x:Key="TextBoxBackgroundBrush" Color="#FFEFE6CD"/>
     <SolidColorBrush x:Key="TextBoxModifiedBackgroundBrush" Color="#FFFF9B9B"/>
+    <SolidColorBrush x:Key="InvalidInputBrush" Color="#FFFF4F4F"/>
+    <SolidColorBrush x:Key="ValidInputBrush" Color="#FF75FF4F"/>
     <SolidColorBrush x:Key="WindowTextBrush" Color="#000000"/>
     <Style TargetType="Button">
         <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}"/>

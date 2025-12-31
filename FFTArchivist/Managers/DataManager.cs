@@ -1,25 +1,11 @@
-﻿using CommunityToolkit.HighPerformance;
-using Dapper;
-using FF16Tools.Files.Nex;
-using FF16Tools.Files.Nex.Entities;
-using FF16Tools.Files.Nex.Managers;
-using FF16Tools.Pack;
+﻿using FF16Tools.Pack;
 using FFTArchivist.DataSources;
-using FFTArchivist.DataSources.EXE;
-using FFTArchivist.DataSources.EXE.TempInterfaces.SupportAbility;
 using FFTArchivist.Models;
 using FFTArchivist.Models.Base;
 using FFTArchivist.Properties;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FFTArchivist.Managers
 {
@@ -42,15 +28,25 @@ namespace FFTArchivist.Managers
         // TODO: At some point consider refactoring this to a custom class.
         public Dictionary<Type, IEnumerable<BaseModel>> DataLists { get; } = new();
 
-        public async Task OpenPack(string packDirectory)
+        public async Task<bool> OpenPack(string packDirectory)
         {
+            if (FF16PackManager != null)
+            {
+                await FF16PackManager.DisposeAsync();
+            }
+
+            FF16PackManager = new();
             FF16PackManager.Open(packDirectory, CodeName);
+
+            return true;
         }
 
-        public async Task ClosePack()
+        public async Task<bool> ClosePack()
         {
             await FF16PackManager.DisposeAsync();
             FF16PackManager = null;
+
+            return true;
         }
 
         public static List<Type> GetModelTypes()
@@ -68,43 +64,6 @@ namespace FFTArchivist.Managers
 
             return modelTypes;
         }
-
-        //public static List<Type> GetModelDataItems(List<Type> modelTypes)
-        //{
-        //    var dataItems = new List<Type>();
-
-        //    foreach (var type in modelTypes)
-        //    {
-        //        foreach (var prop in type.GetProperties())
-        //        {
-        //            if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(DataItem<>))
-        //            {
-        //                var nexLinkageAttribute = prop.GetCustomAttribute<NEXMappingAttribute>();
-        //                if (nexLinkageAttribute != null)
-        //                {
-        //                    var propertyTypeArg = prop.PropertyType.GetGenericArguments()[0];
-        //                    //Type genericType = typeof(NEXLinkage<>);
-        //                    //Type specificType = genericType.MakeGenericType(propertyTypeArg);
-        //                    //var args = new object[] { nexLinkageAttribute.PackName, nexLinkageAttribute.TableName, nexLinkageAttribute.Column.HasValue ? nexLinkageAttribute.Column : nexLinkageAttribute.ColumnName };
-        //                    //Debug.WriteLine($"Linkage: {nexLinkageAttribute.PackName}, {nexLinkageAttribute.TableName}, {nexLinkageAttribute.ColumnName}");
-        //                    //object newLinkage = Activator.CreateInstance(specificType, args);
-
-        //                    //if (newLinkage == null)
-        //                    //{
-        //                    //    continue;
-        //                    //}
-
-        //                    //var newDataItem = Activator.CreateInstance(prop.PropertyType, newLinkage, id);
-
-        //                    //newDataItem.ReadFromSource();
-        //                    //prop.SetValue(this, newDataItem);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return dataItems;
-        //}
 
         public async Task<bool> LoadData()
         {
@@ -149,6 +108,7 @@ namespace FFTArchivist.Managers
             {
                 var actionAbility = new ActionAbility(i);
                 actionAbility.SetOriginalSources(DataSources);
+                actionAbility.SetOriginalOverrideSources(DataSources);
                 await actionAbility.ReadData();
                 actionAbilities.Add(actionAbility);
             }
@@ -240,7 +200,7 @@ namespace FFTArchivist.Managers
             return true;
         }
 
-        public async Task LoadDataSources()
+        public async Task<bool> LoadDataSources()
         {
             foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IDataSource") != null && !type.IsAbstract))
             {
@@ -252,11 +212,11 @@ namespace FFTArchivist.Managers
                     if (dataSource is ANEXDataSource aNEXDataSource)
                     {
                         await aNEXDataSource.LoadPackSource(FF16PackManager);
-                        //var layout = aNEXDataSource.TableLayout;
-                        //var originalNexFile = aNEXDataSource.OriginalNexFile;
                     }
                 }
             }
+
+            return true;
         }
 
         // TODO: Move data source loading and caching logic to their respective classes

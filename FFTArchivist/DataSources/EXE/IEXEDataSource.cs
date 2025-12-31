@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FFTArchivist.DataSources.EXE
+﻿namespace FFTArchivist.DataSources.EXE
 {
     internal interface IEXEDataSource
     {

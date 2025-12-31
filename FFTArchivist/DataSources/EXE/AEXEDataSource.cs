@@ -1,30 +1,16 @@
-﻿using CommunityToolkit.HighPerformance;
-using FFTArchivist.Managers;
-using fftivc.utility.modloader.Interfaces.Tables;
+﻿using FFTArchivist.Managers;
 using fftivc.utility.modloader.Interfaces.Tables.Models;
 using fftivc.utility.modloader.Interfaces.Tables.Models.Bases;
-using fftivc.utility.modloader.Interfaces.Tables.Structures;
 using fftivc.utility.modloader.Serializers;
-using Reloaded.Memory.Extensions;
 using Reloaded.Memory.Sigscan;
 using Syroot.BinaryData;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Vortice.Win32;
-using YamlDotNet.Serialization;
 
 namespace FFTArchivist.DataSources.EXE
 {
     public abstract class AEXEDataSource<TClass, TStruct, TTable> : IEXEDataSource, IDataSource where TClass : class, IDiffableModel<TClass> where TStruct : struct where TTable : class, new()
-    //public abstract class AEXEDataSource<TClass, TStruct, TTable> : IEXEDataSource, IDataSource where TClass : class where TStruct : struct where TTable : class, new()
     {
         public string Path { get; private set; }
         public long BaseOffset { get; private set; }
@@ -77,42 +63,14 @@ namespace FFTArchivist.DataSources.EXE
         public async Task LoadModSource(string tablesPath)
         {
             var xmlFilename = System.IO.Path.Combine(tablesPath, Filename);
-            var xmlText = File.ReadAllText(xmlFilename);
+            var xmlText = await File.ReadAllTextAsync(xmlFilename);
             var serializer = new XmlModelFormatSerializer();
-            //TClass result = serializer.Deserialize<TClass>(xmlText);
-            //AbilityActionTable? abilityActionTable = _abilityActionSerializer.ReadModelFromFile(xmlFilename);
-
-            //var deserializeMethod = serializer.GetType().GetMethods().FirstOrDefault(m => m.Name == "Deserialize");
-            //if (deserializeMethod != null)
-            //{
             var result = serializer.Deserialize<TTable>(xmlFilename);
 
             if (result is TableBase<TClass> TClassResult)
             {
                 rows = TClassResult.Entries;
             }
-            //var Rows = result.rows
-            //var typedDeserializeMethod = deserializeMethod.MakeGenericMethod([tableType]);
-
-            //    var args = new object[] { tablePath };
-            //    var results = typedDeserializeMethod.Invoke(abilitySerializer, args);
-            //    var entriesProp = tableType.GetProperties().FirstOrDefault(p => p.Name == "Entries");
-            //    if (entriesProp != default)
-            //    {
-            //        var entries = entriesProp.GetValue(results);
-
-            //        Debug.WriteLine($"Entries: {entries}");
-
-            //        var dataList = DataManager.Instance.GetDataList(type.BaseType.GetGenericArguments()[0]);
-
-            //        Debug.WriteLine($"Corresponding data list: {dataList}");
-            //    }
-            //    //var entryType = type.BaseType.GetGenericArguments()[0];
-
-            //    //var results = abilitySerializer.Deserialize<AbilityTable>(File.OpenRead(tablePath));
-
-            //    Debug.WriteLine($"Results: {results}");
-            ////}
         }
 
         public async Task<TDataType> ReadData<TDataType>(int id, string propertyName)
@@ -159,18 +117,10 @@ namespace FFTArchivist.DataSources.EXE
                 {
                     var entries = entriesProperty.GetValue(table) as List<TClass>;
                     entries.AddRange(rows);
-                    //var addRangeMethod = entriesProperty.GetType().GetMethods().FirstOrDefault(m => m.Name == "AddRange");
-                    //if (addRangeMethod != null)
-                    //{
-                    //var args = new object[] { rows };
-                    //addRangeMethod.Invoke(entries, args);
-                    //}
                 }
 
                 var serializer = new XmlModelFormatSerializer();
                 serializer.Serialize(fileStream, table);
-                //var serializedData = serializer.Serialize(rows);
-                //fileStream.WriteString(serializedData);
                 Debug.WriteLine($"Wrote {fileStream.Length} bytes to new xml file {tablesPath}");
             }
         }

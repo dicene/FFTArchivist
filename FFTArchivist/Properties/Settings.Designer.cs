@@ -25,8 +25,7 @@ namespace FFTArchivist.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Steam\\steamapps\\common\\FINAL FANTASY TACTICS - The Ivalice" +
-            " Chronicles")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string FFTIVCRootPath {
             get {
                 return ((string)(this["FFTIVCRootPath"]));
@@ -38,7 +37,7 @@ namespace FFTArchivist.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("NewMod")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ModName {
             get {
                 return ((string)(this["ModName"]));
@@ -50,7 +49,7 @@ namespace FFTArchivist.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Thoth\\Documents\\Software\\Reloaded II\\Mods")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ReloadedIIModsPath {
             get {
                 return ((string)(this["ReloadedIIModsPath"]));
@@ -62,7 +61,7 @@ namespace FFTArchivist.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("fftivc.various.newMod")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ModId {
             get {
                 return ((string)(this["ModId"]));
@@ -74,7 +73,7 @@ namespace FFTArchivist.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Author")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ModAuthor {
             get {
                 return ((string)(this["ModAuthor"]));
@@ -86,7 +85,7 @@ namespace FFTArchivist.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("v0.0.1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ModVersion {
             get {
                 return ((string)(this["ModVersion"]));
@@ -98,7 +97,7 @@ namespace FFTArchivist.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Mod Description")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ModDescription {
             get {
                 return ((string)(this["ModDescription"]));

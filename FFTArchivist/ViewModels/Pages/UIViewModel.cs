@@ -42,6 +42,12 @@ namespace FFTArchivist.ViewModels.Pages
 
         public void ChangeIndex(int index)
         {
+            if (index < 0 || index >= App.DataManager.GetDataList<UI>().Count)
+            {
+                UI = new UI(0);
+                return;
+            }
+
             UI = App.DataManager.GetDataList<UI>()[index];
         }
     }

@@ -3,25 +3,25 @@
   <Profiles />
   <Settings>
     <Setting Name="FFTIVCRootPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Program Files (x86)\Steam\steamapps\common\FINAL FANTASY TACTICS - The Ivalice Chronicles</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ModName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">NewMod</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ReloadedIIModsPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\Thoth\Documents\Software\Reloaded II\Mods</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ModId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">fftivc.various.newMod</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ModAuthor" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Author</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ModVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)">v0.0.1</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ModDescription" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Mod Description</Value>
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

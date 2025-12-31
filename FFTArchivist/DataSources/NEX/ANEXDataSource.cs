@@ -1,31 +1,17 @@
-﻿using BCnEncoder.Shared.ImageFiles;
-using CommunityToolkit.HighPerformance.Buffers;
-using FF16Tools.Files.Nex;
+﻿using FF16Tools.Files.Nex;
 using FF16Tools.Files.Nex.Entities;
 using FF16Tools.Files.Nex.Managers;
 using FF16Tools.Pack;
-using FFTArchivist.Managers;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace FFTArchivist.DataSources
 {
     public abstract class ANEXDataSource : IDataSource
     {
-        //public string PacFileName;
         public string TableName;
         public string NEXPath;
         public string LayoutName;
-        //public string TempFileLocation => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FFTArchivist", "temp");
         public string CodeName = FF16Tools.Pack.Crypto.PackKeyStore.FFT_IVALICE_CODENAME;
         public string Locale = "en";
 
@@ -40,16 +26,6 @@ namespace FFTArchivist.DataSources
             TableName = name.Replace("<locale>", Locale);
             NEXPath = $"nxd/{TableName}.nxd";
             LayoutName = NEXPath.Contains('.') ? NEXPath.Split('.')[0] : NEXPath;
-            //LoadSource($"nxd/{NEXPath}.nxd");
-            //Task.Run(() => LoadSource(NEXPath)).GetAwaiter().GetResult();
-            //PacFileName = pacFileName.EndsWith(".pac") ? pacFileName : $"{pacFileName}.pac";
-            //NEXPath = Path.Combine("nxd", nexName);
-            //if (pacFileName.Contains('.'))
-            //{
-            //    NEXPath += ".en";
-            //}
-            //NEXPath += ".nxd";
-            //LayoutName = layoutName;
         }
 
         public void CreateBuilderFromOriginalSource()
@@ -164,16 +140,64 @@ namespace FFTArchivist.DataSources
             }
 
             int columnIndex = TableLayout.Columns.Values.ToList().IndexOf(matchingColumns[0]);
-            return (T)cells[columnIndex];
+            if (typeof(T) == typeof(string))
+            {
+                return (T)cells[columnIndex];
+            }
+            else if (typeof(T) == typeof(byte))
+            {
+                try
+                {
+                    return (T)Convert.ChangeType(Convert.ToByte(cells[columnIndex]), typeof(T));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to Byte: {ex}");
+                }
+            }
+            else if (typeof(T) == typeof(sbyte))
+            {
+                try
+                {
+                    return (T)Convert.ChangeType(Convert.ToSByte(cells[columnIndex]), typeof(T));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to SByte: {ex}");
+                }
+            }
+            else if (typeof(T) == typeof(short))
+            {
+                try
+                {
+                    return (T)Convert.ChangeType(Convert.ToInt16(cells[columnIndex]), typeof(T));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to SByte: {ex}");
+                }
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                try
+                {
+                    return (T)Convert.ChangeType(Convert.ToInt32(cells[columnIndex]), typeof(T));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to SByte: {ex}");
+                }
+            }
+            try
+            {
+                return (T)cells[columnIndex];
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to {typeof(T).Name}");
+            }
+            return default;
         }
-
-        //public async Task WriteData<T>(int id, int column, T value)
-        //{
-        //    var row = builder.GetRow((uint)id, 0, 0);
-        //    row.Cells[column] = value;
-        //    //NexUtils.WriteCell(layout, modifiedNexFile.Buffer, modifiedNexFile.RowManager.GetRowInfo((uint)id).RowDataOffset, column, value);
-        //    Debug.WriteLine($"Wrote value {value} to row {id} column {column}.");
-        //}
 
         public async Task WriteData<T>(int id, string columnName, T value)
         {
@@ -192,33 +216,23 @@ namespace FFTArchivist.DataSources
             }
 
             int columnIndex = TableLayout.Columns.Values.ToList().IndexOf(matchingColumns[0]);
-            row.Cells[columnIndex] = value;
-            //return (T)cells[columnIndex];
 
-            //NexUtils.WriteCell(layout, modifiedNexFile.Buffer, modifiedNexFile.RowManager.GetRowInfo((uint)id).RowDataOffset, column, value);
-            //Debug.WriteLine($"Wrote value {value} to row {id} column {columnName}.");
+            if (typeof(T) == typeof(byte) && matchingColumns[0].Type == NexColumnType.Short)
+            {
+                row.Cells[columnIndex] = Convert.ToInt16(value);
+                return;
+            }
+
+            row.Cells[columnIndex] = value;
         }
 
         public async Task WriteToFile(string filePath)
         {
-            //var newNexFile = new NexDataFile();
-            //newNexFile.Type = originalNexFile.Type;
-            //newNexFile.Version = originalNexFile.Version;
-            //newNexFile.Read(originalNexFile.Buffer);
-
-            //using MemoryOwner<byte> ogNexFileData = packManagerForGameMode.GetFileData(nexGamePath, includeDiff: false);
-
-            //NexDataFile originalTableFile = new NexDataFile();
-            //originalTableFile.Read(ogNexFileData.Span.ToArray());
-            //await File.WriteAllBytesAsync(filePath, newNexFile.Buffer);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 builder.Write(fileStream);
                 Debug.WriteLine($"Wrote {fileStream.Length} bytes to new nex file {filePath}");
             }
-
-            //await File.WriteAllBytesAsync(filePath, builder);
-            //Debug.WriteLine($"Wrote {newNexFile.Buffer.Length} bytes to new nex file {filePath}");
         }
     }
 }

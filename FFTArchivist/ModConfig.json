@@ -55,7 +55,8 @@
   "OptionalDependencies": [],
   "SupportedAppId": [
     "fft_enhanced.exe",
-    "fft_classic.exe"
+    "fft_classic.exe",
+    "fft_enhanced - 1.2.0.exe"
   ],
   "ProjectUrl": ""
 }

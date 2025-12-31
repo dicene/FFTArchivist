@@ -1,8 +1,4 @@
 ﻿using FFTArchivist.DataSources;
-using FFTArchivist.Managers;
-using System.Data.Common;
-using System.Diagnostics;
-using System.Windows;
 
 namespace FFTArchivist.Models.Base
 {
@@ -13,6 +9,19 @@ namespace FFTArchivist.Models.Base
         public string ColumnName { get; private set; }
 
         public NEXMappingAttribute(Type dataSourceType, string columnName)
+        {
+            SourceType = dataSourceType;
+            ColumnName = columnName;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class NEXOverrideMappingAttribute : Attribute
+    {
+        public Type SourceType { get; private set; }
+        public string ColumnName { get; private set; }
+
+        public NEXOverrideMappingAttribute(Type dataSourceType, string columnName)
         {
             SourceType = dataSourceType;
             ColumnName = columnName;

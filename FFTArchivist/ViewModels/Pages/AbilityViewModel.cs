@@ -1,4 +1,5 @@
 ﻿using FFTArchivist.Models;
+using FFTArchivist.ViewModels.DataItems;
 using FFTArchivist.ViewModels.Pages.Abilities;
 using FFTArchivist.Views.Abilities;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ namespace FFTArchivist.ViewModels.Pages
     internal class AbilityViewModel : BaseDataPageViewModel, INotifyPropertyChanged
     {
         private Ability ability;
-        private ActionAbilityViewModel actionAbilityViewModel = new();
+        private ActionAbilityPageViewModel actionAbilityViewModel = new();
         private ItemAbilityViewModel itemAbilityViewModel = new();
         private ThrowAbilityViewModel throwAbilityViewModel = new();
         private JumpAbilityViewModel jumpAbilityViewModel = new();
@@ -36,6 +37,74 @@ namespace FFTArchivist.ViewModels.Pages
         //private System.Windows.Controls.Page CurrentPage;
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private StringDataItemViewModel nameDataItemViewModel = new();
+        public StringDataItemViewModel NameDataItemViewModel
+        {
+            get => nameDataItemViewModel;
+            set
+            {
+                if (nameDataItemViewModel == value)
+                {
+                    return;
+                }
+
+                nameDataItemViewModel = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameDataItemViewModel)));
+            }
+        }
+
+        private ushortDataItemViewModel jpCostDataItemViewModel = new();
+        public ushortDataItemViewModel JpCostDataItemViewModel
+        {
+            get => jpCostDataItemViewModel;
+            set
+            {
+                if (jpCostDataItemViewModel == value)
+                {
+                    return;
+                }
+
+                jpCostDataItemViewModel = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCostDataItemViewModel)));
+            }
+        }
+
+        private ushortDataItemViewModel chanceToLearnDataItemViewModel = new();
+        public ushortDataItemViewModel ChanceToLearnDataItemViewModel
+        {
+            get => chanceToLearnDataItemViewModel;
+            set
+            {
+                if (chanceToLearnDataItemViewModel == value)
+                {
+                    return;
+                }
+
+                chanceToLearnDataItemViewModel = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChanceToLearnDataItemViewModel)));
+            }
+        }
+
+        private StringDataItemViewModel descriptionDataItemViewModel = new();
+        public StringDataItemViewModel DescriptionDataItemViewModel
+        {
+            get => descriptionDataItemViewModel;
+            set
+            {
+                if (descriptionDataItemViewModel == value)
+                {
+                    return;
+                }
+
+                descriptionDataItemViewModel = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DescriptionDataItemViewModel)));
+            }
+        }
 
         private string secondaryType { get; set; }
         public string AbilityType
@@ -79,9 +148,14 @@ namespace FFTArchivist.ViewModels.Pages
                 ability = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChanceToLearn)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCost)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChanceToLearn)));
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameDataItemViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChanceToLearnDataItemViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DescriptionDataItemViewModel)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCostDataItemViewModel)));
             }
         }
 
@@ -317,6 +391,13 @@ namespace FFTArchivist.ViewModels.Pages
 
         public void ChangeIndex(int index)
         {
+            if (index < 0 || index >= App.DataManager.GetDataList<Ability>().Count)
+            {
+                Ability = new Ability(0);
+                CurrentPage = new Page();
+                return;
+            }
+
             Ability = App.DataManager.GetDataList<Ability>()[index];
 
             if (index < 0x170)      //Action

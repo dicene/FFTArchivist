@@ -1,17 +1,10 @@
 ﻿using FFTArchivist.Models.Base;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Navigation;
+using System.Windows;
 
 namespace FFTArchivist.ViewModels.DataItems
 {
-    internal class TextBoxStringDataItemViewModel : INotifyPropertyChanged
+    internal class StringDataItemViewModel : DependencyObject, RevertableDataItemViewModel, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -25,33 +18,23 @@ namespace FFTArchivist.ViewModels.DataItems
                 dataItem = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataItem)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OriginalValue)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OriginalValueString)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Label)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ValueString)));
             }
         }
 
-        //public TextBoxStringDataItemViewModel(string labelText)
-        //{
-        //    Label = labelText;
-        //}
-
-        private string label = "label";
-        public string Label
-        {
-            get => label + ":";
+        private string label;
+        public string Label { 
+            get => label;
             set
             {
-                if (label == value)
-                {
-                    return;
-                }
-
                 label = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataItem)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Label)));
             }
         }
 
+        public string ValueString { get => Value; set => Value = value; }
         public string Value
         {
             get => dataItem?.GetValue<string>() ?? "";
@@ -64,11 +47,12 @@ namespace FFTArchivist.ViewModels.DataItems
 
                 dataItem.SetValue(value);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataItem)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OriginalValue)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ValueString)));
             }
         }
 
+        public string OriginalValueString { get => Value; set => Value = value; }
         public string OriginalValue
         {
             get => dataItem?.IsModified == true ? $"Original Value: {dataItem?.GetOriginalValue<string>() ?? ""}" : null;
@@ -82,6 +66,7 @@ namespace FFTArchivist.ViewModels.DataItems
                 dataItem.SetOriginalValue(value);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataItem)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OriginalValue)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OriginalValueString)));
             }
         }
 
@@ -90,6 +75,7 @@ namespace FFTArchivist.ViewModels.DataItems
             dataItem?.RevertToOriginal();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataItem)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ValueString)));
         }
     }
 }

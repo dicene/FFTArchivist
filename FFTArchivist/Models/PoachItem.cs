@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace FFTArchivist.Models
 {
-    public class PoachItem(int id) : BaseModel(id), INotifyPropertyChanged
+    public class PoachItem : BaseModel, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -16,5 +16,10 @@ namespace FFTArchivist.Models
 
         [NEXMapping(typeof(PoachItemNEXSource), nameof(PoachItemNEXModel.Unknown2C))]
         public DataItem<int> RewardID { get; set; }
+
+        public PoachItem() : base() { }
+        public PoachItem(int id) : base(id) { }
+
+        public override string ToString() => $"{Id} {Name?.Value?.Replace("<Icon=103>", "+") ?? "N/A"}";
     }
 }

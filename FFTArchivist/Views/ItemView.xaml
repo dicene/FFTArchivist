@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FFTArchivist"
       xmlns:Pages="clr-namespace:FFTArchivist.ViewModels.Pages"
-      xmlns:Controls="clr-namespace:FFTArchivist.Controls"
+      xmlns:TextBoxControls="clr-namespace:FFTArchivist.Controls.TextBox"
       x:Class="FFTArchivist.ItemView"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
@@ -35,15 +35,11 @@
         </Grid.RowDefinitions>
         <TextBlock Text="Items" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="26" Grid.Row="0" Grid.Column="0" FontFamily="Sitka Text" Margin="5,0,0,0">
         </TextBlock>
-        <!--<DockPanel Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
-            <Label Content="Price:" VerticalAlignment="Center" />
-            <TextBox x:Name="Price" VerticalAlignment="Center" Text="{Binding Price}"/>
-        </DockPanel>-->
-        <Controls:TextBoxIntDataItemControl Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding PriceDataItemViewModel}"/>
+        <TextBoxControls:TextBoxStringDataItemControl Label="Name:" MaxLength="50" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" x:Name="NameControl" DataContext="{Binding NameDataItemViewModel}"/>
+        <TextBoxControls:TextBoxIntDataItemControl Label="Price:" MaxLength="123" DisplayAsHex="True" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" x:Name="PriceControl" DataContext="{Binding PriceDataItemViewModel}"/>
         <DockPanel Grid.Row="2" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="6" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,10,0">
             <Label Content="Description:" VerticalAlignment="Top" DockPanel.Dock="Top"/>
-            <TextBox x:Name="Description" VerticalAlignment="Center" Text="{Binding Description}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" AcceptsTab="True" MinLines="5" Margin="0" DockPanel.Dock="Top"/>
+            <TextBox x:Name="Description" VerticalAlignment="Center" Text="{Binding DescriptionDataItemViewModel.Value}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" AcceptsTab="True" MinLines="5" Margin="0" DockPanel.Dock="Top"/>
         </DockPanel>
-        <Controls:TextBoxStringDataItemControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" DataContext="{Binding NameDataItemViewModel}"/>
     </Grid>
 </Page>

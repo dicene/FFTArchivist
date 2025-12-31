@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace FFTArchivist.Models
 {
-    public class UI(int id) : BaseModel(id), INotifyPropertyChanged
+    public class UI : BaseModel, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -13,5 +13,10 @@ namespace FFTArchivist.Models
 
         [NEXMapping(typeof(UINEXSource), nameof(UINEXModel.Text))]
         public DataItem<string> Text { get; set; }
+
+        public UI() : base() { }
+        public UI(int id) : base(id) { }
+
+        public override string ToString() => $"{Id} {(Text?.Value?.Replace("\n", "") + (new string(' ', 30)))[0..30] ?? "N/A"}";
     }
 }

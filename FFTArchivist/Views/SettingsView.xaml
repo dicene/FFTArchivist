@@ -8,6 +8,9 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingsView" Background="{DynamicResource WindowBackgroundBrush}">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Page.Resources>
 
     <Page.DataContext>
         <Pages:SettingsViewModel x:Name="SettingsViewModel"/>
@@ -20,12 +23,40 @@
         <DockPanel>
             <Label Content="FFT IVC Root Path:" VerticalAlignment="Center" Margin="0,0,0,0" DockPanel.Dock="Left"/>
             <Button x:Name="SelectRootPathButton" Content=" ... " Margin="5" DockPanel.Dock="Right" Click="SelectRootPathButton_Click"/>
-            <TextBox x:Name="FFTIVCRootPathTextBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding FFTIVCRootPath}" Margin="5,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+            <TextBox x:Name="FFTIVCRootPathTextBox" Text="{Binding FFTIVCRootPath}" Margin="5,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Right">
+                <TextBox.Style>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                        <Setter Property="Background" Value="{StaticResource TextBoxBackgroundBrush}"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ValidExecutablePath, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="True">
+                                <Setter Property="Background" Value="{StaticResource ValidInputBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ValidExecutablePath, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="False">
+                                <Setter Property="Background" Value="{StaticResource InvalidInputBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
         </DockPanel>
         <DockPanel Grid.Column="0" Grid.ColumnSpan="6" Grid.Row="3">
             <Label Content="Reloaded II\Mods Path:" VerticalAlignment="Center" Margin="0,0,0,0" DockPanel.Dock="Left"/>
             <Button x:Name="SelectReloadedIIModsPathButton" Content=" ... " Margin="5" DockPanel.Dock="Right" Click="SelectReloadedIIModsPathButton_Click"/>
-            <TextBox x:Name="ReloadedIIModsPathTextBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding ReloadedIIModsPath}" Margin="5,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+            <TextBox x:Name="ReloadedIIModsPathTextBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding ReloadedIIModsPath}" Margin="5,0,5,0" VerticalAlignment="Center" DockPanel.Dock="Right">
+                <TextBox.Style>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                        <Setter Property="Background" Value="{StaticResource TextBoxBackgroundBrush}"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ValidReloadedPath, Mode=OneWay}" Value="True">
+                                <Setter Property="Background" Value="{StaticResource ValidInputBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ValidReloadedPath, Mode=OneWay}" Value="False">
+                                <Setter Property="Background" Value="{StaticResource InvalidInputBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
         </DockPanel>
         <Separator Height="20" Background="Transparent"/>
         <TextBlock HorizontalAlignment="Center" FontSize="26" FontWeight="Bold">

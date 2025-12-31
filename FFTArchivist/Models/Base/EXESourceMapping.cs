@@ -1,11 +1,5 @@
 ﻿using FFTArchivist.DataSources;
 using FFTArchivist.DataSources.EXE;
-using FFTArchivist.Managers;
-using System.ComponentModel.DataAnnotations;
-using System.Data.Common;
-using System.Diagnostics;
-using System.Reflection;
-using Vortice.Direct3D12;
 
 namespace FFTArchivist.Models.Base
 {

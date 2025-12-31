@@ -1,6 +1,5 @@
 ﻿using FFTArchivist.Managers;
 using FFTArchivist.Models;
-using FFTArchivist.ViewModels.Pages;
 using System.ComponentModel;
 
 namespace FFTArchivist.ViewModels.Pages.Abilities

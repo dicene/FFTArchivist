@@ -1,13 +1,4 @@
-﻿using FFTArchivist.DataSources.EXE.TempInterfaces;
-using fftivc.utility.modloader.Interfaces.Tables.Models;
-using fftivc.utility.modloader.Interfaces.Tables.Structures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FFTArchivist.DataSources.EXE
+﻿namespace FFTArchivist.DataSources.EXE
 {
     //internal class ENTDEXESource : AEXEDataSource<ENTD, ENTD_COMMON_DATA, ENTDTable>
     //{

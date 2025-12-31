@@ -1,6 +1,5 @@
 ﻿using FFTArchivist.DataSources;
 using System.Reflection;
-using System.Windows.Markup;
 
 namespace FFTArchivist.Models.Base
 {
@@ -40,11 +39,36 @@ namespace FFTArchivist.Models.Base
             }
         }
 
+        public void SetOriginalOverrideSources(Dictionary<Type, IDataSource> DataSources)
+        {
+            foreach (var (itemName, dataItem) in DataItems)
+            {
+                if (dataItem.SourceOverrideMapping != null)
+                {
+                    var sourceType = dataItem.SourceOverrideMapping.SourceType;
+                    if (sourceType != null && DataSources.TryGetValue(sourceType, out var source))
+                    {
+                        dataItem.SetOriginalOverrideSource(source);
+                    }
+                    //var mapping = dataItem.Mapp;
+                    //if (DataSources.TryGetValue(mapping.DataSourceType, out var source))
+                    //{
+                    //    mapping.DataSource = source;
+                    //}
+                }
+            }
+        }
+
         public async Task ReadData()
         {
             foreach (var (name, dataItem) in DataItems)
             {
-                dataItem.ReadFromOriginalSource();
+                await dataItem.ReadFromOriginalSource();
+
+                if (dataItem.originalOverrideSource != null)
+                {
+                    await dataItem.ReadFromOriginalOverrideSource();
+                }
             }
             //foreach (var prop in GetType().GetProperties())
             //{
@@ -94,6 +118,8 @@ namespace FFTArchivist.Models.Base
             {
                 if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(DataItem<>))
                 {
+                    ADataItem newDataItem = default;
+
                     var nexMappingAttribute = prop.GetCustomAttribute<NEXMappingAttribute>();
 
                     if (nexMappingAttribute != null)
@@ -109,7 +135,7 @@ namespace FFTArchivist.Models.Base
                         object newMapping = Activator.CreateInstance(genericType, args);
                         //object newMapping = Activator.CreateInstance(specificType, args);
 
-                        if (newMapping == null)
+                        if (newMapping == null || newMapping is not NEXMapping newNEXMapping)
                         {
                             continue;
                         }
@@ -134,14 +160,17 @@ namespace FFTArchivist.Models.Base
                         columnNameProp.SetValue(newMapping, nexMappingAttribute.ColumnName);
                         idProp.SetValue(newMapping, Id);
                         sourceType.SetValue(newMapping, nexMappingAttribute.SourceType);
+
+                        //newNEXMapping.ColumnName = nexMappingAttribute.ColumnName;
+
                         //dataTypeProp.SetValue(newMapping, propertyTypeArg);
 
-                        var newDataItem = Activator.CreateInstance(prop.PropertyType, newMapping, id);
-
+                        newDataItem = Activator.CreateInstance(prop.PropertyType, newMapping, id) as ADataItem;
+                        newDataItem.ColumnName = nexMappingAttribute.ColumnName;
                         //newDataItem.ReadFromSource();
                         prop.SetValue(this, newDataItem);
 
-                        DataItems.Add(prop.Name, (ADataItem)newDataItem);
+                        DataItems.Add(prop.Name, newDataItem);
 
                         //if (DataManager.Instance.DataSources.TryGetValue(nexLinkageAttribute.DataSourceType, out var source))
                         //{
@@ -165,7 +194,7 @@ namespace FFTArchivist.Models.Base
                         var args = new object[] { };
                         //var args = new object[] { specificType, Id, exeSourceMappingAttribute.PropertyName };
                         //EXESourceMapping(Type t, AEXEDataSource dataSource, int id, string propertyName)
-                        object newMapping = Activator.CreateInstance(specificType, args);
+                        var newMapping = Activator.CreateInstance(specificType, args) as EXESourceMapping;
 
                         if (newMapping == null || newMapping is not EXESourceMapping newEXESourceMapping)
                         {
@@ -195,12 +224,76 @@ namespace FFTArchivist.Models.Base
 
                         //////dataTypeProp.SetValue(newMapping, propertyTypeArg);
 
-                        var newDataItem = Activator.CreateInstance(prop.PropertyType, newMapping, id);
+                        newDataItem = Activator.CreateInstance(prop.PropertyType, newMapping, id) as ADataItem;
+                        newDataItem.ColumnName = exeSourceMappingAttribute.PropertyName;
 
                         //newDataItem.ReadFromSource();
                         prop.SetValue(this, newDataItem);
 
-                        DataItems.Add(prop.Name, (ADataItem)newDataItem);
+                        DataItems.Add(prop.Name, newDataItem);
+
+                        //if (DataManager.Instance.DataSources.TryGetValue(nexLinkageAttribute.DataSourceType, out var source))
+                        //{
+                        //    //source.ReadData<>
+                        //}
+
+                        //source.ReadData<string>(prop., nexLinkageAttribute.ColumnName);
+                        //Debug.WriteLine($"");
+                    }
+
+                    var nexOverrideAttribute = prop.GetCustomAttribute<NEXOverrideMappingAttribute>();
+
+                    if (nexOverrideAttribute != null)
+                    {
+                        //Debug.WriteLine($"{GetType().Name}: {prop.Name}: {nexOverrideMappingAttribute.DataSourceType.Name} - {nexOverrideMappingAttribute.ColumnName}");
+
+                        var propertyTypeArg = prop.PropertyType.GetGenericArguments()[0];
+                        Type genericType = typeof(NEXMapping);
+                        //Type genericType = typeof(NEXMapping<>);
+                        //Type specificType = genericType.MakeGenericType(propertyTypeArg);
+                        var args = new object[] { };
+                        //var args = new object[] { specificType, null, Id, nexLinkageAttribute.ColumnName };
+                        object newMapping = Activator.CreateInstance(genericType, args);
+                        //object newMapping = Activator.CreateInstance(specificType, args);
+
+                        if (newMapping == null || newMapping is not NEXMapping newNEXMapping)
+                        {
+                            continue;
+                        }
+
+                        //////var dataSource = DataManager.Instance.GetDataSource(nexOverrideMappingAttribute.DataSourceType);
+                        //////var dataSourceProp = specificType.GetProperty("DataSource");
+                        //var columnNameProp = specificType.GetProperty("ColumnName");
+                        //var idProp = specificType.GetProperty("Id");
+                        //var dataTypeProp = specificType.GetProperty("DataType");
+
+                        var columnNameProp = genericType.GetProperty("ColumnName");
+                        var idProp = genericType.GetProperty("Id");
+                        var sourceType = genericType.GetProperty("SourceType");
+                        //var dataTypeProp = genericType.GetProperty("DataType");
+
+                        //var dataSourceProp = genericType.GetProperty("DataSource");
+                        //var columnNameProp = genericType.GetProperty("ColumnName");
+                        //var idProp = genericType.GetProperty("Id");
+
+                        //var data
+                        //////dataSourceProp.SetValue(newMapping, dataSource);
+                        columnNameProp.SetValue(newMapping, nexOverrideAttribute.ColumnName);
+                        idProp.SetValue(newMapping, Id);
+                        sourceType.SetValue(newMapping, nexOverrideAttribute.SourceType);
+
+                        newDataItem.SourceOverrideMapping = newMapping as ISourceMapping;
+
+                        //newNEXMapping.ColumnName = nexOverrideAttribute.ColumnName;
+
+                        //dataTypeProp.SetValue(newMapping, propertyTypeArg);
+
+                        //newDataItem = Activator.CreateInstance(prop.PropertyType, newMapping, id) as ADataItem;
+                        //newDataItem.ColumnName = nexOverrideAttribute.ColumnName;
+                        //newDataItem.ReadFromSource();
+                        //prop.SetValue(this, newDataItem);
+
+                        //DataItems.Add(prop.Name, newDataItem);
 
                         //if (DataManager.Instance.DataSources.TryGetValue(nexLinkageAttribute.DataSourceType, out var source))
                         //{

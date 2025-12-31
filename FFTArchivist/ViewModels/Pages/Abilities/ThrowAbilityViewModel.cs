@@ -1,6 +1,5 @@
 ﻿using FFTArchivist.Managers;
 using FFTArchivist.Models;
-using FFTArchivist.ViewModels.Pages;
 using fftivc.utility.modloader.Interfaces.Tables.Structures;
 using System.ComponentModel;
 

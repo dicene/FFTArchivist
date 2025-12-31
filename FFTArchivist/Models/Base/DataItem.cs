@@ -1,52 +1,16 @@
 ﻿using FFTArchivist.DataSources;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FFTArchivist.Models.Base
 {
-    public abstract class ADataItem : INotifyPropertyChanged
-    {
-        private string columnName;
-        public ISourceMapping SourceMapping { get; set; }
-        public ISourceMapping SourceOverrideMapping { get; set; }
-        public IDestinationMapping DestinationMapping { get; set; }
-        public IDataSource originalSource { get; set; }
-        public IDataSource modSource { get; set; }
-        public IDataSource originalOverrideSource { get; set; }
-        public IDataSource modOverrideSource { get; set; }
-
-        public virtual bool IsModified { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public abstract Task ReadFromOriginalSource();
-        public abstract Task ReadFromModSource();
-        public abstract Task ReadFromOriginalOverrideSource();
-        public abstract Task ReadFromModOverrideSource();
-        public abstract void SetOriginalSource(IDataSource dataSource);
-        public abstract void SetModSource(IDataSource dataSource);
-        public abstract void SetOriginalOverrideSource(IDataSource dataSource);
-        public abstract void SetModOverrideSource(IDataSource dataSource);
-        public abstract void RevertToOriginal();
-        public abstract T GetValue<T>();
-        public abstract T GetOriginalValue<T>();
-        public abstract object GetValue();
-        public abstract void SetValue<T>(T newvalue);
-        public abstract void SetOriginalValue<T>(T newvalue);
-    }
-
     public class DataItem<T> : ADataItem
     {
         private int id;
-        public T OriginalValue { get; private set; }
+        public T? OriginalValue { get; private set; }
 
-        private T value;
-        public T Value
+        private T? value;
+        public T? Value
         {
             get
             {
@@ -57,13 +21,14 @@ namespace FFTArchivist.Models.Base
                 if (Equals(this.value, value))
                     return;
 
+                this.value = value;
+
                 if (this.value != null)
                 {
                     //Debug.WriteLine($"Changing value of {GetType().Name} from ({this.value}) to ({value})");
                     WriteToMod();
                 }
 
-                this.value = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
             }
         }
@@ -97,11 +62,9 @@ namespace FFTArchivist.Models.Base
 
         public override async Task ReadFromOriginalSource()
         {
-            if (OriginalValue == null)
-            {
-                OriginalValue = await SourceMapping.ReadFromSource<T>(originalSource);
-                value = OriginalValue;
-            }
+            OriginalValue = await SourceMapping.ReadFromSource<T>(originalSource);
+            Value = OriginalValue;
+            //value ??= OriginalValue;
         }
 
         public override async Task ReadFromModSource()
@@ -111,8 +74,64 @@ namespace FFTArchivist.Models.Base
 
         public override async Task ReadFromOriginalOverrideSource()
         {
-            OriginalValue = await SourceMapping.ReadFromSource<T>(originalOverrideSource);
-            Value = OriginalValue;
+            if (typeof(T) == typeof(string))
+            {
+                var newValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+
+                Debug.WriteLine($"String NewValue: {newValue}");
+                //await SetOriginalValue<T>(newValue);
+                OriginalValue = newValue;
+                Value = OriginalValue;
+                //OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                //Value = OriginalValue;
+            }
+            else
+            {
+                if (typeof(T) == typeof(byte))
+                {
+                    var newValue = await SourceOverrideMapping.ReadFromSource<short>(originalOverrideSource);
+
+                    if (newValue > -1)
+                    {
+                        Debug.WriteLine($"Numeric NewValue: {newValue}");
+                        OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Value = OriginalValue;
+                    }
+                }
+                else if (typeof(T) == typeof(short))
+                {
+                    var newValue = await SourceOverrideMapping.ReadFromSource<short>(originalOverrideSource);
+
+                    if (newValue > -1)
+                    {
+                        Debug.WriteLine($"Numeric NewValue: {newValue}");
+                        OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Value = OriginalValue;
+                    }
+                }
+                else if (typeof(T) == typeof(int))
+                {
+                    var newValue = await SourceOverrideMapping.ReadFromSource<int>(originalOverrideSource);
+
+                    if (newValue > -1)
+                    {
+                        Debug.WriteLine($"Numeric NewValue: {newValue}");
+                        OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Value = OriginalValue;
+                    }
+                }
+                else
+                {
+                    var newValue = await SourceOverrideMapping.ReadFromSource<int>(originalOverrideSource);
+
+                    if (newValue > -1)
+                    {
+                        Debug.WriteLine($"Numeric NewValue: {newValue}");
+                        OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Value = OriginalValue;
+                    }
+                }
+            }
         }
 
         public override async Task ReadFromModOverrideSource()
@@ -122,6 +141,11 @@ namespace FFTArchivist.Models.Base
 
         public async void WriteToMod()
         {
+            if (SourceOverrideMapping != null && SourceOverrideMapping is IDestinationMapping destinationOverrideMapping)
+            {
+                await destinationOverrideMapping.WriteToDestination(originalOverrideSource, Value);
+                return;
+            }
             await DestinationMapping.WriteToDestination(originalSource, Value);
             //await DestinationMapping.WriteToDestination(Value);
         }
