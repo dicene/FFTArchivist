@@ -72,8 +72,8 @@ namespace FFTArchivist.ViewModels.Pages
             }
         }
 
-        private ushortDataItemViewModel chanceToLearnDataItemViewModel = new();
-        public ushortDataItemViewModel ChanceToLearnDataItemViewModel
+        private ByteDataItemViewModel chanceToLearnDataItemViewModel = new();
+        public ByteDataItemViewModel ChanceToLearnDataItemViewModel
         {
             get => chanceToLearnDataItemViewModel;
             set
@@ -146,6 +146,10 @@ namespace FFTArchivist.ViewModels.Pages
                 }
 
                 ability = value;
+                NameDataItemViewModel.DataItem = value.Name;
+                ChanceToLearnDataItemViewModel.DataItem = value.ChanceToLearn;
+                DescriptionDataItemViewModel.DataItem = value.Description;
+                JpCostDataItemViewModel.DataItem = value.JpCost;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AbilityViewModel)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChanceToLearn)));
@@ -332,17 +336,30 @@ namespace FFTArchivist.ViewModels.Pages
             }
         }
 
+        //public int JpCost
+        //{
+        //    get
+        //    {
+        //        return (ability.JpCost1?.Value ?? 0) + ((ability.JpCost2?.Value ?? 0) << 8);
+        //    }
+
+        //    set
+        //    {
+        //        ability.JpCost1.Value = (byte)(value & 0xff);
+        //        ability.JpCost2.Value = (byte)(value >> 8);
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCost)));
+        //    }
+        //}
         public int JpCost
         {
             get
             {
-                return (ability.JpCost1?.Value ?? 0) + ((ability.JpCost2?.Value ?? 0) << 8);
+                return ability.JpCost?.Value ?? 0;
             }
 
             set
             {
-                ability.JpCost1.Value = (byte)(value & 0xff);
-                ability.JpCost2.Value = (byte)(value >> 8);
+                ability.JpCost.Value = Convert.ToUInt16(value);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(JpCost)));
             }
         }

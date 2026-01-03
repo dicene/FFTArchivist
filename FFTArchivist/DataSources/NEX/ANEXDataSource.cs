@@ -67,6 +67,23 @@ namespace FFTArchivist.DataSources
             NEXFile.Read(fileData.Span.ToArray());
 
             TableLayout = TableMappingReader.ReadTableLayout(TableName, new Version(1, 0, 0), CodeName);
+
+            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost1"))
+            {
+                Debug.WriteLine($"Modifying JpCost1 and JpCost2 columns...");
+                var jpCost1Column = TableLayout.Columns["JpCost1"];
+                var jpCost2Column = TableLayout.Columns["JpCost2"];
+                TableLayout.Columns.Remove("JpCost2");
+                TableLayout.Columns["JpCost"] = jpCost1Column;
+                TableLayout.Columns.Remove("JpCost1");
+            }
+
+            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost") && TableLayout.Columns["JpCost"].Type == NexColumnType.Short)
+            {
+                Debug.WriteLine($"Changing JpCost column from Short to UShort...");
+                TableLayout.Columns["JpCost"].Type = NexColumnType.UShort;
+            }
+
             fileIsLoaded = true;
 
             CreateBuilderFromOriginalSource();
@@ -86,6 +103,23 @@ namespace FFTArchivist.DataSources
             NEXFile.Read(fileData);
 
             TableLayout = TableMappingReader.ReadTableLayout(TableName, new Version(1, 0, 0), CodeName);
+
+            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost1"))
+            {
+                Debug.WriteLine($"Modifying JpCost1 and JpCost2 columns...");
+                var jpCost1Column = TableLayout.Columns["JpCost1"];
+                var jpCost2Column = TableLayout.Columns["JpCost2"];
+                TableLayout.Columns.Remove("JpCost2");
+                TableLayout.Columns["JpCost"] = jpCost1Column;
+                TableLayout.Columns.Remove("JpCost1");
+            }
+
+            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost") && TableLayout.Columns["JpCost"].Type == NexColumnType.Short)
+            {
+                Debug.WriteLine($"Changing JpCost column from Short to UShort...");
+                TableLayout.Columns["JpCost"].Type = NexColumnType.UShort;
+            }
+
             fileIsLoaded = true;
         }
 
@@ -103,6 +137,23 @@ namespace FFTArchivist.DataSources
             NEXFile.Read(fileData);
 
             TableLayout = TableMappingReader.ReadTableLayout(TableName, new Version(1, 0, 0), CodeName);
+
+            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost1"))
+            {
+                Debug.WriteLine($"Modifying JpCost1 and JpCost2 columns...");
+                var jpCost1Column = TableLayout.Columns["JpCost1"];
+                var jpCost2Column = TableLayout.Columns["JpCost2"];
+                TableLayout.Columns.Remove("JpCost2");
+                TableLayout.Columns["JpCost"] = jpCost1Column;
+                TableLayout.Columns.Remove("JpCost1");
+            }
+
+            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost") && TableLayout.Columns["JpCost"].Type == NexColumnType.Short)
+            {
+                Debug.WriteLine($"Changing JpCost column from Short to UShort...");
+                TableLayout.Columns["JpCost"].Type = NexColumnType.UShort;
+            }
+
             fileIsLoaded = true;
         }
 
@@ -174,7 +225,18 @@ namespace FFTArchivist.DataSources
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to SByte: {ex}");
+                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to Int16: {ex}");
+                }
+            }
+            else if (typeof(T) == typeof(ushort))
+            {
+                try
+                {
+                    return (T)Convert.ChangeType(Convert.ToUInt16(cells[columnIndex]), typeof(T));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to UInt16: {ex}");
                 }
             }
             else if (typeof(T) == typeof(int))
@@ -185,11 +247,12 @@ namespace FFTArchivist.DataSources
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to SByte: {ex}");
+                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to Int: {ex}");
                 }
             }
             try
             {
+                Debug.WriteLine($"Unsure how to convert cell {columnName} from {cells[columnIndex].GetType().Name} to {typeof(T)}!");
                 return (T)cells[columnIndex];
             }
             catch (Exception ex)
@@ -230,7 +293,14 @@ namespace FFTArchivist.DataSources
         {
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                builder.Write(fileStream);
+                try {
+                    builder.Write(fileStream);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to write to file: {ex}");
+                }
+
                 Debug.WriteLine($"Wrote {fileStream.Length} bytes to new nex file {filePath}");
             }
         }

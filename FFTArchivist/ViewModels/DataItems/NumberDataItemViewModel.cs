@@ -114,12 +114,40 @@ namespace FFTArchivist.ViewModels.DataItems
                     return default;
                 }
 
-                if (DisplayAsHex)
+                int value;
+
+                try
                 {
-                    return $"{dataItem.GetValue<T>():X}";
+                    if (typeof(T) == typeof(int))
+                    {
+                        value = dataItem.GetValue<int>();
+                    }
+                    else if (typeof(T) == typeof(byte))
+                    {
+                        value = dataItem.GetValue<byte>();
+                    }
+                    else if (typeof(T) == typeof(ushort))
+                    {
+                        value = dataItem.GetValue<ushort>();
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Unsure how to convert type {typeof(T).Name} for dataitem: {DataItem.GetType().Name}");
+                        value = 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failure to convert value of type {typeof(T).Name} for dataitem: {DataItem.GetType().Name}");
+                    value = 0;
                 }
 
-                return dataItem.GetValue<T>().ToString();
+                if (DisplayAsHex)
+                {
+                    return $"{value:X}";
+                }
+
+                return value.ToString();
             }
 
             set
@@ -196,12 +224,40 @@ namespace FFTArchivist.ViewModels.DataItems
                     return default;
                 }
 
-                if (DisplayAsHex)
+                int value;
+
+                try {
+                    if (typeof(T) == typeof(int))
+                    {
+                        value = dataItem.GetOriginalValue<int>();
+                    }
+                    else if (typeof(T) == typeof(byte))
+                    {
+                        value = dataItem.GetOriginalValue<byte>();
+                    }
+                    else if (typeof(T) == typeof(ushort))
+                    {
+                        value = dataItem.GetOriginalValue<ushort>();
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Unsure how to convert type {typeof(T).Name} for dataitem: {DataItem.GetType().Name}");
+                        value = 0;
+                    }
+                }                
+                catch (Exception ex)
                 {
-                    return $"{dataItem.GetOriginalValue<T>():X}";
+                    Debug.WriteLine($"Failure to convert value of type {typeof(T).Name} for dataitem: {DataItem.GetType().Name}");
+                    value = 0;
                 }
 
-                return dataItem.GetOriginalValue<T>().ToString();
+
+                if (DisplayAsHex)
+                {
+                    return $"{value:X}";
+                }
+
+                return value.ToString();
             }
 
             set

@@ -157,11 +157,17 @@ namespace FFTArchivist.Models.Base
 
         public override T1 GetValue<T1>()
         {
+            if (Value == null)
+                return default;
+
             return Value is T1 castedValue ? castedValue : throw new InvalidCastException($"Cannot cast value of type {typeof(T)} to {typeof(T1)}");
         }
 
         public override T1 GetOriginalValue<T1>()
         {
+            if (OriginalValue == null)
+                return default;
+
             return OriginalValue is T1 castedOriginalValue ? castedOriginalValue : throw new InvalidCastException($"Cannot cast original value of type {typeof(T)} to {typeof(T1)}");
         }
 
