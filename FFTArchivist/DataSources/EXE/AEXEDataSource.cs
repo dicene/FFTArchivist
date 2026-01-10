@@ -6,6 +6,7 @@ using Reloaded.Memory.Sigscan;
 using Syroot.BinaryData;
 using System.Diagnostics;
 using System.IO;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 
 namespace FFTArchivist.DataSources.EXE
@@ -28,7 +29,7 @@ namespace FFTArchivist.DataSources.EXE
             RowType = typeof(TClass);
             Pattern = pattern;
             Count = count;
-            using (var reader = new BinaryReader(File.OpenRead(Path)))
+            try
             {
                 using (Stream stream = File.OpenRead(Path))
                 {
@@ -38,25 +39,38 @@ namespace FFTArchivist.DataSources.EXE
                     stream.Seek(BaseOffset, SeekOrigin.Begin);
                     for (int i = 0; i < Count; i++)
                     {
-                        byte[] bytes = stream.ReadBytes(Marshal.SizeOf(typeof(TStruct)));
-                        GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-                        TStruct @struct = (TStruct)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(TStruct));
-                        TClass @class = default;
-
-                        var convertMethod = typeof(TClass).GetMethods().FirstOrDefault(m => m.IsStatic && m.Name == "FromStructure");
-                        TClass convertResult = default;
-
-                        if (convertMethod != null)
+                        try
                         {
-                            var args = new object[] { i, @struct };
-                            convertResult = convertMethod.Invoke(null, args) as TClass;
+                            byte[] bytes = stream.ReadBytes(Marshal.SizeOf(typeof(TStruct)));
+                            GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+                            TStruct @struct = (TStruct)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(TStruct));
+                            TClass @class = default;
+
+                            var convertMethod = typeof(TClass).GetMethods().FirstOrDefault(m => m.IsStatic && m.Name == "FromStructure");
+                            TClass convertResult = default;
+
+                            if (convertMethod != null)
+                            {
+                                var args = new object[] { i, @struct };
+                                convertResult = convertMethod.Invoke(null, args) as TClass;
+                            }
+
+                            rows.Add(convertResult);
+
+                            handle.Free();
                         }
-
-                        rows.Add(convertResult);
-
-                        handle.Free();
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Failed to read structure {typeof(TClass).Name} from EXE Data Source.");
+                            throw;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to load EXE Data Source: {Filename} type: {typeof(TClass).Name}.");
+                throw;
             }
         }
 

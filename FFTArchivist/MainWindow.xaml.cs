@@ -79,5 +79,10 @@ namespace FFTArchivist
         {
             await MainWindowViewModel.ReloadData();
         }
+
+        private async void ErrorCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            await MainWindowViewModel.CloseError();
+        }
     }
 }

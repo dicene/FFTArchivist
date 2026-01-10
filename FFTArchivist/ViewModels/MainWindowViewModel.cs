@@ -55,15 +55,37 @@ namespace FFTArchivist.ViewModels
             set
             {
                 errorOccurred = value;
+
+                if (!value)
+                {
+                    ErrorForceReloadData = false;
+                }
+
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowLoadingScreen)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LoadingScreenHidden)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BlurRadius)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorOccurred)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NoErrorOccurred)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorForceReloadData)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowCloseErrorButton)));
             }
         }
 
         public bool NoErrorOccurred => !ErrorOccurred;
+
+        private bool errorForceReloadData = false;
+        public bool ErrorForceReloadData
+        {
+            get => errorForceReloadData;
+            set
+            {
+                errorForceReloadData = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorForceReloadData)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowCloseErrorButton)));
+            }
+        }
+
+        public bool ShowCloseErrorButton => ErrorOccurred && !ErrorForceReloadData;
 
         private bool isDataLoaded = false;
 
@@ -187,8 +209,9 @@ namespace FFTArchivist.ViewModels
             }
             catch (Exception ex)
             {
-                Status = $"Failed to import mod \n{path.Split(System.IO.Path.DirectorySeparatorChar)[^1]}\nSee the console for more details";
+                Status = $"Failed to import mod \n{path.Split(System.IO.Path.DirectorySeparatorChar)[^1]}\nCheck the log for more details.";
                 ErrorOccurred = true;
+                ErrorForceReloadData = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
@@ -266,7 +289,7 @@ namespace FFTArchivist.ViewModels
                 catch (Exception ex)
                 {
                     FailedLoad($"Failed to move modded pac file: {ex}");
-                    return;
+                    throw;
                 }
             }
 
@@ -292,8 +315,9 @@ namespace FFTArchivist.ViewModels
             }
             catch (Exception ex)
             {
-                Status = $"Failed to open packs at \n{App.DataManager.DataFolderPath}\nSee the console for more details";
+                Status = $"Failed to open packs at \n{App.DataManager.DataFolderPath}\nCheck the log for more details.";
                 ErrorOccurred = true;
+                await SwitchToSettingsEditor();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
@@ -322,8 +346,9 @@ namespace FFTArchivist.ViewModels
             }
             catch (Exception ex)
             {
-                Status = $"Failed to open data sources.\nSee the console for more details";
+                Status = $"Failed to open data sources.\nCheck the log for more details.";
                 ErrorOccurred = true;
+                await SwitchToSettingsEditor();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
@@ -352,8 +377,9 @@ namespace FFTArchivist.ViewModels
             }
             catch (Exception ex)
             {
-                Status = $"Failed to load data.\nSee the console for more details";
+                Status = $"Failed to load data.\nCheck the log for more details.";
                 ErrorOccurred = true;
+                await SwitchToSettingsEditor();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
@@ -382,8 +408,9 @@ namespace FFTArchivist.ViewModels
             }
             catch (Exception ex)
             {
-                Status = $"Failed to close packs.\nSee the console for more details";
+                Status = $"Failed to close packs.\nCheck the log for more details.";
                 ErrorOccurred = true;
+                await SwitchToSettingsEditor();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
@@ -507,7 +534,7 @@ namespace FFTArchivist.ViewModels
             }
             catch (Exception ex)
             {
-                Status = $"Failed to export mod \n{modName}\nSee the console for more details";
+                Status = $"Failed to export mod \n{modName}\nCheck the log for more details.";
                 ErrorOccurred = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
@@ -524,6 +551,13 @@ namespace FFTArchivist.ViewModels
             ErrorOccurred = false;
             App.DataManager.ClearDataSources();
             await LoadData();
+        }
+
+        internal async Task CloseError()
+        {
+            ErrorOccurred = false;
+            ShowLoadingScreen = false;
+            ErrorForceReloadData = false;
         }
     }
 }

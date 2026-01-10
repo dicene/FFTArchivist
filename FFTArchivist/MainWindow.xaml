@@ -113,7 +113,8 @@
                 <Controls:LoadingSpinner x:Name="LoadingSpinner" BorderBrush="OrangeRed" BorderThickness="0" Visibility="{Binding NoErrorOccurred, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
                 <Controls:ErrorSpinner x:Name="ErrorSpinner" BorderBrush="OrangeRed" BorderThickness="0" Visibility="{Binding ErrorOccurred, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
                 <Label x:Name="statusLabel" Content="{Binding Status, FallbackValue=Loading}" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" FontSize="26" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"/>
-                <Button x:Name="ErrorReloadDataButton" Content="Reload Data" Visibility="{Binding ErrorOccurred, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Click="ErrorReloadDataButton_Click"/>
+                <Button x:Name="ErrorReloadDataButton" Content="Reload Data" Visibility="{Binding ErrorForceReloadData, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Click="ErrorReloadDataButton_Click"/>
+                <Button x:Name="ErrorCloseButton" Content="Close" Visibility="{Binding ShowCloseErrorButton, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Click="ErrorCloseButton_Click"/>
             </StackPanel>
         </Border>
     </Grid>    

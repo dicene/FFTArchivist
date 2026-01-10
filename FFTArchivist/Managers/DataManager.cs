@@ -14,7 +14,7 @@ namespace FFTArchivist.Managers
         private static DataManager _instance = new DataManager();
         public static DataManager Instance { get => _instance; }
         public string FFTBasePath => Settings.Default.FFTIVCRootPath;
-        public string FFTExecutablePath => Path.Combine([FFTBasePath, "fft_enhanced - 1.2.0.exe"]);
+        public string FFTExecutablePath => Path.Combine([FFTBasePath, "fft_enhanced.exe"]);
         public string DataFolderPath => Path.Combine([FFTBasePath, "data", "enhanced"]);
         public string Locale = "en";
         public string CodeName = FF16Tools.Pack.Crypto.PackKeyStore.FFT_IVALICE_CODENAME;
@@ -205,15 +205,22 @@ namespace FFTArchivist.Managers
             foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IDataSource") != null && !type.IsAbstract))
             {
                 Debug.WriteLine($"Initializing new datasource: {t.Name}");
-                Trace.WriteLine($"Initializing new datasource: {t.Name}");
-                if (Activator.CreateInstance(t) is IDataSource dataSource)
+                try
                 {
-                    DataSources.Add(t, dataSource);
-
-                    if (dataSource is ANEXDataSource aNEXDataSource)
+                    if (Activator.CreateInstance(t) is IDataSource dataSource)
                     {
-                        await aNEXDataSource.LoadPackSource(FF16PackManager);
+                        DataSources.Add(t, dataSource);
+
+                        if (dataSource is ANEXDataSource aNEXDataSource)
+                        {
+                            await aNEXDataSource.LoadPackSource(FF16PackManager);
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to initialize dataSource {t.Name}: {ex}");
+                    throw;
                 }
             }
 
