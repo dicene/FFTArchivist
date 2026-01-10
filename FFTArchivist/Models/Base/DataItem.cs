@@ -1,12 +1,15 @@
 ﻿using FFTArchivist.DataSources;
 using System.ComponentModel;
 using System.Diagnostics;
+using Vortice.Direct3D12;
 
 namespace FFTArchivist.Models.Base
 {
     public class DataItem<T> : ADataItem
     {
         private int id;
+        public string ToolTipString => $"Value({Value}), OriginalValue({OriginalValue})";
+        //public string ToolTipString => $"Value({Value}), OverrideValue({OverrideValue}), OriginalValue({OriginalValue}), OriginalOverrideValue({OriginalOverrideValue})";
         public T? OriginalValue { get; private set; }
 
         private T? value;
@@ -143,7 +146,33 @@ namespace FFTArchivist.Models.Base
         {
             if (SourceOverrideMapping != null && SourceOverrideMapping is IDestinationMapping destinationOverrideMapping)
             {
-                await destinationOverrideMapping.WriteToDestination(originalOverrideSource, Value);
+                if (EqualityComparer<T>.Default.Equals(OriginalValue, Value))
+                {
+                    if (Value is byte)
+                    {
+                        await destinationOverrideMapping.WriteToDestination(originalOverrideSource, Convert.ToSByte(-1));
+                    }
+                    else if (Value is short)
+                    {
+                        await destinationOverrideMapping.WriteToDestination(originalOverrideSource, Convert.ToInt16(-1));
+                    }
+                    else if (Value is ushort)
+                    {
+                        await destinationOverrideMapping.WriteToDestination(originalOverrideSource, Convert.ToInt16(-1));
+                    }
+                    else if (Value is int)
+                    {
+                        await destinationOverrideMapping.WriteToDestination(originalOverrideSource, -1);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Unsure how to set override destination value to -1: T:{typeof(T).Name}, Value:({Value.GetType().Name}) {Value}");
+                    }
+                }
+                else
+                {
+                    await destinationOverrideMapping.WriteToDestination(originalOverrideSource, Value);
+                }
                 return;
             }
             await DestinationMapping.WriteToDestination(originalSource, Value);

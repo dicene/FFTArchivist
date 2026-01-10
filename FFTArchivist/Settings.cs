@@ -3,8 +3,6 @@ using System.Diagnostics;
 
 namespace FFTArchivist.Properties
 {
-
-
     // This class allows you to handle specific events on the settings class:
     //  The SettingChanging event is raised before a setting's value is changed.
     //  The PropertyChanged event is raised after a setting's value is changed.
@@ -24,7 +22,7 @@ namespace FFTArchivist.Properties
 
         private void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
         {
-            Debug.WriteLine($"Setting changed: {e.PropertyName}: {this.FFTIVCRootPath}");
+            Debug.WriteLine($"Setting changed: {e.PropertyName}");
             this.Save();
         }
 

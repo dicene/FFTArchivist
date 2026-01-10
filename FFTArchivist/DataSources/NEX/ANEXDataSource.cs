@@ -134,27 +134,28 @@ namespace FFTArchivist.DataSources
             }
 
             NEXFile = new NexDataFile();
-            NEXFile.Read(fileData);
-
-            TableLayout = TableMappingReader.ReadTableLayout(TableName, new Version(1, 0, 0), CodeName);
-
-            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost1"))
+            try
             {
-                Debug.WriteLine($"Modifying JpCost1 and JpCost2 columns...");
-                var jpCost1Column = TableLayout.Columns["JpCost1"];
-                var jpCost2Column = TableLayout.Columns["JpCost2"];
-                TableLayout.Columns.Remove("JpCost2");
-                TableLayout.Columns["JpCost"] = jpCost1Column;
-                TableLayout.Columns.Remove("JpCost1");
-            }
+                NEXFile.Read(fileData);
 
-            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost") && TableLayout.Columns["JpCost"].Type == NexColumnType.Short)
+                TableLayout = TableMappingReader.ReadTableLayout(TableName, new Version(1, 0, 0), CodeName);
+
+                if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost1"))
+                {
+                    var jpCost1Column = TableLayout.Columns["JpCost1"];
+                    var jpCost2Column = TableLayout.Columns["JpCost2"];
+                    TableLayout.Columns.Remove("JpCost2");
+                    TableLayout.Columns["JpCost"] = jpCost1Column;
+                    TableLayout.Columns.Remove("JpCost1");
+                }
+
+                fileIsLoaded = true;
+            }
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Changing JpCost column from Short to UShort...");
-                TableLayout.Columns["JpCost"].Type = NexColumnType.UShort;
+                Debug.WriteLine($"Error while attempting to NEX data file {filePath}: {ex}");
+                throw;
             }
-
-            fileIsLoaded = true;
         }
 
         public async Task<T> ReadData<T>(int id, int column)
@@ -285,6 +286,11 @@ namespace FFTArchivist.DataSources
                 row.Cells[columnIndex] = Convert.ToInt16(value);
                 return;
             }
+            else if (typeof(T) == typeof(sbyte) && matchingColumns[0].Type == NexColumnType.Short)
+            {
+                row.Cells[columnIndex] = Convert.ToInt16(value);
+                return;
+            }
 
             row.Cells[columnIndex] = value;
         }
@@ -294,11 +300,23 @@ namespace FFTArchivist.DataSources
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 try {
+                    var columns = TableLayout.Columns;
+                    var row = builder.GetRow(1, 0, 0);
+                    var cells = row.Cells;
+
+                    int i = 0;
+                    foreach (var column in columns.Values)
+                    {
+                        Debug.WriteLine($"Column: {column.Name}, Type: {column.Type}, Value: {cells[i]}, ValueType: {cells[i].GetType().Name}");
+                        i++;
+                    }
+
                     builder.Write(fileStream);
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Failed to write to file: {ex}");
+                    throw;
                 }
 
                 Debug.WriteLine($"Wrote {fileStream.Length} bytes to new nex file {filePath}");

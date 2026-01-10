@@ -7,6 +7,7 @@ namespace FFTArchivist.Models.Base
     {
         private string columnName;
         public string ColumnName { get => columnName; set => columnName = value; }
+        public string ToolTipString { get; }
         public ISourceMapping SourceMapping { get; set; }
         public ISourceMapping SourceOverrideMapping { get; set; }
         public IDestinationMapping DestinationMapping { get; set; }

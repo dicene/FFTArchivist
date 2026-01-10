@@ -70,7 +70,7 @@ namespace FFTArchivist.ViewModels.Pages.Abilities
         public ByteDataItemViewModel Flags3 { get; set; } = new();
         public ByteDataItemViewModel Flags4 { get; set; } = new();
         public ByteDataItemViewModel Element { get; set; } = new();
-        public ByteDataItemViewModel Formula { get; set; } = new();
+        public ushortDataItemViewModel Formula { get; set; } = new();
         public ByteDataItemViewModel X { get; set; } = new();
         public ByteDataItemViewModel Y { get; set; } = new();
         public ByteDataItemViewModel InflictStatus { get; set; } = new();

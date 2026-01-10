@@ -8,6 +8,12 @@
     <UseWindowsForms>true</UseWindowsForms>
 	<UseWPF>true</UseWPF>
 	<Platforms>AnyCPU;x64</Platforms>
+	<Version>0.1.0.3</Version>
+	<AssemblyName>FFTArchivist</AssemblyName>
+    <RootNamespace>FFTArchivist</RootNamespace>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <!--<ApplicationIcon>Images\Icons\ic_fluent_history_48_filled.ico</ApplicationIcon>-->
+	<StartupObject>FFTArchivist.App</StartupObject>	  
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +28,7 @@
     <None Remove="Images\Icons\ic_fluent_pen_dismiss_48_filled.png" />
     <None Remove="Images\Icons\ic_fluent_pen_dismiss_48_filled.svg" />
     <None Remove="Images\job_Chocobo.gif" />
-    <None Remove="ModConfig.json" />
+    <None Remove="Images\Squire1M-Dead-NW.gif" />
     <None Remove="Preview.png" />
   </ItemGroup>
 
@@ -33,10 +39,8 @@
     <Resource Include="Images\Icons\ic_fluent_history_dismiss_48_filled.svg" />
     <Resource Include="Images\Icons\ic_fluent_pen_dismiss_48_filled.png" />
     <Resource Include="Images\Icons\ic_fluent_pen_dismiss_48_filled.svg" />
-    <EmbeddedResource Include="ModConfig.json">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
     <Resource Include="Images\job_Chocobo.gif" />
+    <Resource Include="Images\Squire1M-Dead-NW.gif" />
     <EmbeddedResource Include="Preview.png" />
   </ItemGroup>
 
@@ -49,13 +53,18 @@
     <PackageReference Include="fftivc.utility.modloader.Interfaces" Version="1.3.1" />
     <PackageReference Include="fftivc.utility.modloader.Serializers" Version="1.0.3" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.1" />
+    <PackageReference Include="Narod.SteamGameFinder" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1" />
     <PackageReference Include="Reloaded.Memory.Sigscan" Version="3.1.9" />
+    <PackageReference Include="Reloaded.Mod.Loader.IO" Version="2.5.0" />
     <PackageReference Include="XamlAnimatedGif" Version="2.3.1" />
     <PackageReference Include="YAXLib" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\ErrorSpinner.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\TextBox\TextBoxIntDataItemControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,6 +106,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ModConfig.json">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

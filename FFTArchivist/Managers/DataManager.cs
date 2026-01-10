@@ -205,6 +205,7 @@ namespace FFTArchivist.Managers
             foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IDataSource") != null && !type.IsAbstract))
             {
                 Debug.WriteLine($"Initializing new datasource: {t.Name}");
+                Trace.WriteLine($"Initializing new datasource: {t.Name}");
                 if (Activator.CreateInstance(t) is IDataSource dataSource)
                 {
                     DataSources.Add(t, dataSource);

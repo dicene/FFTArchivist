@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="FFTArchivist.Controls.Spinner"
+﻿<UserControl x:Class="FFTArchivist.Controls.LoadingSpinner"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -164,7 +164,7 @@
         </Style>
     </UserControl.Resources>-->
     <Canvas Width="74" Height="88">
-        <Image gif:AnimationBehavior.SourceUri="/Images/job_Chocobo.gif" gif:AnimationBehavior.AutoStart="True" gif:AnimationBehavior.AnimateInDesignMode="True" gif:AnimationBehavior.RepeatBehavior="Forever" Stretch="None">
+        <Image x:Name="ChocoboIcon" gif:AnimationBehavior.SourceUri="/Images/job_Chocobo.gif" gif:AnimationBehavior.AutoStart="True" gif:AnimationBehavior.AnimateInDesignMode="True" gif:AnimationBehavior.RepeatBehavior="Forever" Stretch="None">
             <Image.RenderTransform>
                 <ScaleTransform ScaleX="2" ScaleY="2"/>
             </Image.RenderTransform>

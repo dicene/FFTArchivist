@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Numerics;
 using System.Windows;
+using YamlDotNet.Core.Tokens;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace FFTArchivist.ViewModels.DataItems
 {
@@ -47,6 +49,8 @@ namespace FFTArchivist.ViewModels.DataItems
         //{
         //    Label = labelText;
         //}
+
+        
 
         private string label = "label";
         public string Label
@@ -104,6 +108,8 @@ namespace FFTArchivist.ViewModels.DataItems
             //control.DataItemViewModel.DisplayAsHex = (bool)e.NewValue;
             //Debug.WriteLine($"MaxLengthChanged: {e.Property.Name}: {e.OldValue} -> {e.NewValue} {d.GetValue(MaxLengthProperty)}");
         }
+
+        public string ToolTipString => dataItem.ToolTipString;
 
         public string ValueString
         {
@@ -183,7 +189,35 @@ namespace FFTArchivist.ViewModels.DataItems
 
         public T? Value
         {
-            get => dataItem == null ? default : dataItem.GetValue<T>();
+            get
+            {
+                if (dataItem == null)
+                {
+                    return default;
+                }
+
+                if (typeof(T) == typeof(int))
+                {
+                    return (T)Convert.ChangeType(Convert.ToInt32(dataItem.GetValue()), typeof(T));
+                }
+                else if (typeof(T) == typeof(byte))
+                {
+                    return (T)Convert.ChangeType(Convert.ToByte(dataItem.GetValue()), typeof(T));
+                }
+                else if (typeof(T) == typeof(sbyte))
+                {
+                    return (T)Convert.ChangeType(Convert.ToSByte(dataItem.GetValue()), typeof(T));
+                }
+                else if (typeof(T) == typeof(ushort))
+                {
+                    return (T)Convert.ChangeType(Convert.ToUInt16(dataItem.GetValue()), typeof(T));
+                }
+                else
+                {
+                    Debug.WriteLine($"Unsure how to convert type {typeof(T).Name} for dataitem: {DataItem.GetType().Name}");
+                }
+                return dataItem == null ? default : dataItem.GetValue<T>();
+            }
 
             set
             {

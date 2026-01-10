@@ -1,4 +1,5 @@
 ﻿using FFTArchivist.ViewModels;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +18,7 @@ namespace FFTArchivist
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            System.Windows.Application.Current.MainWindow.Title = $"FFT Archivist v{System.Windows.Application.ResourceAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? "?"}";
             await MainWindowViewModel.WindowLoaded();
         }
 
@@ -69,6 +71,11 @@ namespace FFTArchivist
         }
 
         private async void ReloadDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            await MainWindowViewModel.ReloadData();
+        }
+
+        private async void ErrorReloadDataButton_Click(object sender, RoutedEventArgs e)
         {
             await MainWindowViewModel.ReloadData();
         }

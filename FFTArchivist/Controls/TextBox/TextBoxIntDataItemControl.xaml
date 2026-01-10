@@ -20,13 +20,13 @@
         </Button>
         <TextBox x:Name="FieldText" DockPanel.Dock="Left" VerticalAlignment="Center"
                  Text="{Binding ValueString, UpdateSourceTrigger=PropertyChanged}"
-                 ToolTip="{Binding OriginalValueString, UpdateSourceTrigger=PropertyChanged}">
+                 ToolTip="{Binding DataItem.ToolTipString, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.Style>
                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
                     <Setter Property="Background" Value="{StaticResource TextBoxBackgroundBrush}"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding DataItem.IsModified}" Value="True">
-                            <Setter Property="Background" Value="{StaticResource TextBoxModifiedBackgroundBrush}" />
+                            <Setter Property="Background" Value="{StaticResource TextBoxModifiedBackgroundBrush}"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

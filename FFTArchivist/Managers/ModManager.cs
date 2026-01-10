@@ -2,6 +2,7 @@
 using FFTArchivist.DataSources.EXE;
 using FFTArchivist.Models.Base;
 using fftivc.utility.modloader.Serializers;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.IO;
@@ -32,24 +33,18 @@ namespace FFTArchivist.Managers
 
             var resourceName = "FFTArchivist.ModConfig.json";
 
-            var modConfigJson = "";
+            var modConfig = new ModConfig();
+            
+            modConfig.ModId = modId;
+            modConfig.ModName = modName;
+            modConfig.ModAuthor = modAuthor;
+            modConfig.ModVersion = modVersion;
+            modConfig.ModDescription = modDescription;
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    modConfigJson = reader.ReadToEnd();
-                }
-            }
+            var modConfigJson = JsonConvert.SerializeObject(modConfig, Formatting.Indented);
+            Debug.WriteLine($"{modConfigJson}");
 
-            var modConfig = JObject.Parse(modConfigJson);
-            modConfig["ModId"] = modId;
-            modConfig["ModName"] = modName;
-            modConfig["ModAuthor"] = modAuthor;
-            modConfig["ModVersion"] = modVersion;
-            modConfig["ModDescription"] = modDescription;
-
-            await File.WriteAllTextAsync(Path.Combine(modPath, "ModConfig.json"), modConfig.ToString());
+            await File.WriteAllTextAsync(Path.Combine(modPath, "ModConfig.json"), modConfigJson);
 
             var changedItems = DataManager.Instance.GetDataList<Item>().ToList();
 
@@ -67,8 +62,16 @@ namespace FFTArchivist.Managers
                 if (dataSource is ANEXDataSource nexSource)
                 {
                     var destinationPath = Path.Combine(enhancedDataPath, nexSource.NEXPath);
-                    Debug.WriteLine($"Writing to NEX file at {destinationPath}");
-                    await nexSource.WriteToFile(destinationPath);
+                    try
+                    {
+                        Debug.WriteLine($"Writing to NEX file at {destinationPath}");
+                        await nexSource.WriteToFile(destinationPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Failed to write NEX file to {destinationPath}: {ex}");
+                        throw;
+                    }
                 }
                 else if (dataSource is IEXEDataSource exeDataSource)
                 {
@@ -94,7 +97,15 @@ namespace FFTArchivist.Managers
 
                     if (dataSource is ANEXDataSource aNEXDataSource)
                     {
-                        await aNEXDataSource.LoadModSource(nxdBasePath);
+                        try
+                        {
+                            await aNEXDataSource.LoadModSource(nxdBasePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Failed to load NEX Mod Source {nxdBasePath}: {ex}");
+                            throw;
+                        }
                     }
                     else if (dataSource is IEXEDataSource iEXEDataSource)
                     {

@@ -110,8 +110,10 @@
                 Panel.ZIndex="1000" BorderThickness="3" BorderBrush="Black" CornerRadius="8" Background="{StaticResource TextBoxBackgroundBrush}"
                 Padding="80,40,80,40">
             <StackPanel Orientation="Vertical" Background="Transparent">
-                <Controls:Spinner BorderBrush="OrangeRed" BorderThickness="0"/>
-                <Label x:Name="statusLabel" Content="{Binding Status, FallbackValue=Loading}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"/>
+                <Controls:LoadingSpinner x:Name="LoadingSpinner" BorderBrush="OrangeRed" BorderThickness="0" Visibility="{Binding NoErrorOccurred, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+                <Controls:ErrorSpinner x:Name="ErrorSpinner" BorderBrush="OrangeRed" BorderThickness="0" Visibility="{Binding ErrorOccurred, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+                <Label x:Name="statusLabel" Content="{Binding Status, FallbackValue=Loading}" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" FontSize="26" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"/>
+                <Button x:Name="ErrorReloadDataButton" Content="Reload Data" Visibility="{Binding ErrorOccurred, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Click="ErrorReloadDataButton_Click"/>
             </StackPanel>
         </Border>
     </Grid>    

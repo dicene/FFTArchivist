@@ -1,12 +1,15 @@
-﻿using FFTArchivist.Managers;
+﻿using FFTArchivist.Controls;
+using FFTArchivist.Managers;
 using FFTArchivist.Models;
 using FFTArchivist.ViewModels.Pages;
+using Microsoft.VisualBasic;
 using SQLitePCL;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 
 namespace FFTArchivist.ViewModels
 {
@@ -44,6 +47,23 @@ namespace FFTArchivist.ViewModels
         }
 
         public bool LoadingScreenHidden => !ShowLoadingScreen;
+
+        private bool errorOccurred = false;
+        public bool ErrorOccurred
+        {
+            get => errorOccurred;
+            set
+            {
+                errorOccurred = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowLoadingScreen)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LoadingScreenHidden)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BlurRadius)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorOccurred)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NoErrorOccurred)));
+            }
+        }
+
+        public bool NoErrorOccurred => !ErrorOccurred;
 
         private bool isDataLoaded = false;
 
@@ -122,6 +142,7 @@ namespace FFTArchivist.ViewModels
 
         public async Task ImportMod()
         {
+            ErrorOccurred = false;
             Status = "Importing mod...";
             ShowLoadingScreen = true;
 
@@ -147,7 +168,42 @@ namespace FFTArchivist.ViewModels
                 return;
             }
 
-            await Task.Run(() => App.ModManager.ImportMod(path));
+            var importModTask = Task.Run(async () =>
+            {
+                try
+                {
+                    await App.ModManager.ImportMod(path);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to import mod {path}: {ex}");
+                    throw;
+                }
+            });
+
+            try
+            {
+                await importModTask;
+            }
+            catch (Exception ex)
+            {
+                Status = $"Failed to import mod \n{path.Split(System.IO.Path.DirectorySeparatorChar)[^1]}\nSee the console for more details";
+                ErrorOccurred = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
+                return;
+            }
+
+            //if (!importModTask.IsCompletedSuccessfully)
+            //{
+            //    Status = "Failed to import mod! See console for details...";
+            //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
+            //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
+            //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
+            //    return;
+            //}
+
             Status = "Complete";
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
@@ -176,68 +232,161 @@ namespace FFTArchivist.ViewModels
 
         private async Task LoadData()
         {
+            ErrorOccurred = false;
             Status = "Loading...";
             ShowLoadingScreen = true;
 
             async void FailedLoad(string message)
             {
                 Status = message;
-                await Task.Delay(2000);
+                await Task.Delay(3000);
                 ShowLoadingScreen = false;
                 await SwitchToSettingsEditor();
             }
 
             List<string> moddedPacs = new();
 
-            try
-            {
-                moddedPacs = Directory.GetFiles(App.DataManager.DataFolderPath, "modded*.pac").ToList();
+            moddedPacs = Directory.GetFiles(App.DataManager.DataFolderPath, "modded*.pac").ToList();
 
-                foreach (var moddedPac in moddedPacs)
-                {
-                    Debug.WriteLine($"Temporarily renaming modded pac {moddedPac}...");
-                    File.Move(moddedPac, moddedPac + ".bak");
-                }
-            }
-            catch (Exception ex)
+            Status = "Temporarily renaming modded pacs...";
+            foreach (var moddedPac in moddedPacs)
             {
-                FailedLoad($"Invalid FFT path.");
-                return;
+                try
+                {
+                    var moddedPacBak = moddedPac + ".bak";
+                    Debug.WriteLine($"Temporarily renaming modded pac {moddedPac}...");
+
+                    if (File.Exists(moddedPacBak))
+                    {
+                        File.Delete(moddedPacBak);
+                    }
+
+                    File.Move(moddedPac, moddedPacBak);
+                }
+                catch (Exception ex)
+                {
+                    FailedLoad($"Failed to move modded pac file: {ex}");
+                    return;
+                }
             }
 
             Status = "Opening pack...";
-            var success = await Task.Run(() => App.DataManager.OpenPack(App.DataManager.DataFolderPath));
-
-            if (!success)
+            var openPackTask = Task.Run(async () =>
             {
-                FailedLoad("Failed to open pack.");
+                var success = false;
+
+                try
+                {
+                    success = await App.DataManager.OpenPack(App.DataManager.DataFolderPath);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to open packs {App.DataManager.DataFolderPath}: {ex}");
+                    throw;
+                }
+            });
+
+            try
+            {
+                await openPackTask;
+            }
+            catch (Exception ex)
+            {
+                Status = $"Failed to open packs at \n{App.DataManager.DataFolderPath}\nSee the console for more details";
+                ErrorOccurred = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
                 return;
             }
 
             Status = "Opening data sources...";
-            success = await Task.Run(App.DataManager.LoadDataSources);
-
-            if (!success)
+            var openSourcesTask = Task.Run(async () =>
             {
-                FailedLoad("Failed to open data sources.");
+                var success = false;
+
+                try
+                {
+                    success = await App.DataManager.LoadDataSources();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to open data sources: {ex}");
+                    throw;
+                }
+            });
+
+            try
+            {
+                await openSourcesTask;
+            }
+            catch (Exception ex)
+            {
+                Status = $"Failed to open data sources.\nSee the console for more details";
+                ErrorOccurred = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
                 return;
             }
-
+            
             Status = "Loading data...";
-            success = await Task.Run(App.DataManager.LoadData);
-
-            if (!success)
+            var loadDataTask = Task.Run(async () =>
             {
-                FailedLoad("Failed to load data.");
+                var success = false;
+
+                try
+                {
+                    success = await App.DataManager.LoadData();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to load data: {ex}");
+                    throw;
+                }
+            });
+
+            try
+            {
+                await loadDataTask;
+            }
+            catch (Exception ex)
+            {
+                Status = $"Failed to load data.\nSee the console for more details";
+                ErrorOccurred = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
                 return;
             }
-
+            
             Status = "Closing pack...";
-            success = await Task.Run(App.DataManager.ClosePack);
-
-            if (!success)
+            var closePackTask = Task.Run(async () =>
             {
-                FailedLoad("Failed to close pack.");
+                var success = false;
+
+                try
+                {
+                    success = await App.DataManager.ClosePack();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to close packs: {ex}");
+                    throw;
+                }
+            });
+
+            try
+            {
+                await closePackTask;
+            }
+            catch (Exception ex)
+            {
+                Status = $"Failed to close packs.\nSee the console for more details";
+                ErrorOccurred = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
                 return;
             }
 
@@ -268,6 +417,7 @@ namespace FFTArchivist.ViewModels
         {
             //EntryListBox.SelectedIndex = -1;
             ItemList.Clear();
+
             foreach (var poachItem in App.DataManager.GetDataList<PoachItem>().Select(p => p.ToString()))
             {
                 ItemList.Add(poachItem);
@@ -305,6 +455,7 @@ namespace FFTArchivist.ViewModels
         internal async Task SwitchToUIEditor()
         {
             ItemList.Clear();
+
             foreach (var item in App.DataManager.GetDataList<UI>().Select(ui => ui.ToString()))
             {
                 ItemList.Add(item);
@@ -327,6 +478,7 @@ namespace FFTArchivist.ViewModels
 
         internal async Task ExportMod()
         {
+            ErrorOccurred = false;
             var modName = Properties.Settings.Default.ModName;
             var modId = Properties.Settings.Default.ModId;
             var modVersion = Properties.Settings.Default.ModVersion;
@@ -334,15 +486,42 @@ namespace FFTArchivist.ViewModels
             var modDescription = Properties.Settings.Default.ModDescription;
             var newModPath = System.IO.Path.Combine(Properties.Settings.Default.ReloadedIIModsPath, modName);
             Debug.WriteLine($"Exporting Mod: {modName} to {newModPath}");
-            Status = "Exporting mod {modName}...";
+            Status = $"Exporting mod {modName}...";
             ShowLoadingScreen = true;
-            await ModManager.Instance.ExportMod(modName, modId, modVersion, modAuthor, modDescription, newModPath);
+            var exportModTask = Task.Run(async () =>
+            {
+                try
+                {
+                    await ModManager.Instance.ExportMod(modName, modId, modVersion, modAuthor, modDescription, newModPath);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to export mod {modName}: {ex}");
+                    throw;
+                }
+            });
+
+            try
+            {
+                await exportModTask;
+            }
+            catch (Exception ex)
+            {
+                Status = $"Failed to export mod \n{modName}\nSee the console for more details";
+                ErrorOccurred = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemList.Count)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainWindowViewModel)));
+                return;
+            }
+
             Status = "Complete";
             ShowLoadingScreen = false;
         }
 
         internal async Task ReloadData()
         {
+            ErrorOccurred = false;
             App.DataManager.ClearDataSources();
             await LoadData();
         }
