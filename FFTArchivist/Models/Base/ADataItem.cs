@@ -30,9 +30,11 @@ namespace FFTArchivist.Models.Base
         public abstract void SetModOverrideSource(IDataSource dataSource);
         public abstract void RevertToOriginal();
         public abstract T? GetValue<T>();
+        public abstract T? GetRevertValue<T>();
         public abstract T? GetOriginalValue<T>();
         public abstract object GetValue();
         public abstract void SetValue<T>(T newvalue);
+        public abstract void SetRevertValue<T>(T newvalue);
         public abstract void SetOriginalValue<T>(T newvalue);
     }
 }

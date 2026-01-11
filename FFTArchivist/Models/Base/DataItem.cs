@@ -8,9 +8,10 @@ namespace FFTArchivist.Models.Base
     public class DataItem<T> : ADataItem
     {
         private int id;
-        public string ToolTipString => $"Value({Value}), OriginalValue({OriginalValue})";
+        public string ToolTipString => $"Orig({OriginalValue}), Revert({RevertValue}), Value({Value})";
         //public string ToolTipString => $"Value({Value}), OverrideValue({OverrideValue}), OriginalValue({OriginalValue}), OriginalOverrideValue({OriginalOverrideValue})";
         public T? OriginalValue { get; private set; }
+        public T? RevertValue { get; private set; }
 
         private T? value;
         public T? Value
@@ -36,7 +37,8 @@ namespace FFTArchivist.Models.Base
             }
         }
 
-        public override bool IsModified => !Equals(OriginalValue, Value);
+        public override bool IsModified => !Equals(RevertValue, Value);
+        //public override bool IsModified => !Equals(OriginalValue, Value);
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -66,6 +68,7 @@ namespace FFTArchivist.Models.Base
         public override async Task ReadFromOriginalSource()
         {
             OriginalValue = await SourceMapping.ReadFromSource<T>(originalSource);
+            RevertValue = OriginalValue;
             Value = OriginalValue;
             //value ??= OriginalValue;
         }
@@ -83,8 +86,8 @@ namespace FFTArchivist.Models.Base
 
                 Debug.WriteLine($"String NewValue: {newValue}");
                 //await SetOriginalValue<T>(newValue);
-                OriginalValue = newValue;
-                Value = OriginalValue;
+                RevertValue = newValue;
+                Value = RevertValue;
                 //OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
                 //Value = OriginalValue;
             }
@@ -96,8 +99,14 @@ namespace FFTArchivist.Models.Base
 
                     if (newValue > -1)
                     {
-                        Debug.WriteLine($"Numeric NewValue: {newValue}");
-                        OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Debug.WriteLine($"NON -1 {ColumnName} Override Value: {OriginalValue} -> {newValue}");
+                        RevertValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Value = RevertValue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        RevertValue = OriginalValue;
                         Value = OriginalValue;
                     }
                 }
@@ -107,8 +116,14 @@ namespace FFTArchivist.Models.Base
 
                     if (newValue > -1)
                     {
-                        Debug.WriteLine($"Numeric NewValue: {newValue}");
-                        OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Debug.WriteLine($"NON -1 {ColumnName} Override Value: {OriginalValue} -> {newValue}");
+                        RevertValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Value = RevertValue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        RevertValue = OriginalValue;
                         Value = OriginalValue;
                     }
                 }
@@ -118,8 +133,14 @@ namespace FFTArchivist.Models.Base
 
                     if (newValue > -1)
                     {
-                        Debug.WriteLine($"Numeric NewValue: {newValue}");
-                        OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Debug.WriteLine($"NON -1 {ColumnName} Override Value: {OriginalValue} -> {newValue}");
+                        RevertValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Value = RevertValue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        RevertValue = OriginalValue;
                         Value = OriginalValue;
                     }
                 }
@@ -129,8 +150,14 @@ namespace FFTArchivist.Models.Base
 
                     if (newValue > -1)
                     {
-                        Debug.WriteLine($"Numeric NewValue: {newValue}");
-                        OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Debug.WriteLine($"NON -1 {ColumnName} Override Value: {OriginalValue} -> {newValue}");
+                        RevertValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                        Value = RevertValue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        RevertValue = OriginalValue;
                         Value = OriginalValue;
                     }
                 }
@@ -139,7 +166,83 @@ namespace FFTArchivist.Models.Base
 
         public override async Task ReadFromModOverrideSource()
         {
-            Value = await SourceMapping.ReadFromSource<T>(modOverrideSource);
+            //Value = await SourceOverrideMapping.ReadFromSource<T>(modOverrideSource);
+
+            if (typeof(T) == typeof(string))
+            {
+                var newValue = await SourceOverrideMapping.ReadFromSource<T>(modOverrideSource);
+
+                Debug.WriteLine($"String NewValue: {newValue}");
+                //await SetOriginalValue<T>(newValue);
+                //RevertValue = newValue;
+                //Value = RevertValue;
+                Value = newValue;
+                //OriginalValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
+                //Value = OriginalValue;
+            }
+            else
+            {
+                if (typeof(T) == typeof(byte))
+                {
+                    var newValue = await SourceOverrideMapping.ReadFromSource<short>(modOverrideSource);
+
+                    if (newValue > -1)
+                    {
+                        Debug.WriteLine($"NON -1 {ColumnName} Override Value: {OriginalValue} -> {newValue}");
+                        Value = await SourceOverrideMapping.ReadFromSource<T>(modOverrideSource);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        Value = OriginalValue;
+                    }
+                }
+                else if (typeof(T) == typeof(short))
+                {
+                    var newValue = await SourceOverrideMapping.ReadFromSource<short>(modOverrideSource);
+
+                    if (newValue > -1)
+                    {
+                        Debug.WriteLine($"NON -1 {ColumnName} Override Value: {OriginalValue} -> {newValue}");
+                        Value = await SourceOverrideMapping.ReadFromSource<T>(modOverrideSource);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        Value = OriginalValue;
+                    }
+                }
+                else if (typeof(T) == typeof(int))
+                {
+                    var newValue = await SourceOverrideMapping.ReadFromSource<int>(modOverrideSource);
+
+                    if (newValue > -1)
+                    {
+                        Debug.WriteLine($"NON -1 {ColumnName} Override Value: {OriginalValue} -> {newValue}");
+                        Value = await SourceOverrideMapping.ReadFromSource<T>(modOverrideSource);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        Value = OriginalValue;
+                    }
+                }
+                else
+                {
+                    var newValue = await SourceOverrideMapping.ReadFromSource<int>(modOverrideSource);
+
+                    if (newValue > -1)
+                    {
+                        Debug.WriteLine($"NON -1 {ColumnName} Override Value: {OriginalValue} -> {newValue}");
+                        Value = await SourceOverrideMapping.ReadFromSource<T>(modOverrideSource);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        Value = OriginalValue;
+                    }
+                }
+            }
         }
 
         public async void WriteToMod()
@@ -181,7 +284,7 @@ namespace FFTArchivist.Models.Base
 
         public override void RevertToOriginal()
         {
-            Value = OriginalValue;
+            Value = RevertValue;
         }
 
         public override T1 GetValue<T1>()
@@ -198,6 +301,14 @@ namespace FFTArchivist.Models.Base
                 return default;
 
             return OriginalValue is T1 castedOriginalValue ? castedOriginalValue : throw new InvalidCastException($"Cannot cast original value of type {typeof(T)} to {typeof(T1)}");
+        }
+
+        public override T1 GetRevertValue<T1>()
+        {
+            if (RevertValue == null)
+                return default;
+
+            return RevertValue is T1 castedRevertValue ? castedRevertValue : throw new InvalidCastException($"Cannot cast revert value of type {typeof(T)} to {typeof(T1)}");
         }
 
         public override object GetValue()
@@ -225,7 +336,19 @@ namespace FFTArchivist.Models.Base
             }
             else
             {
-                throw new InvalidCastException($"Cannot cast originalvalue of type {typeof(T1)} to {typeof(T)}");
+                throw new InvalidCastException($"Cannot cast OriginalValue of type {typeof(T1)} to {typeof(T)}");
+            }
+        }
+
+        public override void SetRevertValue<T1>(T1 newRevertValue)
+        {
+            if (typeof(T) == typeof(T1) && newRevertValue is T castNewRevertValue)
+            {
+                RevertValue = castNewRevertValue;
+            }
+            else
+            {
+                throw new InvalidCastException($"Cannot cast RevertValue of type {typeof(T1)} to {typeof(T)}");
             }
         }
 

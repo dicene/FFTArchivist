@@ -126,6 +126,17 @@ namespace FFTArchivist.Managers
                             dataItem.SetModSource(source);
                             await dataItem.ReadFromModSource();
                         }
+
+                        if (dataItem.SourceOverrideMapping != null)
+                        {
+                            var sourceOverrideType = dataItem.SourceOverrideMapping.SourceType;
+                            if (sourceOverrideType != null && modDataSources.TryGetValue(sourceOverrideType, out var overrideSource))
+                            {
+                                dataItem.SetModOverrideSource(overrideSource);
+                                //await dataItem.ReadFromOriginalOverrideSource();
+                                await dataItem.ReadFromModOverrideSource();
+                            }
+                        }
                     }
                 }
             }
