@@ -5,6 +5,7 @@ namespace FFTArchivist.Models.Base
 {
     public abstract class ADataItem : INotifyPropertyChanged
     {
+        public Type Type { get; init; }
         private string columnName;
         public string ColumnName { get => columnName; set => columnName = value; }
         public string ToolTipString { get; }

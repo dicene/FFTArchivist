@@ -1,10 +1,10 @@
 ﻿namespace FFTArchivist.DataSources.EXE
 {
-    internal interface IEXEDataSource
+    internal interface IEXEDataSource : IDataSource
     {
         public string Path { get; }
         public long BaseOffset { get; }
-        public int Count { get; }
+        public int RowCount { get; }
         public Type RowType { get; }
         public string Pattern { get; }
         public string Filename { get; }

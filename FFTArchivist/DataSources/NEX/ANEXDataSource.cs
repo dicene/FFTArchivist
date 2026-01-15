@@ -7,7 +7,7 @@ using System.IO;
 
 namespace FFTArchivist.DataSources
 {
-    public abstract class ANEXDataSource : IDataSource
+    public abstract class ANEXDataSource : INEXDataSource
     {
         public string TableName;
         public string NEXPath;
@@ -20,6 +20,16 @@ namespace FFTArchivist.DataSources
         public NexDataFile NEXFile { get; set; }
         private NexDataFileBuilder builder;
         public NexTableLayout TableLayout { get; set; }
+        public List<NexRowInfo> AllRows { get; set; }
+        public int RowCount { get; private set; }
+
+        public void ForEachRow(Action<int> action)
+        {
+            foreach (var key in AllRows.Select(r => r.Key))
+            {
+                action(Convert.ToInt32(key));
+            }
+        }
 
         public ANEXDataSource(string name)
         {
@@ -78,11 +88,22 @@ namespace FFTArchivist.DataSources
                 TableLayout.Columns.Remove("JpCost1");
             }
 
-            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost") && TableLayout.Columns["JpCost"].Type == NexColumnType.Short)
+            if (TableName.Contains("Ability") && TableLayout.Columns.ContainsKey("JpCost"))
             {
-                Debug.WriteLine($"Changing JpCost column from Short to UShort...");
+                if (TableLayout.Columns["JpCost"].Type == NexColumnType.Short)
+                {
+                    Debug.WriteLine($"Changing JpCost column from Short to UShort...");
+                }
+                else if (TableLayout.Columns["JpCost"].Type == NexColumnType.Byte)
+                {
+                    Debug.WriteLine($"Changing JpCost column from Byte to UShort...");
+                }
+                
                 TableLayout.Columns["JpCost"].Type = NexColumnType.UShort;
             }
+
+            AllRows = NEXFile.RowManager.GetAllRowInfos();
+            RowCount = AllRows.Count;
 
             fileIsLoaded = true;
 
@@ -120,6 +141,9 @@ namespace FFTArchivist.DataSources
                 TableLayout.Columns["JpCost"].Type = NexColumnType.UShort;
             }
 
+            AllRows = NEXFile.RowManager.GetAllRowInfos();
+            RowCount = AllRows.Count;
+
             fileIsLoaded = true;
         }
 
@@ -148,6 +172,9 @@ namespace FFTArchivist.DataSources
                     TableLayout.Columns["JpCost"] = jpCost1Column;
                     TableLayout.Columns.Remove("JpCost1");
                 }
+
+                AllRows = NEXFile.RowManager.GetAllRowInfos();
+                RowCount = AllRows.Count;
 
                 fileIsLoaded = true;
             }
@@ -192,69 +219,105 @@ namespace FFTArchivist.DataSources
             }
 
             int columnIndex = TableLayout.Columns.Values.ToList().IndexOf(matchingColumns[0]);
+            
+            var value = cells[columnIndex];
+            
             if (typeof(T) == typeof(string))
             {
-                return (T)cells[columnIndex];
+                return (T)value;
             }
-            else if (typeof(T) == typeof(byte))
+
+            if (value is string stringVal && stringVal.Equals(""))
+            {
+                value = "0";
+            }
+
+            if (typeof(T) == typeof(byte))
             {
                 try
                 {
-                    return (T)Convert.ChangeType(Convert.ToByte(cells[columnIndex]), typeof(T));
+                    return (T)Convert.ChangeType(Convert.ToByte(value), typeof(T));
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to Byte: {ex}");
+                    Debug.WriteLine($"Failed while converting {value:X} to Byte: {ex}");
                 }
             }
             else if (typeof(T) == typeof(sbyte))
             {
                 try
                 {
-                    return (T)Convert.ChangeType(Convert.ToSByte(cells[columnIndex]), typeof(T));
+                    return (T)Convert.ChangeType(Convert.ToSByte(value), typeof(T));
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to SByte: {ex}");
+                    Debug.WriteLine($"Failed while converting {value:X} to SByte: {ex}");
                 }
             }
             else if (typeof(T) == typeof(short))
             {
                 try
                 {
-                    return (T)Convert.ChangeType(Convert.ToInt16(cells[columnIndex]), typeof(T));
+                    return (T)Convert.ChangeType(Convert.ToInt16(value), typeof(T));
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to Int16: {ex}");
+                    Debug.WriteLine($"Failed while converting {value:X} to Int16: {ex}");
                 }
             }
             else if (typeof(T) == typeof(ushort))
             {
                 try
                 {
-                    return (T)Convert.ChangeType(Convert.ToUInt16(cells[columnIndex]), typeof(T));
+                    return (T)Convert.ChangeType(Convert.ToUInt16(value), typeof(T));
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to UInt16: {ex}");
+                    Debug.WriteLine($"Failed while converting {value:X} to UInt16: {ex}");
                 }
             }
             else if (typeof(T) == typeof(int))
             {
                 try
                 {
-                    return (T)Convert.ChangeType(Convert.ToInt32(cells[columnIndex]), typeof(T));
+                    return (T)Convert.ChangeType(Convert.ToInt32(value), typeof(T));
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failed while converting {cells[columnIndex]:X} to Int: {ex}");
+                    Debug.WriteLine($"Failed while converting {value:X} to Int: {ex}");
+                }
+            }
+            else if (typeof(T) == typeof(bool))
+            {
+                try
+                {
+                    return (T)Convert.ChangeType(Convert.ToInt32(value) == 1, typeof(T));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed while converting {value:X} to bool: {ex}");
+                }
+            }
+            else if (typeof(T) == typeof(string))
+            {
+                try
+                {
+                    if (((string)value).Equals(""))
+                    {
+                        return (T)Convert.ChangeType(0, typeof(T));
+                    }
+
+                    return (T)Convert.ChangeType(Convert.ToInt32(value), typeof(T));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed while converting {value:X} to bool: {ex}");
                 }
             }
             try
             {
-                Debug.WriteLine($"Unsure how to convert cell {columnName} from {cells[columnIndex].GetType().Name} to {typeof(T)}!");
-                return (T)cells[columnIndex];
+                Debug.WriteLine($"\t\tUnsure how to convert cell {columnName} from {value.GetType().Name} to {typeof(T)}!");
+                return (T)value;
             }
             catch (Exception ex)
             {

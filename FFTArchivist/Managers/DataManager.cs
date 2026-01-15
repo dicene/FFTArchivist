@@ -1,11 +1,14 @@
 ﻿using FF16Tools.Pack;
 using FFTArchivist.DataSources;
+using FFTArchivist.DataSources.EXE;
+using FFTArchivist.DataSources.NEX.PlaceName;
 using FFTArchivist.Models;
 using FFTArchivist.Models.Base;
 using FFTArchivist.Properties;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Security.AccessControl;
 
 namespace FFTArchivist.Managers
 {
@@ -183,6 +186,29 @@ namespace FFTArchivist.Managers
                 uis.Add(ui);
             }
 
+            var placeNames = new List<PlaceName>();
+
+            var source = GetDataSource(typeof(PlaceNameNEXSource));
+            var rowCount = source.RowCount;
+
+            source.ForEachRow(async (rowId) =>
+            {
+                var placeName = new PlaceName(rowId);
+                placeName.SetOriginalSources(DataSources);
+                await placeName.ReadData();
+                placeNames.Add(placeName);
+            });
+
+            var towns = new List<Town>();
+
+            for (int i = 0; i < 48; i++)
+            {
+                var town = new Town(i);
+                town.SetOriginalSources(DataSources);
+                await town.ReadData();
+                towns.Add(town);
+            }
+
             DataLists[typeof(Item)] = items;
             DataLists[typeof(PoachItem)] = poaches;
             DataLists[typeof(Ability)] = abilities;
@@ -192,8 +218,10 @@ namespace FFTArchivist.Managers
             DataLists[typeof(JumpAbility)] = jumpAbilities;
             DataLists[typeof(ChargeAbility)] = chargeAbilities;
             DataLists[typeof(MathAbility)] = mathAbilities;
-            DataLists[typeof(Models.SupportAbility)] = supportAbilities;
+            DataLists[typeof(SupportAbility)] = supportAbilities;
             DataLists[typeof(UI)] = uis;
+            DataLists[typeof(PlaceName)] = placeNames;
+            DataLists[typeof(Town)] = towns;
 
             OnDataReloaded?.Invoke(this, EventArgs.Empty);
 
@@ -202,7 +230,8 @@ namespace FFTArchivist.Managers
 
         public async Task<bool> LoadDataSources()
         {
-            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IDataSource") != null && !type.IsAbstract))
+            var sourceTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IDataSource") != null && !type.IsAbstract);
+            foreach (Type t in sourceTypes)
             {
                 Debug.WriteLine($"Initializing new datasource: {t.Name}");
                 try

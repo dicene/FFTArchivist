@@ -41,6 +41,7 @@
                 <Button x:Name="JobEditorButton" Content="Jobs" Click="JobEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" Visibility="Collapsed" IsEnabled="{Binding IsDataLoaded}"/>
                 <Button x:Name="PoachEditorButton" Content="Poach" Click="PoachEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" IsEnabled="{Binding IsDataLoaded}"/>
                 <Button x:Name="UIButton" Content="UI" Click="UIEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" IsEnabled="{Binding IsDataLoaded}"/>
+                <Button x:Name="TownButton" Content="Town" Click="TownEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Left" IsEnabled="{Binding IsDataLoaded}"/>
                 <Button x:Name="Settings" Content="Settings" Click="SettingsEditorButton_Click" Margin="3,5,3,5" DockPanel.Dock="Right"/>
                 <Button x:Name="ReloadData" Content="ReloadData" Click="ReloadDataButton_Click" Margin="3,5,3,5" DockPanel.Dock="Right"/>
                 <Control DockPanel.Dock="Right"/>

@@ -106,6 +106,7 @@ namespace FFTArchivist.ViewModels
         public PoachView PoachView { get; set; }
         public AbilityView AbilityView { get; set; }
         public UIView UIView { get; set; }
+        public TownView TownView { get; set; }
         public SettingsView SettingsView { get; set; }
 
         private Page? currentPage;
@@ -494,6 +495,25 @@ namespace FFTArchivist.ViewModels
             }
 
             CurrentPage = UIView;
+
+            SelectedIndex = 0;
+        }
+
+        internal async Task SwitchToTownEditor()
+        {
+            ItemList.Clear();
+
+            foreach (var item in App.DataManager.GetDataList<Town>().Select(town => town.ToString()))
+            {
+                ItemList.Add(item);
+            }
+
+            if (TownView == null)
+            {
+                TownView = new TownView();
+            }
+
+            CurrentPage = TownView;
 
             SelectedIndex = 0;
         }

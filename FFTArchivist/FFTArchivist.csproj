@@ -8,12 +8,13 @@
     <UseWindowsForms>true</UseWindowsForms>
 	<UseWPF>true</UseWPF>
 	<Platforms>AnyCPU;x64</Platforms>
-	<Version>0.1.0.4</Version>
+	<Version>0.1.0.6</Version>
 	<AssemblyName>FFTArchivist</AssemblyName>
     <RootNamespace>FFTArchivist</RootNamespace>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <!--<ApplicationIcon>Images\Icons\ic_fluent_history_48_filled.ico</ApplicationIcon>-->
-	<StartupObject>FFTArchivist.App</StartupObject>	  
+	<StartupObject>FFTArchivist.App</StartupObject>
+	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,6 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="FF16Framework.Interfaces" Version="1.2.0" />
@@ -92,6 +94,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\ENTDView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\TownView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\UIView.xaml.cs">

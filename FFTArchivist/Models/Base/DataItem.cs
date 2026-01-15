@@ -44,6 +44,7 @@ namespace FFTArchivist.Models.Base
 
         public DataItem(ISourceMapping sourceMapping, int id)
         {
+            this.Type = typeof(T);
             this.id = id;
             this.SourceMapping = sourceMapping;
 
@@ -59,6 +60,7 @@ namespace FFTArchivist.Models.Base
 
         public DataItem(ISourceMapping sourceMapping, IDestinationMapping destinationMapping, int id)
         {
+            this.Type = typeof(T);
             this.id = id;
             this.SourceMapping = sourceMapping;
             this.DestinationMapping = destinationMapping;
@@ -84,7 +86,7 @@ namespace FFTArchivist.Models.Base
             {
                 var newValue = await SourceOverrideMapping.ReadFromSource<T>(originalOverrideSource);
 
-                Debug.WriteLine($"String NewValue: {newValue}");
+                Debug.WriteLine($"String NewValue: {OriginalValue} -> {newValue}");
                 //await SetOriginalValue<T>(newValue);
                 RevertValue = newValue;
                 Value = RevertValue;
@@ -105,7 +107,7 @@ namespace FFTArchivist.Models.Base
                     }
                     else
                     {
-                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        //Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
                         RevertValue = OriginalValue;
                         Value = OriginalValue;
                     }
@@ -122,7 +124,7 @@ namespace FFTArchivist.Models.Base
                     }
                     else
                     {
-                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        //Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
                         RevertValue = OriginalValue;
                         Value = OriginalValue;
                     }
@@ -139,7 +141,7 @@ namespace FFTArchivist.Models.Base
                     }
                     else
                     {
-                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        //Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
                         RevertValue = OriginalValue;
                         Value = OriginalValue;
                     }
@@ -156,7 +158,7 @@ namespace FFTArchivist.Models.Base
                     }
                     else
                     {
-                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        //Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
                         RevertValue = OriginalValue;
                         Value = OriginalValue;
                     }
@@ -193,7 +195,7 @@ namespace FFTArchivist.Models.Base
                     }
                     else
                     {
-                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        //Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
                         Value = OriginalValue;
                     }
                 }
@@ -208,7 +210,7 @@ namespace FFTArchivist.Models.Base
                     }
                     else
                     {
-                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        //Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
                         Value = OriginalValue;
                     }
                 }
@@ -223,7 +225,7 @@ namespace FFTArchivist.Models.Base
                     }
                     else
                     {
-                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        //Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
                         Value = OriginalValue;
                     }
                 }
@@ -238,7 +240,7 @@ namespace FFTArchivist.Models.Base
                     }
                     else
                     {
-                        Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
+                        //Debug.WriteLine($"-1 {ColumnName} Override Value: {OriginalValue} -> {OriginalValue}");
                         Value = OriginalValue;
                     }
                 }

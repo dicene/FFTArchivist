@@ -1,0 +1,80 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:TextBoxControls="clr-namespace:FFTArchivist.Controls.TextBox"
+      xmlns:local="clr-namespace:FFTArchivist"
+      xmlns:Pages="clr-namespace:FFTArchivist.ViewModels.Pages" x:Class="FFTArchivist.TownView"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="TownView" Background="{DynamicResource WindowBackgroundBrush}">
+
+    <Page.DataContext>
+        <Pages:TownViewModel x:Name="TownViewModel"/>
+    </Page.DataContext>
+
+    <DockPanel LastChildFill="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+        <!--<.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </.ColumnDefinitions>
+        <.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
+        </.RowDefinitions>-->
+        <TextBlock DockPanel.Dock="Top" Text="Town" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="26" Grid.Row="0" Grid.Column="0" FontFamily="Sitka Text" Margin="5,0,0,0" />
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" MinWidth="200">
+                    <TextBoxControls:TextBoxIntDataItemControl Label="DLCFlags:" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding DLCFlags}"/>
+                    <TextBoxControls:TextBoxIntDataItemControl Label="Ramza X Pos:" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding Unknown8}"/>
+                    <TextBoxControls:TextBoxIntDataItemControl Label="Ramza Y Pos:" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding UnknownC}"/>
+                    <TextBoxControls:TextBoxIntDataItemControl Label="Unknown1C:" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding Unknown1C}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" MinWidth="200">
+                    <TextBoxControls:TextBoxIntDataItemControl Label="Unknown20:" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding Unknown20}"/>
+                    <TextBoxControls:TextBoxIntDataItemControl Label="Unknown24:" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding Unknown24}"/>
+                    <TextBoxControls:TextBoxIntDataItemControl Label="Unknown2C:" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding Unknown2C}"/>
+                    <TextBoxControls:TextBoxIntDataItemControl Label="Unknown2E:" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" DataContext="{Binding Unknown2E}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" MinWidth="200">
+                    <DockPanel>
+                        <Label Content="Unknown30" DockPanel.Dock="Left"/>
+                        <CheckBox DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" IsChecked="{Binding Unknown30}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="UnkBool31"/>
+                        <CheckBox DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" IsChecked="{Binding UnkBool31}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Poacher's Den:"/>
+                        <CheckBox DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" IsChecked="{Binding Unknown32}"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Unknown33"/>
+                        <CheckBox DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" IsChecked="{Binding Unknown33}"/>
+                    </DockPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <!--<DockPanel>
+                <Label Content="Name: " DockPanel.Dock="Left" />
+                <ComboBox DockPanel.Dock="Right" HorizontalAlignment="Stretch" Margin="0,0,5,0" SelectedIndex="0" FontSize="18" VerticalContentAlignment="Center">
+                    <ComboBoxItem Content="Location Name"/>
+                </ComboBox>
+            </DockPanel>-->
+            <DockPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+                <Label Content="Name:" VerticalAlignment="Center" />
+                <ComboBox x:Name="Name" VerticalAlignment="Center" ItemsSource="{Binding PlaceNames, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedIndex="{Binding PlaceNameIndex}" Background="{DynamicResource TextBoxBackgroundBrush}"/>
+            </DockPanel>
+            <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Label Content="Description:"  />
+                <TextBox x:Name="Description"  Text="{Binding Description}" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" AcceptsTab="True" MinLines="5" Margin="5"/>
+            </DockPanel>
+        </StackPanel>
+    </DockPanel>
+</Page>

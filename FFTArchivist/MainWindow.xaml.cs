@@ -1,4 +1,6 @@
-﻿using FFTArchivist.ViewModels;
+﻿using AutoUpdaterDotNET;
+using FFTArchivist.ViewModels;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,9 +18,12 @@ namespace FFTArchivist
             InitializeComponent();
         }
 
+        //private void Window_Loaded(object sender, RoutedEventArgs e)
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //var a = AutoUpdater.PersistenceProvider.GetRemindLater();
             System.Windows.Application.Current.MainWindow.Title = $"FFT Archivist v{System.Windows.Application.ResourceAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? "?"}";
+            AutoUpdater.Start("https://gist.githubusercontent.com/dicene/48a982e63686acc0b5f959376a34bc3b/raw/FFT_Archivist_Version.xml");
             await MainWindowViewModel.WindowLoaded();
         }
 
@@ -40,6 +45,11 @@ namespace FFTArchivist
         private async void UIEditorButton_Click(object sender, RoutedEventArgs e)
         {
             await MainWindowViewModel.SwitchToUIEditor();
+        }
+
+        private async void TownEditorButton_Click(object sender, RoutedEventArgs e)
+        {
+            await MainWindowViewModel.SwitchToTownEditor();
         }
 
         private async void SettingsEditorButton_Click(object sender, RoutedEventArgs e)

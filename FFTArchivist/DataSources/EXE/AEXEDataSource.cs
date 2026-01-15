@@ -11,16 +11,24 @@ using System.Runtime.InteropServices;
 
 namespace FFTArchivist.DataSources.EXE
 {
-    public abstract class AEXEDataSource<TClass, TStruct, TTable> : IEXEDataSource, IDataSource where TClass : class, IDiffableModel<TClass> where TStruct : struct where TTable : class, new()
+    public abstract class AEXEDataSource<TClass, TStruct, TTable> : IEXEDataSource where TClass : class, IDiffableModel<TClass> where TStruct : struct where TTable : class, new()
     {
         public string Path { get; private set; }
         public long BaseOffset { get; private set; }
-        public int Count { get; private set; }
+        public int RowCount { get; private set; }
         public Type RowType { get; private set; }
         public string Pattern { get; private set; }
         public string Filename { get; private set; }
 
         private List<TClass> rows { get; set; } = new List<TClass>();
+
+        public void ForEachRow(Action<int> action)
+        {
+            for (int i = 0; i < RowCount; i++)
+            {
+                action(i);
+            }
+        }
 
         public AEXEDataSource(string filename, string pattern, int count)
         {
@@ -28,7 +36,7 @@ namespace FFTArchivist.DataSources.EXE
             Path = DataManager.Instance.FFTExecutablePath;
             RowType = typeof(TClass);
             Pattern = pattern;
-            Count = count;
+            RowCount = count;
             try
             {
                 using (Stream stream = File.OpenRead(Path))
@@ -37,7 +45,7 @@ namespace FFTArchivist.DataSources.EXE
                     var result = scanner.FindPattern(pattern);
                     BaseOffset = result.Offset;
                     stream.Seek(BaseOffset, SeekOrigin.Begin);
-                    for (int i = 0; i < Count; i++)
+                    for (int i = 0; i < RowCount; i++)
                     {
                         try
                         {

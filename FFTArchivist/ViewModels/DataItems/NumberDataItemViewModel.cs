@@ -136,15 +136,19 @@ namespace FFTArchivist.ViewModels.DataItems
                     {
                         value = dataItem.GetValue<ushort>();
                     }
+                    else if (typeof(T) == typeof(short))
+                    {
+                        value = dataItem.GetValue<short>();
+                    }
                     else
                     {
-                        Debug.WriteLine($"Unsure how to convert type {typeof(T).Name} for dataitem: {DataItem.GetType().Name}");
+                        Debug.WriteLine($"Unsure how to convert type {typeof(T).Name} for dataitem: {DataItem.Type.Name}");
                         value = 0;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Failure to convert value of type {typeof(T).Name} for dataitem: {DataItem.GetType().Name}");
+                    Debug.WriteLine($"Failure to convert value of type {typeof(T).Name} for dataitem: {DataItem.Type.Name}");
                     value = 0;
                 }
 

@@ -1,4 +1,4 @@
-﻿using FFTArchivist.DataSources.NEX.UI;
+﻿using FFTArchivist.DataSources.NEX.NewFolder.UI;
 using FFTArchivist.Models.Base;
 using System.ComponentModel;
 

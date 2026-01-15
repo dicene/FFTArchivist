@@ -1,4 +1,4 @@
-﻿namespace FFTArchivist.DataSources.NEX.UI
+﻿namespace FFTArchivist.DataSources.NEX.NewFolder.UI
 {
     internal class UINEXModel
     {
